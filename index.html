@@ -4,15 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>JoelData - MTN Dark Mode</title>
+    <title>JoelData Store</title>
     <style>
         body { font-family: -apple-system, sans-serif; background-color: #121212; color: #ffffff; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
         .app-container { background: #1e1e1e; width: 100%; max-width: 400px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); padding: 20px; box-sizing: border-box; border: 2px solid #FFCC00; margin-bottom: 20px; }
         h2 { color: #FFCC00; text-align: center; font-weight: 900; text-transform: uppercase; margin-bottom: 20px; }
         
         .bundle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .bundle-card { border: 1.5px solid #333; padding: 15px; border-radius: 15px; text-align: center; cursor: pointer; background: #2a2a2a; transition: 0.3s; }
-        .bundle-card:active { background: #FFCC00; color: #000; }
+        
+        /* --- SELECT EFFECT STYLES --- */
+        .bundle-card { border: 1.5px solid #333; padding: 15px; border-radius: 15px; text-align: center; cursor: pointer; background: #2a2a2a; transition: all 0.3s ease; }
+        .bundle-card.selected {
+            border: 3px solid #003399 !important; /* MTN Blue Border */
+            background: #FFCC00 !important; /* MTN Yellow Background */
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 204, 0, 0.4);
+        }
+        .bundle-card.selected strong, .bundle-card.selected span { color: #000 !important; }
+        /* ---------------------------- */
+
         .bundle-card strong { display: block; font-size: 22px; color: #FFCC00; }
         .bundle-card span { font-size: 14px; color: #bbbbbb; }
 
@@ -30,9 +40,8 @@
         .instruction-container ol { padding-left: 20px; color: #bbbbbb; margin-bottom: 0; }
         .instruction-container li { margin-bottom: 12px; line-height: 1.4; }
         
-        /* WhatsApp Channel Button */
-        .channel-btn { width: 100%; max-width: 400px; background: #25D366; color: white; text-decoration: none; display: flex; align-items: center; justify-content: center; padding: 15px; border-radius: 15px; font-weight: bold; font-size: 16px; box-sizing: border-box; transition: 0.3s; margin-top: 5px; }
-        .channel-btn:active { transform: scale(0.95); background: #1da851; }
+        .channel-btn { width: 100%; max-width: 400px; background: #25D366; color: white; text-decoration: none; display: flex; align-items: center; justify-content: center; padding: 15px; border-radius: 15px; font-weight: bold; font-size: 16px; box-sizing: border-box; transition: 0.3s; }
+        .channel-btn:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
@@ -56,11 +65,10 @@
 <div class="instruction-container">
     <h3>📝 How to Buy</h3>
     <ol>
-        <li>Tap the <b>Bundle</b> you want.</li>
-        <li>Tap the yellow <b>"Copy"</b> button.</li>
+        <li>Select your <b>Bundle</b> (it will highlight).</li>
+        <li>Tap <b>"Copy Number"</b> to save my MoMo details.</li>
         <li>Enter the <b>Recipient Number</b>.</li>
-        <li>Tap <b>"Pay & Confirm"</b> to open your dialer.</li>
-        <li>Dial <b>*170#</b> and <b>Paste</b> my number to pay.</li>
+        <li>Tap <b>"Pay"</b> and <b>Paste</b> my number in the MoMo menu.</li>
     </ol>
 </div>
 
@@ -78,15 +86,26 @@
         const card = document.createElement('div');
         card.className = 'bundle-card';
         card.innerHTML = `<strong>${gb}GB</strong><span>${price} GHS</span>`;
+        
         card.onclick = () => {
+            // Haptic Vibration (Only works on Android/Chrome)
+            if (navigator.vibrate) { navigator.vibrate(50); }
+
+            // Visual Highlight Logic
+            document.querySelectorAll('.bundle-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+
             currentOrder = { gb, price };
             document.getElementById('selectedPlanTitle').innerText = `Buy ${gb}GB for ${price} GHS`;
             document.getElementById('orderForm').classList.add('active');
+            
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
         };
         container.appendChild(card);
     }
 
     function copyMyNumber() {
+        if (navigator.vibrate) { navigator.vibrate(30); }
         navigator.clipboard.writeText(momoNumber);
         alert("Number Copied! Paste it when you dial *170#.");
     }
@@ -94,7 +113,7 @@
     function handlePayment() {
         const targetNumber = document.getElementById('recipientPhone').value;
         if (targetNumber.length < 10) { alert("Please enter a valid number"); return; }
-        const message = `ORDER: ${currentOrder.gb}GB for ${targetNumber}. I am paying ${currentOrder.price} GHS now.`;
+        const message = `ORDER: ${currentOrder.gb}GB for ${targetNumber}. Paying now!`;
         window.location.href = `tel:*170%23`;
         setTimeout(() => {
             window.location.href = `https://wa.me/233248745662?text=${encodeURIComponent(message)}`;
