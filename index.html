@@ -4,24 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>JoelData - MTN Bundles</title>
+    <title>JoelData - Dark Mode MTN</title>
     <style>
-        /* MTN Color Palette: Yellow (#FFCC00) and Dark Blue/Black (#000000) */
-        body { font-family: -apple-system, sans-serif; background-color: #FFCC00; margin: 0; padding: 15px; display: flex; justify-content: center; }
-        .app-container { background: white; width: 100%; max-width: 400px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); padding: 20px; box-sizing: border-box; border: 3px solid #000; }
-        h2 { color: #000; text-align: center; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
+        /* MTN Dark Mode Palette */
+        body { font-family: -apple-system, sans-serif; background-color: #121212; color: #ffffff; margin: 0; padding: 15px; display: flex; justify-content: center; }
+        .app-container { background: #1e1e1e; width: 100%; max-width: 400px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); padding: 20px; box-sizing: border-box; border: 2px solid #FFCC00; }
+        h2 { color: #FFCC00; text-align: center; font-weight: 900; text-transform: uppercase; margin-bottom: 20px; }
+        
         .bundle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .bundle-card { border: 2px solid #FFCC00; padding: 15px; border-radius: 15px; text-align: center; cursor: pointer; transition: 0.2s; background: #fff; }
-        .bundle-card:active { background: #FFCC00; color: #000; }
-        .bundle-card strong { display: block; font-size: 22px; color: #000; }
-        .bundle-card span { font-size: 14px; color: #555; font-weight: bold; }
-        .form-section { margin-top: 30px; padding-top: 20px; border-top: 3px solid #FFCC00; display: none; }
+        .bundle-card { border: 1.5px solid #333; padding: 15px; border-radius: 15px; text-align: center; cursor: pointer; background: #2a2a2a; transition: 0.3s; }
+        .bundle-card:active { background: #FFCC00; }
+        .bundle-card:active strong, .bundle-card:active span { color: #000; }
+        .bundle-card strong { display: block; font-size: 22px; color: #FFCC00; }
+        .bundle-card span { font-size: 14px; color: #bbbbbb; }
+
+        .form-section { margin-top: 25px; padding-top: 20px; border-top: 1px solid #333; display: none; }
         .form-section.active { display: block; }
-        h3 { color: #000; font-size: 18px; text-align: center; }
-        input { width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #000; border-radius: 12px; box-sizing: border-box; font-size: 18px; outline: none; }
-        .pay-btn { width: 100%; background: #000; color: #FFCC00; border: none; padding: 18px; border-radius: 12px; font-size: 20px; font-weight: 900; text-transform: uppercase; cursor: pointer; }
-        .pay-btn:active { background: #333; }
+        
+        .copy-box { background: #003399; color: white; padding: 15px; border-radius: 12px; text-align: center; margin-bottom: 15px; border: 1px solid #0055ff; }
+        .copy-btn { background: #FFCC00; color: #000; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; margin-top: 10px; cursor: pointer; text-transform: uppercase; font-size: 12px; }
+        
+        input { width: 100%; padding: 15px; margin: 10px 0; border: 1px solid #444; border-radius: 12px; box-sizing: border-box; font-size: 18px; background: #2a2a2a; color: white; outline: none; }
+        input:focus { border-color: #FFCC00; }
+        
+        .pay-btn { width: 100%; background: #003399; color: #ffffff; border: none; padding: 18px; border-radius: 12px; font-size: 20px; font-weight: 900; text-transform: uppercase; margin-top: 10px; box-shadow: 0 4px 15px rgba(0, 51, 153, 0.4); }
+        .pay-btn:active { transform: scale(0.98); background: #002266; }
     </style>
 </head>
 <body>
@@ -29,9 +36,17 @@
 <div class="app-container">
     <h2>JoelData Store</h2>
     <div class="bundle-grid" id="bundleContainer"></div>
+    
     <div class="form-section" id="orderForm">
-        <h3 id="selectedPlanTitle">Confirm Order</h3>
-        <input type="tel" id="recipientPhone" placeholder="Recipient Number" maxlength="10">
+        <h3 id="selectedPlanTitle" style="text-align:center; color:#FFCC00;">Confirm Order</h3>
+        
+        <div class="copy-box">
+            <p style="margin:0; font-size: 14px;">MTN Number to Pay:</p>
+            <strong style="font-size: 20px; letter-spacing: 1px;">0248745662</strong><br>
+            <button class="copy-btn" onclick="copyMyNumber()">Copy Number</button>
+        </div>
+
+        <input type="tel" id="recipientPhone" placeholder="Enter Recipient Number" maxlength="10">
         <button class="pay-btn" onclick="handlePayment()">Pay & Get Data</button>
     </div>
 </div>
@@ -55,24 +70,27 @@
         container.appendChild(card);
     }
 
+    function copyMyNumber() {
+        navigator.clipboard.writeText(momoNumber);
+        alert("Number Copied! You can now paste it in the MoMo menu.");
+    }
+
     function handlePayment() {
         const targetNumber = document.getElementById('recipientPhone').value;
-        const amount = currentOrder.price;
-        if (targetNumber.length < 10) { alert("Enter a valid 10-digit number"); return; }
+        if (targetNumber.length < 10) { alert("Please enter a valid number"); return; }
 
-        const message = `ORDER:%0A---%0ABundle: ${currentOrder.gb}GB%0ARecipient: ${targetNumber}%0AApount Paid: ${amount} GHS%0A---%0AI have made the MoMo payment.`;
+        const message = `JOELDATA ORDER%0A---%0ABundle: ${currentOrder.gb}GB%0APrice: ${currentOrder.price} GHS%0ARecipient: ${targetNumber}%0A---%0AI have copied your number and I am paying now.`;
         const whatsappURL = `https://wa.me/233248745662?text=${message}`;
         
-        // MoMo USSD Prompt for Ghana
-        const momoUSSD = `tel:*170*1*1*${momoNumber}*${momoNumber}*${amount}%23`;
+        const momoUSSD = `tel:*170%23`;
 
-        alert("MTN MOMO PAYMENT:\n1. The dialer will open.\n2. Press 'Call' and enter PIN to pay.\n3. Return here to send your WhatsApp confirmation.");
+        alert("INSTRUCTIONS:\n1. Your dialer will open *170#.\n2. PASTE the number you just copied.\n3. Pay and return here for WhatsApp confirmation.");
         
         window.location.href = momoUSSD;
 
         setTimeout(() => {
             window.location.href = whatsappURL;
-        }, 6000);
+        }, 5000);
     }
 </script>
 </body>
