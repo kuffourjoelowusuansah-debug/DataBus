@@ -22,6 +22,19 @@
             transition: 0.3s;
         }
 
+        /* --- THEME MODAL --- */
+        #themeModal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 10000;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+        .modal-box { text-align: center; background: var(--card); padding: 40px; border-radius: 30px; border: 1px solid var(--accent); }
+        .theme-choice-btn { 
+            padding: 15px 30px; margin: 10px; border-radius: 15px; border: none; 
+            font-weight: bold; cursor: pointer; font-size: 16px; 
+        }
+
         .header { width: 100%; max-width: 400px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .logo { font-weight: 900; letter-spacing: -1.5px; font-size: 22px; color: var(--accent); }
         .theme-btn { background: var(--glass); border: 1px solid var(--glass); color: var(--text); padding: 8px 15px; border-radius: 50px; cursor: pointer; font-size: 11px; font-weight: bold; }
@@ -80,6 +93,15 @@
 </head>
 <body>
 
+<div id="themeModal">
+    <div class="modal-box">
+        <h2 style="color:var(--accent); margin-top:0;">Welcome to JoelData</h2>
+        <p>Select your preferred theme:</p>
+        <button class="theme-choice-btn" style="background:#121212; color:white;" onclick="setTheme('dark')">🌙 DARK MODE</button>
+        <button class="theme-choice-btn" style="background:#f0f0f0; color:black;" onclick="setTheme('light')">☀️ LIGHT MODE</button>
+    </div>
+</div>
+
 <div class="header">
     <div class="logo">JOELDATA.</div>
     <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙 DARK</button>
@@ -116,9 +138,8 @@
         <div class="info-title">⚖️ Terms & Conditions</div>
         <div class="info-content">
             • <b>Delivery Time:</b> Data is typically processed within 1-10 minutes after WhatsApp confirmation.<br>
-            • <b>No Refunds:</b> Ensure the recipient number is correct. We cannot retrieve data sent to the wrong number.<br>
-            • <b>Payment Policy:</b> No data will be sent without a confirmed payment in our system.<br>
-            • <b>Network Issues:</b> Delays caused by the telco network are beyond our control but we will ensure delivery.
+            • <b>No Refunds:</b> Ensure the recipient number is correct.<br>
+            • <b>Payment Policy:</b> No data will be sent without confirmed payment.
         </div>
     </div>
 
@@ -126,8 +147,7 @@
         <div class="info-title">🛡️ Privacy Policy</div>
         <div class="info-content">
             • We only collect the recipient's phone number to fulfill orders.<br>
-            • Your financial details (PINs/Passwords) are never requested or stored by this app.<br>
-            • We do not share your contact information with any third-party marketing services.
+            • Your financial details are never requested or stored.
         </div>
     </div>
 </div>
@@ -142,12 +162,34 @@
     let selectedGB = 0;
     let paymentInitiated = false;
 
-    function toggleTheme() {
-        document.body.classList.toggle('light-mode');
-        const isLight = document.body.classList.contains('light-mode');
-        document.getElementById('themeBtn').innerText = isLight ? "☀️ LIGHT" : "🌙 DARK";
+    // --- THEME MANAGEMENT ---
+    window.onload = () => {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            setTheme(savedTheme);
+        } else {
+            document.getElementById('themeModal').style.display = 'flex';
+        }
     }
 
+    function setTheme(mode) {
+        if (mode === 'light') {
+            document.body.classList.add('light-mode');
+            document.getElementById('themeBtn').innerText = "☀️ LIGHT";
+        } else {
+            document.body.classList.remove('light-mode');
+            document.getElementById('themeBtn').innerText = "🌙 DARK";
+        }
+        localStorage.setItem('theme', mode);
+        document.getElementById('themeModal').style.display = 'none';
+    }
+
+    function toggleTheme() {
+        const currentMode = document.body.classList.contains('light-mode') ? 'dark' : 'light';
+        setTheme(currentMode);
+    }
+
+    // --- BUNDLE SETUP ---
     const grid = document.getElementById('bundleGrid');
     for (let gb = 1; gb <= 10; gb++) {
         const isLow = gb > 8;
@@ -189,7 +231,6 @@
         if (!paymentInitiated) {
             window.location.href = "tel:*170#";
             paymentInitiated = true;
-            
             const btn = document.getElementById('mainBtn');
             btn.innerText = "SEND TO WHATSAPP";
             btn.classList.add('wa-btn');
