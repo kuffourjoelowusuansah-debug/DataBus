@@ -57,11 +57,11 @@
         .pay-btn { width: 100%; background: var(--accent); color: black; border: none; padding: 20px; border-radius: 20px; font-size: 18px; font-weight: 800; cursor: pointer; }
         .wa-btn { background: #25D366 !important; color: white !important; }
 
-        .info-section { margin-top: 25px; padding: 20px; background: var(--glass); border-radius: 25px; border: 1px solid var(--glass); }
-        .info-title { font-size: 14px; font-weight: 800; color: var(--accent); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
-        .info-content { font-size: 13px; line-height: 1.6; opacity: 0.8; }
-        .step-item { margin-bottom: 8px; display: flex; gap: 10px; }
-        .step-num { background: var(--accent); color: #000; min-width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; }
+        .info-section { margin-top: 20px; padding: 20px; background: var(--glass); border-radius: 25px; border: 1px solid var(--glass); }
+        .info-title { font-size: 14px; font-weight: 800; color: var(--accent); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+        .info-content { font-size: 13px; line-height: 1.6; opacity: 0.9; }
+        .step-item { margin-bottom: 12px; display: flex; gap: 10px; align-items: flex-start; }
+        .step-num { background: var(--accent); color: #000; min-width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; margin-top: 2px; }
 
         .share-fab {
             position: fixed; bottom: 30px; right: 30px;
@@ -90,23 +90,44 @@
 
     <div id="orderForm">
         <div class="copy-box">
-            <span style="font-size:11px; opacity:0.8">STEP 1: SEND MONEY TO</span><br>
+            <span style="font-size:11px; opacity:0.8">SEND MOMO TO MERCHANT</span><br>
             <strong style="font-size: 22px;">0248745662</strong><br>
             <button class="copy-btn" onclick="copyNum()">COPY NUMBER</button>
         </div>
 
-        <input type="tel" id="recipientPhone" placeholder="Recipient Number" maxlength="10">
+        <input type="tel" id="recipientPhone" placeholder="Data Recipient Number" maxlength="10">
         <button class="pay-btn" onclick="handleButtonClick()" id="mainBtn">CONFIRM & PAY</button>
-        <p id="statusMsg" style="text-align: center; font-size: 13px; font-weight: bold; display: none; color: var(--accent);">Complete payment then click the button above!</p>
+        <p id="statusMsg" style="text-align: center; font-size: 13px; font-weight: bold; display: none; color: var(--accent);">⚠️ Paid already? Click "SEND TO WHATSAPP" now.</p>
     </div>
 
     <div class="info-section">
-        <div class="info-title">📖 How To Buy</div>
+        <div class="info-title">💳 Detailed Payment Rules</div>
         <div class="info-content">
-            <div class="step-item"><div class="step-num">1</div> Select your preferred Data Bundle above.</div>
-            <div class="step-item"><div class="step-num">2</div> Copy the Merchant Number and pay via MoMo.</div>
-            <div class="step-item"><div class="step-num">3</div> Enter the Phone Number to receive the data.</div>
-            <div class="step-item"><div class="step-num">4</div> Click 'Send to WhatsApp' to finish your order.</div>
+            <div class="step-item"><div class="step-num">1</div> Select your GB bundle and copy the Merchant Number: <b>0248745662</b>.</div>
+            <div class="step-item"><div class="step-num">2</div> Dial <b>*170#</b> and choose Transfer Money (Option 1).</div>
+            <div class="step-item"><div class="step-num">3</div> Select MoMo User and enter the merchant number you copied.</div>
+            <div class="step-item"><div class="step-num">4</div> Enter the exact amount shown on your selected bundle (e.g., 25 GHS for 5GB).</div>
+            <div class="step-item"><div class="step-num">5</div> Once payment is successful, return to this app and enter the <b>Recipient Number</b>.</div>
+            <div class="step-item"><div class="step-num">6</div> Click "SEND TO WHATSAPP" to submit your order.</div>
+        </div>
+    </div>
+
+    <div class="info-section">
+        <div class="info-title">⚖️ Terms & Conditions</div>
+        <div class="info-content">
+            • <b>Delivery Time:</b> Data is typically processed within 1-10 minutes after WhatsApp confirmation.<br>
+            • <b>No Refunds:</b> Ensure the recipient number is correct. We cannot retrieve data sent to the wrong number.<br>
+            • <b>Payment Policy:</b> No data will be sent without a confirmed payment in our system.<br>
+            • <b>Network Issues:</b> Delays caused by the telco network are beyond our control but we will ensure delivery.
+        </div>
+    </div>
+
+    <div class="info-section">
+        <div class="info-title">🛡️ Privacy Policy</div>
+        <div class="info-content">
+            • We only collect the recipient's phone number to fulfill orders.<br>
+            • Your financial details (PINs/Passwords) are never requested or stored by this app.<br>
+            • We do not share your contact information with any third-party marketing services.
         </div>
     </div>
 </div>
@@ -143,7 +164,6 @@
             card.classList.add('selected');
             selectedGB = gb;
             document.getElementById('orderForm').classList.add('active');
-            // Reset button if they change bundle
             resetButton();
         };
         grid.appendChild(card);
@@ -164,21 +184,18 @@
 
     function handleButtonClick() {
         const phone = document.getElementById('recipientPhone').value;
-        if(phone.length < 10) return alert("Enter valid number");
+        if(phone.length < 10) return alert("Please enter a valid 10-digit number");
 
         if (!paymentInitiated) {
-            // First click: Open Dialer
             window.location.href = "tel:*170#";
             paymentInitiated = true;
             
-            // Change button appearance for when they return
             const btn = document.getElementById('mainBtn');
             btn.innerText = "SEND TO WHATSAPP";
             btn.classList.add('wa-btn');
             document.getElementById('statusMsg').style.display = "block";
         } else {
-            // Second click: Send WhatsApp
-            const text = `ORDER: ${selectedGB}GB for ${phone}. I have just finished paying.`;
+            const text = `ORDER: ${selectedGB}GB for ${phone}. Payment has been sent. Please process immediately.`;
             window.location.href = `https://wa.me/233248745662?text=${encodeURIComponent(text)}`;
         }
     }
@@ -186,7 +203,7 @@
     function shareApp() {
         const shareData = {
             title: 'JoelData Affordable Data',
-            text: 'I just got affordable data here:',
+            text: 'I just got cheap data from JoelData! Check it out:',
             url: window.location.href
         };
         if (navigator.share) {
