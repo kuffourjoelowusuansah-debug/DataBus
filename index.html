@@ -23,11 +23,13 @@
         }
 
         body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; transition: 0.4s; }
+        
         .header { width: 100%; max-width: 400px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .logo { font-weight: 900; letter-spacing: -1.5px; font-size: 22px; color: var(--accent); }
         .theme-btn { background: var(--glass); border: 1px solid var(--glass); color: var(--text); padding: 10px 15px; border-radius: 50px; cursor: pointer; font-size: 12px; }
 
         .app-container { background: var(--card); width: 100%; max-width: 400px; border-radius: 35px; box-shadow: 0 30px 60px rgba(0,0,0,0.5); padding: 25px; box-sizing: border-box; border: 1px solid var(--glass); }
+        
         .bundle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .bundle-card { border: 1px solid var(--glass); padding: 20px; border-radius: 25px; text-align: center; cursor: pointer; background: var(--glass); position: relative; transition: 0.3s; }
 
@@ -39,23 +41,20 @@
         .bundle-card.selected strong, .bundle-card.selected span { color: #000 !important; }
         .bundle-card strong { display: block; font-size: 26px; margin-top: 10px; color: var(--accent); }
         
-        .form-section { margin-top: 30px; display: none; animation: fadeIn 0.5s ease; }
-        .form-section.active { display: block; }
-
-        .copy-box { background: var(--mtn-blue); color: white; padding: 20px; border-radius: 25px; text-align: center; }
-        input, textarea { width: 100%; padding: 18px; margin: 10px 0; border: 1px solid var(--glass); border-radius: 20px; background: var(--glass); color: var(--text); font-size: 16px; box-sizing: border-box; outline: none; }
+        /* THE FORM SECTION - FIXED */
+        #orderForm { margin-top: 25px; display: none; padding-top: 20px; border-top: 1px solid var(--glass); }
+        
+        .copy-box { background: var(--mtn-blue); color: white; padding: 20px; border-radius: 25px; text-align: center; margin-bottom: 15px; }
+        input { width: 100%; padding: 18px; margin-bottom: 15px; border: 1px solid var(--glass); border-radius: 20px; background: var(--glass); color: var(--text); font-size: 16px; text-align: center; box-sizing: border-box; outline: none; }
         
         .pay-btn { width: 100%; background: var(--accent); color: black; border: none; padding: 20px; border-radius: 20px; font-size: 18px; font-weight: 800; cursor: pointer; }
 
-        /* REVIEWS CSS */
-        .reviews-area { width: 100%; max-width: 400px; margin-top: 40px; }
-        .review-card { background: var(--glass); padding: 15px; border-radius: 20px; margin-bottom: 10px; border: 1px solid var(--glass); }
-        .review-card b { color: var(--accent); font-size: 14px; }
-        .review-card p { font-size: 13px; margin: 5px 0; opacity: 0.8; }
-        .stars { color: var(--accent); margin-bottom: 5px; }
-
+        /* REVIEWS */
+        .reviews-section { width: 100%; max-width: 400px; margin-top: 40px; }
+        .review-card { background: var(--card); padding: 15px; border-radius: 20px; border: 1px solid var(--glass); margin-bottom: 10px; }
+        
+        .channel-btn { width: 100%; max-width: 400px; background: var(--success); color: white; text-decoration: none; display: flex; align-items: center; justify-content: center; padding: 18px; border-radius: 25px; font-weight: bold; margin-top: 20px; }
         .footer { margin-top: 40px; text-align: center; font-size: 12px; opacity: 0.5; padding-bottom: 40px; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -68,67 +67,33 @@
 <div class="app-container">
     <div class="bundle-grid" id="bundleContainer"></div>
     
-    <div class="form-section" id="orderForm">
+    <div id="orderForm">
         <div class="copy-box">
-            <span style="font-size:11px; opacity:0.7">STEP 1: TRANSFER FUNDS</span><br>
+            <span style="font-size:11px; opacity:0.7">1. COPY MOMO NUMBER</span><br>
             <strong style="font-size: 22px;">0248745662</strong><br>
-            <button onclick="copyMyNumber()" style="margin-top:12px; background:white; border:none; padding:8px 20px; border-radius:15px; font-weight:bold; cursor:pointer;">COPY NUMBER</button>
+            <button onclick="copyMyNumber()" style="margin-top:12px; background:white; border:none; padding:8px 20px; border-radius:15px; font-weight:bold; cursor:pointer;">COPY NOW</button>
         </div>
-        <input type="tel" id="recipientPhone" placeholder="Enter Recipient Number" maxlength="10">
-        <button class="pay-btn" onclick="handlePayment()">CONFIRM & PAY</button>
+        
+        <input type="tel" id="recipientPhone" placeholder="Recipient Number (024...)" maxlength="10">
+        
+        <button class="pay-btn" onclick="handlePayment()">2. CONFIRM & PAY</button>
     </div>
 </div>
 
-<div class="reviews-area">
-    <h3 style="color:var(--accent); text-align:center;">Verified Reviews ⭐</h3>
-    <div id="reviewDisplay">
-        <p style="text-align:center; opacity:0.3;">Loading reviews...</p>
-    </div>
+<a href="https://whatsapp.com/channel/0029Vb80VO3Bfxnx4pIYb11c" class="channel-btn">Join Official Channel 📢</a>
 
-    <div style="background:var(--card); padding:20px; border-radius:30px; margin-top:20px; border:1px solid var(--glass);">
-        <h4 style="margin-top:0;">Write a Review</h4>
-        <input type="text" id="revName" placeholder="Your Name">
-        <textarea id="revText" placeholder="Your feedback..."></textarea>
-        <button class="pay-btn" onclick="postReview()" style="padding:12px; font-size:14px;">POST REVIEW</button>
+<div class="reviews-section">
+    <h3 style="color:var(--accent); text-align:center;">User Reviews ⭐</h3>
+    <div id="reviewList">
+         <div class="review-card"><b>Emmanuel</b><p>"Fast service, love it!"</p></div>
     </div>
 </div>
 
 <div class="footer">
-    &copy; 2026 JOELDATA SERVICES GHANA<br>
-    Reliable Data, Instant Delivery.
+    &copy; 2026 JOELDATA SERVICES GHANA
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-
 <script>
-    // FIREBASE CONFIG - REPLACE WITH YOUR ACTUAL URL
-    const firebaseConfig = { databaseURL: "https://YOUR-PROJECT-ID.firebaseio.com/" };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-
-    // Load Reviews
-    db.ref("reviews").on("value", (snap) => {
-        const display = document.getElementById("reviewDisplay");
-        display.innerHTML = "";
-        snap.forEach((child) => {
-            const r = child.val();
-            display.innerHTML = `<div class="review-card"><b>${r.name}</b><div class="stars">★★★★★</div><p>${r.text}</p></div>` + display.innerHTML;
-        });
-    });
-
-    function postReview() {
-        const name = document.getElementById("revName").value;
-        const text = document.getElementById("revText").value;
-        if(name && text) {
-            db.ref("reviews").push({ name, text });
-            document.getElementById("revName").value = "";
-            document.getElementById("revText").value = "";
-            alert("Review Added!");
-        }
-    }
-
-    // Existing Bundle Logic
     const momoNumber = "0248745662"; 
     let currentOrder = { gb: 0, price: 0 };
 
@@ -143,12 +108,19 @@
         const isLow = gb > 8;
         const card = document.createElement('div');
         card.className = 'bundle-card';
-        card.innerHTML = `<div class="stock-tag ${isLow ? 'low-stock' : 'in-stock'}">${isLow ? 'Low Stock' : 'In Stock'}</div><strong>${gb}GB</strong><span>${price} GHS</span>`;
+        card.innerHTML = `<div class="stock-tag ${isLow ? 'low-stock' : 'in-stock'}">${isLow ? 'Low' : 'In Stock'}</div><strong>${gb}GB</strong><span>${price} GHS</span>`;
+        
         card.onclick = () => {
+            // Vibrate and select
+            if (navigator.vibrate) navigator.vibrate(40);
             document.querySelectorAll('.bundle-card').forEach(c => c.classList.remove('selected'));
             card.classList.add('selected');
+            
+            // SHOW THE HIDDEN FORM
             currentOrder = { gb, price };
-            document.getElementById('orderForm').classList.add('active');
+            document.getElementById('orderForm').style.display = 'block';
+            
+            // Scroll to the form
             window.scrollTo({ top: 300, behavior: 'smooth' });
         };
         container.appendChild(card);
@@ -156,15 +128,19 @@
 
     function copyMyNumber() {
         navigator.clipboard.writeText(momoNumber);
-        alert("Number Copied!");
+        alert("Number Copied! Dial *170# to pay.");
     }
 
     function handlePayment() {
         const targetNumber = document.getElementById('recipientPhone').value;
-        if (targetNumber.length < 10) { alert("Enter valid number"); return; }
+        if (targetNumber.length < 10) { alert("Invalid number"); return; }
+        
+        // Open Dialer
         window.location.href = `tel:*170%23`;
+        
+        // Send to WhatsApp
         setTimeout(() => {
-            window.location.href = `https://wa.me/233248745662?text=ORDER: ${currentOrder.gb}GB for ${targetNumber}.`;
+            window.location.href = `https://wa.me/233248745662?text=ORDER: ${currentOrder.gb}GB for ${targetNumber}`;
         }, 5000);
     }
 </script>
