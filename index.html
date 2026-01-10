@@ -18,7 +18,7 @@
         body { 
             font-family: 'Inter', -apple-system, sans-serif; 
             background-color: var(--bg); color: var(--text); 
-            margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center;
+            margin: 0; padding: 20px 20px 100px 20px; display: flex; flex-direction: column; align-items: center;
             transition: 0.3s;
         }
 
@@ -39,7 +39,6 @@
             position: relative; transition: 0.2s; 
         }
 
-        /* Stock Status */
         .stock-tag { font-size: 9px; text-transform: uppercase; font-weight: bold; padding: 4px 8px; border-radius: 10px; position: absolute; top: 8px; right: 8px; }
         .in-stock { background: rgba(37, 211, 102, 0.1); color: var(--success); }
         .low-stock { background: rgba(255, 204, 0, 0.1); color: var(--accent); }
@@ -47,7 +46,6 @@
         .bundle-card.selected { border: 2px solid var(--accent); background: var(--accent) !important; color: #000; }
         .bundle-card.selected strong { color: #000; }
 
-        /* Order Form */
         #orderForm { display: none; margin-top: 25px; animation: slideUp 0.4s ease; }
         #orderForm.active { display: block; }
 
@@ -58,12 +56,23 @@
         
         .pay-btn { width: 100%; background: var(--accent); color: black; border: none; padding: 20px; border-radius: 20px; font-size: 18px; font-weight: 800; cursor: pointer; }
 
-        /* --- NEW STYLES FOR INFO SECTIONS --- */
         .info-section { margin-top: 25px; padding: 20px; background: var(--glass); border-radius: 25px; border: 1px solid var(--glass); }
         .info-title { font-size: 14px; font-weight: 800; color: var(--accent); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
         .info-content { font-size: 13px; line-height: 1.6; opacity: 0.8; }
-        .step-item { margin-bottom: 8px; display: flex; gap: 10px; }
-        .step-num { background: var(--accent); color: #000; min-width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; }
+
+        /* --- NEW BOTTOM NAVIGATION --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: var(--card); border-top: 1px solid var(--glass);
+            display: flex; justify-content: space-around; padding: 15px 0;
+            z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
+        }
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center;
+            color: var(--text); opacity: 0.5; cursor: pointer; font-size: 10px; font-weight: bold;
+        }
+        .nav-item.active { opacity: 1; color: var(--accent); }
+        .nav-icon { font-size: 20px; margin-bottom: 4px; }
 
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -75,16 +84,14 @@
     <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙 DARK</button>
 </div>
 
-<div class="app-container">
+<div class="app-container" id="homePage">
     <div class="bundle-grid" id="bundleGrid"></div>
-
     <div id="orderForm">
         <div class="copy-box">
             <span style="font-size:11px; opacity:0.8">STEP 1: SEND MONEY TO</span><br>
             <strong style="font-size: 22px;">0248745662</strong><br>
             <button class="copy-btn" onclick="copyNum()">COPY NUMBER</button>
         </div>
-
         <input type="tel" id="recipientPhone" placeholder="Recipient Number" maxlength="10">
         <button class="pay-btn" onclick="processOrder()" id="mainBtn">CONFIRM & PAY</button>
         <p id="statusMsg" style="text-align: center; font-size: 13px; font-weight: bold; display: none; color: var(--accent);">Almost done... Dialing *170#</p>
@@ -92,34 +99,31 @@
 
     <div class="info-section">
         <div class="info-title">📖 How To Buy</div>
-        <div class="info-content">
-            <div class="step-item"><div class="step-num">1</div> Select your preferred Data Bundle above.</div>
-            <div class="step-item"><div class="step-num">2</div> Copy the Merchant Number and pay via MoMo.</div>
-            <div class="step-item"><div class="step-num">3</div> Enter the Phone Number to receive the data.</div>
-            <div class="step-item"><div class="step-num">4</div> Click 'Confirm' to notify us on WhatsApp.</div>
-        </div>
+        <div class="info-content">Select bundle, pay Merchant, enter number, and confirm via WhatsApp.</div>
     </div>
+</div>
 
-    <div class="info-section">
-        <div class="info-title">⚖️ Terms & Conditions</div>
-        <div class="info-content">
-            • Data is typically delivered within 1-10 minutes.<br>
-            • Please double-check the recipient number; we cannot refund data sent to the wrong person.<br>
-            • Payments must be made before data is processed.
-        </div>
+<div class="bottom-nav">
+    <div class="nav-item active" onclick="switchPage('home')">
+        <div class="nav-icon">🏠</div><span>HOME</span>
     </div>
-
-    <div class="info-section">
-        <div class="info-title">🛡️ Privacy Policy</div>
-        <div class="info-content">
-            Your data is safe. We only collect your phone number to fulfill your order. We do not store your financial details or share your info with any third party.
-        </div>
+    <div class="nav-item" onclick="checkEligibility()">
+        <div class="nav-icon">⭐</div><span>OFFERS</span>
+    </div>
+    <div class="nav-item" onclick="openShare()">
+        <div class="nav-icon">🔗</div><span>SHARE</span>
+    </div>
+    <div class="nav-item" onclick="switchPage('history')">
+        <div class="nav-icon">🕒</div><span>HISTORY</span>
     </div>
 </div>
 
 <script>
     const myMomo = "0248745662";
     let selectedGB = 0;
+    
+    // Tracking purchase count
+    let purchaseCount = localStorage.getItem('purchaseCount') || 0;
 
     function toggleTheme() {
         document.body.classList.toggle('light-mode');
@@ -127,17 +131,11 @@
         document.getElementById('themeBtn').innerText = isLight ? "☀️ LIGHT" : "🌙 DARK";
     }
 
-    // Load Grid
     const grid = document.getElementById('bundleGrid');
     for (let gb = 1; gb <= 10; gb++) {
-        const isLow = gb > 8;
         const card = document.createElement('div');
         card.className = 'bundle-card';
-        card.innerHTML = `
-            <div class="stock-tag ${isLow ? 'low-stock' : 'in-stock'}">${isLow ? 'Low' : 'In Stock'}</div>
-            <strong>${gb}GB</strong><br>
-            <span>${(gb * 5) + 1} GHS</span>
-        `;
+        card.innerHTML = `<strong>${gb}GB</strong><br><span>${(gb * 5) + 1} GHS</span>`;
         card.onclick = () => {
             document.querySelectorAll('.bundle-card').forEach(c => c.classList.remove('selected'));
             card.classList.add('selected');
@@ -147,27 +145,53 @@
         grid.appendChild(card);
     }
 
-    function copyNum() {
-        navigator.clipboard.writeText(myMomo);
-        alert("Number Copied!");
-    }
-
     function processOrder() {
         const phone = document.getElementById('recipientPhone').value;
         if(phone.length < 10) return alert("Enter valid number");
+        
+        // Increase purchase count
+        purchaseCount++;
+        localStorage.setItem('purchaseCount', purchaseCount);
 
-        // UI feedback
         document.getElementById('mainBtn').innerText = "DIALING...";
         document.getElementById('statusMsg').style.display = "block";
-
-        // Dial immediately
         window.location.href = "tel:*170#";
-
-        // Switch to WhatsApp after a short pause
         setTimeout(() => {
             const text = `ORDER: ${selectedGB}GB for ${phone}`;
             window.location.href = `https://wa.me/233248745662?text=${encodeURIComponent(text)}`;
         }, 3000);
+    }
+
+    function checkEligibility() {
+        if(purchaseCount < 10) {
+            alert(`❌ INELIGIBLE: You have made ${purchaseCount}/10 purchases. Buy more to unlock Special Offers!`);
+        } else {
+            alert("✅ Welcome to Special Offers! Contact us on WhatsApp for your discount.");
+        }
+    }
+
+    function openShare() {
+        const shareText = "I just got affordable data from JoelData! If you share this link to 15 friends, you unlock rewards. Buy here: " + window.location.href;
+        
+        if (navigator.share) {
+            navigator.share({ title: 'JoelData', text: shareText, url: window.location.href });
+        } else {
+            window.location.href = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+        }
+    }
+
+    function switchPage(page) {
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+        
+        if(page === 'history') {
+            alert(`You have made ${purchaseCount} successful orders so far.`);
+        }
+    }
+
+    function copyNum() {
+        navigator.clipboard.writeText(myMomo);
+        alert("Number Copied!");
     }
 </script>
 
