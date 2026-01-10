@@ -3,102 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JoelData | Simple Store</title>
+    <title>JoelData | Iconic Store</title>
     <style>
         :root {
             --bg: #0a0a0a; --card: #161616; --text: #ffffff;
             --accent: #FFCC00; --mtn-blue: #003399;
-            --glass: rgba(255, 255, 255, 0.05);
+            --glass: rgba(255, 255, 255, 0.05); --success: #25D366;
+        }
+
+        .light-mode {
+            --bg: #f8f9fa; --card: #ffffff; --text: #121212; --glass: rgba(0, 0, 0, 0.05);
         }
 
         body { 
-            font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); 
+            font-family: 'Inter', -apple-system, sans-serif; 
+            background-color: var(--bg); color: var(--text); 
             margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center;
+            transition: 0.3s;
         }
+
+        .header { width: 100%; max-width: 400px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .logo { font-weight: 900; letter-spacing: -1.5px; font-size: 22px; color: var(--accent); }
+        .theme-btn { background: var(--glass); border: 1px solid var(--glass); color: var(--text); padding: 8px 15px; border-radius: 50px; cursor: pointer; font-size: 11px; font-weight: bold; }
 
         .app-container { 
             background: var(--card); width: 100%; max-width: 400px; 
-            border-radius: 30px; padding: 25px; box-sizing: border-box; 
-            border: 1px solid var(--glass);
+            border-radius: 35px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); 
+            padding: 25px; box-sizing: border-box; border: 1px solid var(--glass);
         }
 
-        .logo { font-weight: 900; font-size: 24px; color: var(--accent); margin-bottom: 20px; text-align: center; width: 100%; }
-
-        /* Grid for selection */
-        .bundle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .bundle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .bundle-card { 
-            border: 1px solid var(--glass); padding: 15px; border-radius: 20px; 
-            text-align: center; cursor: pointer; background: var(--glass); transition: 0.2s;
+            border: 1px solid var(--glass); padding: 20px; border-radius: 25px; 
+            text-align: center; cursor: pointer; background: var(--glass); 
+            position: relative; transition: 0.2s; 
         }
-        .bundle-card.selected { border: 2px solid var(--accent); background: var(--accent); color: #000; }
+
+        /* Stock Status */
+        .stock-tag { font-size: 9px; text-transform: uppercase; font-weight: bold; padding: 4px 8px; border-radius: 10px; position: absolute; top: 8px; right: 8px; }
+        .in-stock { background: rgba(37, 211, 102, 0.1); color: var(--success); }
+        .low-stock { background: rgba(255, 204, 0, 0.1); color: var(--accent); }
+
+        .bundle-card.selected { border: 2px solid var(--accent); background: var(--accent) !important; color: #000; }
+        .bundle-card.selected strong { color: #000; }
 
         /* Order Form */
-        #orderForm { display: none; margin-top: 25px; }
+        #orderForm { display: none; margin-top: 25px; animation: slideUp 0.4s ease; }
         #orderForm.active { display: block; }
 
-        .copy-section { background: var(--mtn-blue); padding: 15px; border-radius: 20px; text-align: center; margin-bottom: 15px; }
-        .copy-btn { background: #fff; border: none; padding: 8px 15px; border-radius: 10px; font-weight: bold; margin-top: 10px; cursor: pointer; }
+        .copy-box { background: var(--mtn-blue); color: white; padding: 20px; border-radius: 25px; text-align: center; margin-bottom: 15px; }
+        .copy-btn { margin-top: 12px; background: white; border: none; padding: 8px 20px; border-radius: 12px; font-weight: bold; cursor: pointer; }
 
-        input { width: 100%; padding: 15px; border-radius: 15px; border: 1px solid var(--glass); background: #222; color: #fff; font-size: 18px; text-align: center; box-sizing: border-box; margin-bottom: 15px; }
+        input { width: 100%; padding: 18px; border-radius: 20px; border: 1px solid var(--glass); background: var(--glass); color: var(--text); font-size: 18px; text-align: center; box-sizing: border-box; margin-bottom: 15px; outline: none; }
         
-        .action-btn { width: 100%; background: var(--accent); color: #000; border: none; padding: 18px; border-radius: 15px; font-size: 18px; font-weight: bold; cursor: pointer; }
+        .pay-btn { width: 100%; background: var(--accent); color: black; border: none; padding: 20px; border-radius: 20px; font-size: 18px; font-weight: 800; cursor: pointer; }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-<div class="logo">JOELDATA.</div>
+<div class="header">
+    <div class="logo">JOELDATA.</div>
+    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">🌙 DARK</button>
+</div>
 
 <div class="app-container">
     <div class="bundle-grid" id="bundleGrid"></div>
 
     <div id="orderForm">
-        <div class="copy-section">
-            <span style="font-size: 12px; opacity: 0.8;">TRANSFER TO:</span><br>
-            <strong style="font-size: 20px;">0248745662</strong><br>
+        <div class="copy-box">
+            <span style="font-size:11px; opacity:0.8">STEP 1: SEND MONEY TO</span><br>
+            <strong style="font-size: 22px;">0248745662</strong><br>
             <button class="copy-btn" onclick="copyNum()">COPY NUMBER</button>
         </div>
 
-        <input type="tel" id="userPhone" placeholder="Recipient Number (024...)" maxlength="10">
-        <button class="action-btn" onclick="sendOrder()">CONFIRM ORDER</button>
+        <input type="tel" id="recipientPhone" placeholder="Recipient Number" maxlength="10">
+        <button class="pay-btn" onclick="processOrder()" id="mainBtn">CONFIRM & PAY</button>
+        <p id="statusMsg" style="text-align: center; font-size: 13px; font-weight: bold; display: none; color: var(--accent);">Almost done... Dialing *170#</p>
     </div>
 </div>
 
 <script>
-    const myNumber = "0248745662";
-    let selectedGB = "";
+    const myMomo = "0248745662";
+    let selectedGB = 0;
 
-    // Load bundles
+    function toggleTheme() {
+        document.body.classList.toggle('light-mode');
+        const isLight = document.body.classList.contains('light-mode');
+        document.getElementById('themeBtn').innerText = isLight ? "☀️ LIGHT" : "🌙 DARK";
+    }
+
+    // Load Grid
     const grid = document.getElementById('bundleGrid');
-    for (let i = 1; i <= 10; i++) {
-        const div = document.createElement('div');
-        div.className = 'bundle-card';
-        div.innerHTML = `<strong>${i}GB</strong><br><small>${(i*5)+1} GHS</small>`;
-        div.onclick = () => {
+    for (let gb = 1; gb <= 10; gb++) {
+        const isLow = gb > 8;
+        const card = document.createElement('div');
+        card.className = 'bundle-card';
+        card.innerHTML = `
+            <div class="stock-tag ${isLow ? 'low-stock' : 'in-stock'}">${isLow ? 'Low' : 'In Stock'}</div>
+            <strong>${gb}GB</strong><br>
+            <span>${(gb * 5) + 1} GHS</span>
+        `;
+        card.onclick = () => {
             document.querySelectorAll('.bundle-card').forEach(c => c.classList.remove('selected'));
-            div.classList.add('selected');
-            selectedGB = i;
+            card.classList.add('selected');
+            selectedGB = gb;
             document.getElementById('orderForm').classList.add('active');
         };
-        grid.appendChild(div);
+        grid.appendChild(card);
     }
 
     function copyNum() {
-        navigator.clipboard.writeText(myNumber);
+        navigator.clipboard.writeText(myMomo);
         alert("Number Copied!");
     }
 
-    function sendOrder() {
-        const recipient = document.getElementById('userPhone').value;
-        if(recipient.length < 10) return alert("Enter valid number");
+    function processOrder() {
+        const phone = document.getElementById('recipientPhone').value;
+        if(phone.length < 10) return alert("Enter valid number");
 
-        // Dial USSD immediately
+        // UI feedback
+        document.getElementById('mainBtn').innerText = "DIALING...";
+        document.getElementById('statusMsg').style.display = "block";
+
+        // Dial immediately
         window.location.href = "tel:*170#";
 
-        // Open WhatsApp with details
+        // Switch to WhatsApp after a short pause
         setTimeout(() => {
-            const msg = `New Order: ${selectedGB}GB for ${recipient}`;
-            window.location.href = `https://wa.me/233248745662?text=${encodeURIComponent(msg)}`;
-        }, 1500);
+            const text = `ORDER: ${selectedGB}GB for ${phone}`;
+            window.location.href = `https://wa.me/233248745662?text=${encodeURIComponent(text)}`;
+        }, 3000);
     }
 </script>
 
