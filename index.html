@@ -3,146 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JoelData | Iconic Store</title>
+    <title>JoelData | Premium Global</title>
     <style>
         :root {
-            --bg: #0a0a0a;
-            --card: #161616;
-            --text: #ffffff;
-            --accent: #FFCC00;
-            --mtn-blue: #003399;
-            --glass: rgba(255, 255, 255, 0.05);
+            --bg: #0a0a0a; --card: #161616; --text: #ffffff;
+            --accent: #FFCC00; --mtn-blue: #003399; --glass: rgba(255, 255, 255, 0.05);
             --success: #25D366;
         }
+        .light-mode { --bg: #f8f9fa; --card: #ffffff; --text: #121212; --glass: rgba(0, 0, 0, 0.05); }
 
-        .light-mode {
-            --bg: #f8f9fa;
-            --card: #ffffff;
-            --text: #121212;
-            --glass: rgba(0, 0, 0, 0.05);
-        }
-
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; transition: 0.4s; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; transition: 0.4s; overflow-x: hidden; }
         
-        .header { width: 100%; max-width: 400px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .logo { font-weight: 900; letter-spacing: -1.5px; font-size: 22px; color: var(--accent); }
-        .theme-btn { background: var(--glass); border: 1px solid var(--glass); color: var(--text); padding: 10px 15px; border-radius: 50px; cursor: pointer; font-size: 12px; }
+        /* Notification Popup */
+        #notification { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--card); border: 1px solid var(--accent); padding: 12px 20px; border-radius: 50px; display: flex; align-items: center; gap: 10px; transition: 0.5s; z-index: 999; box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-size: 13px; width: 280px; }
+        #notification.show { transform: translateX(-50%) translateY(0); }
 
-        .app-container { background: var(--card); width: 100%; max-width: 400px; border-radius: 35px; box-shadow: 0 30px 60px rgba(0,0,0,0.5); padding: 25px; box-sizing: border-box; border: 1px solid var(--glass); }
-        
+        /* App Main UI */
+        .app-container { background: var(--card); width: 100%; max-width: 400px; border-radius: 35px; padding: 25px; box-sizing: border-box; border: 1px solid var(--glass); }
         .bundle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .bundle-card { border: 1px solid var(--glass); padding: 20px; border-radius: 25px; text-align: center; cursor: pointer; background: var(--glass); position: relative; transition: 0.3s; }
+        .bundle-card.selected { border: 2px solid var(--mtn-blue); background: var(--accent); color: #000; }
+        .bundle-card.selected strong, .bundle-card.selected span { color: #000; }
 
-        .stock-tag { font-size: 9px; text-transform: uppercase; font-weight: bold; padding: 4px 8px; border-radius: 10px; position: absolute; top: 10px; right: 10px; }
-        .in-stock { background: rgba(37, 211, 102, 0.1); color: var(--success); }
-        .low-stock { background: rgba(255, 204, 0, 0.1); color: var(--accent); }
+        /* Transaction Tracker Overlay */
+        #trackerOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; }
+        .loader { width: 50px; height: 50px; border: 5px solid var(--glass); border-top: 5px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .bundle-card.selected { border: 2px solid var(--mtn-blue) !important; background: var(--accent) !important; transform: scale(1.03); }
-        .bundle-card.selected strong, .bundle-card.selected span { color: #000 !important; }
-        .bundle-card strong { display: block; font-size: 26px; margin-top: 10px; color: var(--accent); }
-        
-        /* THE FORM SECTION - FIXED */
-        #orderForm { margin-top: 25px; display: none; padding-top: 20px; border-top: 1px solid var(--glass); }
-        
+        /* Form & Referral */
+        #orderForm { margin-top: 25px; display: none; }
         .copy-box { background: var(--mtn-blue); color: white; padding: 20px; border-radius: 25px; text-align: center; margin-bottom: 15px; }
-        input { width: 100%; padding: 18px; margin-bottom: 15px; border: 1px solid var(--glass); border-radius: 20px; background: var(--glass); color: var(--text); font-size: 16px; text-align: center; box-sizing: border-box; outline: none; }
+        input { width: 100%; padding: 18px; margin-bottom: 15px; border-radius: 20px; border: 1px solid var(--glass); background: var(--glass); color: var(--text); text-align: center; }
+        .pay-btn { width: 100%; background: var(--accent); color: black; border: none; padding: 20px; border-radius: 20px; font-size: 18px; font-weight: bold; cursor: pointer; }
         
-        .pay-btn { width: 100%; background: var(--accent); color: black; border: none; padding: 20px; border-radius: 20px; font-size: 18px; font-weight: 800; cursor: pointer; }
-
-        /* REVIEWS */
-        .reviews-section { width: 100%; max-width: 400px; margin-top: 40px; }
-        .review-card { background: var(--card); padding: 15px; border-radius: 20px; border: 1px solid var(--glass); margin-bottom: 10px; }
-        
-        .channel-btn { width: 100%; max-width: 400px; background: var(--success); color: white; text-decoration: none; display: flex; align-items: center; justify-content: center; padding: 18px; border-radius: 25px; font-weight: bold; margin-top: 20px; }
-        .footer { margin-top: 40px; text-align: center; font-size: 12px; opacity: 0.5; padding-bottom: 40px; }
+        .referral-box { width: 100%; max-width: 400px; background: var(--glass); border: 1px dashed var(--accent); border-radius: 25px; padding: 20px; margin-top: 20px; box-sizing: border-box; text-align: center; }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <div class="logo">JOELDATA.</div>
-    <button class="theme-btn" onclick="toggleTheme()" id="themeLink">🌙 DARK MODE</button>
+<div id="notification">
+    <span style="font-size: 20px;">⚡</span>
+    <span id="notif-text">Someone in Accra just bought 10GB!</span>
+</div>
+
+<div id="trackerOverlay">
+    <div class="loader"></div>
+    <h3 style="color:var(--accent); margin-top:20px;">Verifying Payment...</h3>
+    <p id="trackerStep" style="font-size:14px; opacity:0.7;">Connecting to MTN MoMo Gateway</p>
 </div>
 
 <div class="app-container">
+    <h2 style="color:var(--accent); text-align:center;">JoelData Store</h2>
     <div class="bundle-grid" id="bundleContainer"></div>
     
     <div id="orderForm">
         <div class="copy-box">
-            <span style="font-size:11px; opacity:0.7">1. COPY MOMO NUMBER</span><br>
-            <strong style="font-size: 22px;">0248745662</strong><br>
-            <button onclick="copyMyNumber()" style="margin-top:12px; background:white; border:none; padding:8px 20px; border-radius:15px; font-weight:bold; cursor:pointer;">COPY NOW</button>
+            <small>SEND TO:</small><br>
+            <strong style="font-size:22px;">0248745662</strong><br>
+            <button onclick="copyNum()" style="margin-top:10px; padding:5px 15px; border-radius:10px; border:none; cursor:pointer; font-weight:bold;">COPY NUMBER</button>
         </div>
-        
-        <input type="tel" id="recipientPhone" placeholder="Recipient Number (024...)" maxlength="10">
-        
-        <button class="pay-btn" onclick="handlePayment()">2. CONFIRM & PAY</button>
+        <input type="tel" id="recipientPhone" placeholder="Data Recipient Number">
+        <button class="pay-btn" onclick="startTracking()">PAY & TRACK ORDER</button>
     </div>
 </div>
 
-<a href="https://whatsapp.com/channel/0029Vb80VO3Bfxnx4pIYb11c" class="channel-btn">Join Official Channel 📢</a>
-
-<div class="reviews-section">
-    <h3 style="color:var(--accent); text-align:center;">User Reviews ⭐</h3>
-    <div id="reviewList">
-         <div class="review-card"><b>Emmanuel</b><p>"Fast service, love it!"</p></div>
-    </div>
+<div class="referral-box">
+    <h4 style="margin:0; color:var(--accent);">🎁 Earn Free Data</h4>
+    <p style="font-size:12px; opacity:0.7;">Share your link and get 500MB on every 5th referral!</p>
+    <button onclick="shareLink()" style="background:var(--success); color:white; border:none; padding:10px 20px; border-radius:15px; font-weight:bold; cursor:pointer;">SHARE ON WHATSAPP</button>
 </div>
 
-<div class="footer">
-    &copy; 2026 JOELDATA SERVICES GHANA
+<div class="footer" style="margin-top:40px; text-align:center; opacity:0.4; font-size:12px; padding-bottom:50px;">
+    &copy; 2026 JOELDATA SERVICES
 </div>
 
 <script>
-    const momoNumber = "0248745662"; 
+    const momoNumber = "0248745662";
     let currentOrder = { gb: 0, price: 0 };
 
-    function toggleTheme() {
-        document.body.classList.toggle('light-mode');
-        document.getElementById('themeLink').innerText = document.body.classList.contains('light-mode') ? "🌙 DARK MODE" : "☀️ LIGHT MODE";
-    }
-
+    // 1. GENERATE BUNDLES
     const container = document.getElementById('bundleContainer');
     for (let gb = 1; gb <= 10; gb++) {
-        let price = (gb * 5) + 1; 
-        const isLow = gb > 8;
+        let price = (gb * 5) + 1;
         const card = document.createElement('div');
         card.className = 'bundle-card';
-        card.innerHTML = `<div class="stock-tag ${isLow ? 'low-stock' : 'in-stock'}">${isLow ? 'Low' : 'In Stock'}</div><strong>${gb}GB</strong><span>${price} GHS</span>`;
-        
+        card.innerHTML = `<strong>${gb}GB</strong><span>${price} GHS</span>`;
         card.onclick = () => {
-            // Vibrate and select
-            if (navigator.vibrate) navigator.vibrate(40);
             document.querySelectorAll('.bundle-card').forEach(c => c.classList.remove('selected'));
             card.classList.add('selected');
-            
-            // SHOW THE HIDDEN FORM
             currentOrder = { gb, price };
             document.getElementById('orderForm').style.display = 'block';
-            
-            // Scroll to the form
-            window.scrollTo({ top: 300, behavior: 'smooth' });
+            window.scrollTo({top: 400, behavior: 'smooth'});
         };
         container.appendChild(card);
     }
 
-    function copyMyNumber() {
-        navigator.clipboard.writeText(momoNumber);
-        alert("Number Copied! Dial *170# to pay.");
+    // 2. SOCIAL PROOF NOTIFICATIONS
+    const cities = ["Accra", "Kumasi", "Tema", "Takoradi", "Tamale", "Koforidua"];
+    const gbs = [1, 2, 5, 10];
+    function showNotif() {
+        const city = cities[Math.floor(Math.random() * cities.length)];
+        const gb = gbs[Math.floor(Math.random() * gbs.length)];
+        document.getElementById('notif-text').innerText = `Someone in ${city} just bought ${gb}GB!`;
+        const n = document.getElementById('notification');
+        n.classList.add('show');
+        setTimeout(() => n.classList.remove('show'), 4000);
+    }
+    setInterval(showNotif, 45000); // Shows every 45 seconds
+
+    // 3. TRANSACTION TRACKER
+    function startTracking() {
+        const phone = document.getElementById('recipientPhone').value;
+        if(phone.length < 10) { alert("Enter valid number"); return; }
+        
+        const overlay = document.getElementById('trackerOverlay');
+        const step = document.getElementById('trackerStep');
+        overlay.style.display = 'flex';
+
+        setTimeout(() => { step.innerText = "Waiting for MoMo Authorization..."; }, 2000);
+        setTimeout(() => { step.innerText = "Opening Secure Dialer..."; }, 4000);
+        setTimeout(() => { 
+            overlay.style.display = 'none';
+            window.location.href = `tel:*170%23`;
+            setTimeout(() => {
+                window.location.href = `https://wa.me/233248745662?text=ORDER: ${currentOrder.gb}GB for ${phone}`;
+            }, 5000);
+        }, 6000);
     }
 
-    function handlePayment() {
-        const targetNumber = document.getElementById('recipientPhone').value;
-        if (targetNumber.length < 10) { alert("Invalid number"); return; }
-        
-        // Open Dialer
-        window.location.href = `tel:*170%23`;
-        
-        // Send to WhatsApp
-        setTimeout(() => {
-            window.location.href = `https://wa.me/233248745662?text=ORDER: ${currentOrder.gb}GB for ${targetNumber}`;
-        }, 5000);
+    // 4. REFERRAL SYSTEM
+    function shareLink() {
+        const text = encodeURIComponent("Hey! Get cheap data instantly on JoelData. I use them and they are legit: https://bit.ly/4pxGA4e");
+        window.location.href = `https://wa.me/?text=${text}`;
     }
+
+    function copyNum() { navigator.clipboard.writeText(momoNumber); alert("Copied!"); }
 </script>
 </body>
 </html>
