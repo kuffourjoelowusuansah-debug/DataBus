@@ -58,6 +58,21 @@
         
         .pay-btn { width: 100%; background: var(--accent); color: black; border: none; padding: 20px; border-radius: 20px; font-size: 18px; font-weight: 800; cursor: pointer; }
 
+        /* NEW ADDITIONS FOR TABS/FOOTER */
+        .footer-links { margin-top: 30px; display: flex; gap: 15px; font-size: 11px; opacity: 0.6; }
+        .footer-links span { cursor: pointer; text-decoration: underline; }
+        
+        .modal { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box;
+        }
+        .modal-content { 
+            background: var(--card); padding: 25px; border-radius: 30px; max-width: 400px; 
+            max-height: 70vh; overflow-y: auto; border: 1px solid var(--glass);
+        }
+        .modal-content h3 { color: var(--accent); margin-top: 0; }
+        .close-modal { background: var(--accent); color: #000; border: none; padding: 10px 20px; border-radius: 15px; font-weight: bold; cursor: pointer; margin-top: 15px; width: 100%; }
+
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
@@ -69,6 +84,11 @@
 </div>
 
 <div class="app-container">
+    <div style="background: var(--glass); padding: 12px; border-radius: 15px; margin-bottom: 15px; font-size: 12px; border: 1px dashed var(--accent);">
+        <strong style="color: var(--accent);">💡 HOW TO BUY:</strong> 
+        Select a bundle below → Copy the number → Pay via MoMo → Enter your number → Confirm.
+    </div>
+
     <div class="bundle-grid" id="bundleGrid"></div>
 
     <div id="orderForm">
@@ -81,6 +101,19 @@
         <input type="tel" id="recipientPhone" placeholder="Recipient Number" maxlength="10">
         <button class="pay-btn" onclick="processOrder()" id="mainBtn">CONFIRM & PAY</button>
         <p id="statusMsg" style="text-align: center; font-size: 13px; font-weight: bold; display: none; color: var(--accent);">Almost done... Dialing *170#</p>
+    </div>
+</div>
+
+<div class="footer-links">
+    <span onclick="showModal('policy')">Privacy Policy</span>
+    <span onclick="showModal('terms')">Terms & Conditions</span>
+</div>
+
+<div id="infoModal" class="modal">
+    <div class="modal-content">
+        <h3 id="modalTitle">Title</h3>
+        <div id="modalText" style="font-size: 14px; line-height: 1.6; opacity: 0.9;"></div>
+        <button class="close-modal" onclick="closeModal()">CLOSE</button>
     </div>
 </div>
 
@@ -123,18 +156,35 @@
         const phone = document.getElementById('recipientPhone').value;
         if(phone.length < 10) return alert("Enter valid number");
 
-        // UI feedback
         document.getElementById('mainBtn').innerText = "DIALING...";
         document.getElementById('statusMsg').style.display = "block";
 
-        // Dial immediately
         window.location.href = "tel:*170#";
 
-        // Switch to WhatsApp after a short pause
         setTimeout(() => {
             const text = `ORDER: ${selectedGB}GB for ${phone}`;
             window.location.href = `https://wa.me/233248745662?text=${encodeURIComponent(text)}`;
         }, 3000);
+    }
+
+    // Modal Logic
+    function showModal(type) {
+        const modal = document.getElementById('infoModal');
+        const title = document.getElementById('modalTitle');
+        const text = document.getElementById('modalText');
+
+        if(type === 'policy') {
+            title.innerText = "Privacy Policy";
+            text.innerHTML = "We value your privacy. Your phone number is only used to process your data bundle request and will never be shared with third parties.";
+        } else {
+            title.innerText = "Terms & Conditions";
+            text.innerHTML = "1. Payments are non-refundable once data is sent.<br>2. Ensure the recipient number is correct.<br>3. Data delivery usually takes 1-5 minutes.";
+        }
+        modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('infoModal').style.display = 'none';
     }
 </script>
 
