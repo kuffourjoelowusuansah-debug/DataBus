@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JoelData | Premium Store</title>
+    <title>JoelData | Iconic Store</title>
     <style>
         :root {
             --bg: #0a0a0a;
@@ -11,97 +11,136 @@
             --text: #ffffff;
             --accent: #FFCC00;
             --mtn-blue: #003399;
-            --glass: rgba(255, 255, 255, 0.08);
+            --glass: rgba(255, 255, 255, 0.05);
             --success: #25D366;
         }
 
         body { 
-            font-family: 'Inter', -apple-system, sans-serif; 
+            font-family: 'Inter', sans-serif; 
             background-color: var(--bg); 
             color: var(--text); 
             margin: 0; padding: 20px; 
             display: flex; flex-direction: column; align-items: center;
         }
 
-        .header { width: 100%; max-width: 400px; text-align: center; margin-bottom: 30px; }
-        .logo { font-weight: 900; font-size: 28px; color: var(--accent); letter-spacing: -1px; }
-
         .app-container { 
             background: var(--card); 
             width: 100%; max-width: 400px; 
-            border-radius: 40px; 
+            border-radius: 35px; 
             padding: 25px; box-sizing: border-box; 
             border: 1px solid var(--glass);
-            box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
         }
 
         .bundle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        
-        /* THE "COOL DESIGN" FIX */
         .bundle-card { 
             border: 1px solid var(--glass); 
-            padding: 22px 10px; border-radius: 25px; 
+            padding: 20px; border-radius: 20px; 
             text-align: center; cursor: pointer; 
             background: var(--glass); 
-            display: flex; flex-direction: column; /* This keeps text separate */
-            justify-content: center; align-items: center;
-            gap: 8px; /* Spacing between GB and GHS */
-            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            display: flex; flex-direction: column; gap: 5px;
+            transition: 0.3s;
         }
 
-        .bundle-card:hover { border-color: var(--accent); background: rgba(255, 204, 0, 0.05); }
+        .bundle-card.selected { border: 2px solid var(--mtn-blue); background: var(--accent); color: #000; }
+        .bundle-card strong { font-size: 22px; color: var(--accent); }
+        .bundle-card.selected strong, .bundle-card.selected span { color: #000; }
 
-        .bundle-card.selected {
-            border: 2px solid var(--mtn-blue) !important;
-            background: var(--accent) !important;
-            transform: scale(1.05);
-            box-shadow: 0 15px 30px rgba(255, 204, 0, 0.2);
+        /* Review Section */
+        .reviews-container { width: 100%; max-width: 400px; margin-top: 40px; }
+        .review-item { 
+            background: var(--card); padding: 15px; border-radius: 15px; 
+            margin-bottom: 10px; border: 1px solid var(--glass);
         }
+        .review-item b { color: var(--accent); display: block; margin-bottom: 5px; }
 
-        .bundle-card strong { font-size: 24px; color: var(--accent); }
-        .bundle-card span { font-size: 14px; color: #aaa; font-weight: 600; }
-        .bundle-card.selected strong, .bundle-card.selected span { color: #000 !important; }
+        .write-review-box { background: var(--glass); padding: 20px; border-radius: 25px; margin-top: 20px; }
+        input, textarea { 
+            width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 10px; 
+            border: 1px solid var(--glass); background: var(--bg); color: white; box-sizing: border-box;
+        }
+        .submit-btn { width: 100%; background: var(--accent); color: #000; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; }
 
-        /* FORM DESIGN */
-        #orderForm { margin-top: 30px; display: none; animation: slideUp 0.4s ease; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        /* Legal Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { background: var(--card); padding: 25px; border-radius: 25px; border: 1px solid var(--glass); max-width: 350px; }
 
-        .input-group { background: var(--glass); padding: 20px; border-radius: 30px; border: 1px solid var(--glass); }
-        input { width: 100%; padding: 18px; margin-top: 10px; border: 1px solid var(--glass); border-radius: 20px; background: var(--bg); color: var(--text); font-size: 18px; text-align: center; box-sizing: border-box; outline: none; }
-        .pay-btn { width: 100%; background: var(--accent); color: black; border: none; padding: 20px; border-radius: 20px; font-size: 18px; font-weight: 800; cursor: pointer; margin-top: 15px; }
-
-        .footer { margin-top: 50px; text-align: center; font-size: 12px; opacity: 0.4; letter-spacing: 1px; }
+        .footer { margin-top: 50px; opacity: 0.5; font-size: 11px; text-align: center; padding-bottom: 30px;}
+        .legal-links span { color: var(--accent); text-decoration: underline; cursor: pointer; margin: 0 5px; }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <div class="logo">JOELDATA</div>
-</div>
-
 <div class="app-container">
+    <h2 style="color:var(--accent); text-align: center; letter-spacing: -1px;">JoelData Store</h2>
     <div class="bundle-grid" id="bundleContainer"></div>
     
-    <div id="orderForm">
-        <div class="input-group">
-            <small style="color:var(--accent); font-weight:bold; text-transform:uppercase;">Step 1: Transfer Funds</small>
-            <div style="font-size:20px; margin: 10px 0; font-weight:900;">0248745662</div>
-            <button onclick="copyNum()" style="background:var(--mtn-blue); color:white; border:none; padding:8px 15px; border-radius:12px; font-weight:bold; cursor:pointer; font-size:11px;">COPY NUMBER</button>
-            <input type="tel" id="recipientPhone" placeholder="Recipient Number">
+    <div id="orderForm" style="display:none; margin-top: 20px; border-top: 1px solid var(--glass); padding-top: 20px;">
+        <div style="background:var(--mtn-blue); color:white; padding:15px; border-radius:15px; text-align:center; margin-bottom:15px;">
+            <small>Transfer to:</small><br>
+            <strong style="font-size:20px;">0248745662</strong><br>
+            <button onclick="copyNum()" style="margin-top:8px; background:var(--accent); border:none; padding:5px 12px; border-radius:8px; font-weight:bold; cursor:pointer;">COPY</button>
         </div>
-        <button class="pay-btn" onclick="handlePay()">CONFIRM & PAY</button>
+        <input type="tel" id="recipient" placeholder="Recipient Number (024...)">
+        <button onclick="payNow()" class="submit-btn" style="height:55px; font-size:18px;">PAY NOW</button>
+    </div>
+</div>
+
+<div class="reviews-container">
+    <h3 style="color:var(--accent);">Live Reviews ⭐</h3>
+    <div id="reviewList"></div>
+
+    <div class="write-review-box">
+        <h4 style="margin-top:0;">Leave a Review</h4>
+        <input type="text" id="revName" placeholder="Your Name">
+        <textarea id="revText" placeholder="How was the service?"></textarea>
+        <button onclick="addReview()" class="submit-btn">Post Review</button>
+    </div>
+</div>
+
+<div id="legalModal" class="modal">
+    <div class="modal-content">
+        <h3 id="legalTitle" style="color:var(--accent); margin-top:0;"></h3>
+        <p id="legalBody" style="font-size:13px; line-height:1.5; opacity:0.8;"></p>
+        <button onclick="closeLegal()" class="submit-btn" style="padding:10px;">Close</button>
     </div>
 </div>
 
 <div class="footer">
-    SECURE • FAST • RELIABLE
+    &copy; 2026 JoelData Services <br>
+    <div class="legal-links" style="margin-top:10px;">
+        <span onclick="showLegal('terms')">Terms</span> • 
+        <span onclick="showLegal('privacy')">Privacy</span>
+    </div>
 </div>
 
-<script>
-    const momo = "0248745662";
-    let activeOrder = { gb: 0, price: 0 };
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
-    const grid = document.getElementById('bundleContainer');
+<script>
+    // FIREBASE - Paste your URL in databaseURL
+    const firebaseConfig = { databaseURL: "https://YOUR-PROJECT-ID.firebaseio.com/" };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // Load Reviews
+    db.ref("reviews").on("value", (snap) => {
+        const list = document.getElementById("reviewList");
+        list.innerHTML = "";
+        snap.forEach((child) => {
+            const d = child.val();
+            list.innerHTML = `<div class="review-item"><b>${d.name}</b><p>"${d.text}"</p></div>` + list.innerHTML;
+        });
+    });
+
+    function addReview() {
+        const n = document.getElementById("revName").value;
+        const t = document.getElementById("revText").value;
+        if(n && t) { db.ref("reviews").push({name: n, text: t}); alert("Review Posted!"); }
+    }
+
+    // Bundle Setup
+    const cont = document.getElementById('bundleContainer');
     for (let i = 1; i <= 10; i++) {
         let p = (i * 5) + 1;
         let card = document.createElement('div');
@@ -110,20 +149,25 @@
         card.onclick = () => {
             document.querySelectorAll('.bundle-card').forEach(c => c.classList.remove('selected'));
             card.classList.add('selected');
-            activeOrder = { gb: i, price: p };
             document.getElementById('orderForm').style.display = 'block';
-            window.scrollTo({ top: 500, behavior: 'smooth' });
         };
-        grid.appendChild(card);
+        cont.appendChild(card);
     }
 
-    function copyNum() { navigator.clipboard.writeText(momo); alert("Copied!"); }
-    function handlePay() {
-        const ph = document.getElementById('recipientPhone').value;
-        if(ph.length < 10) return alert("Enter valid number");
-        window.location.href = "tel:*170#";
-        setTimeout(() => { window.location.href = `https://wa.me/233248745662?text=Order: ${activeOrder.gb}GB to ${ph}`; }, 5000);
+    function copyNum() { navigator.clipboard.writeText("0248745662"); alert("Copied!"); }
+    function payNow() { window.location.href = "tel:*170#"; }
+
+    // Legal Functionality
+    const legal = {
+        terms: "1. Data is sent within 5-10 minutes. 2. Payments must be sent to the official MoMo number. 3. No refunds for wrong recipient numbers provided.",
+        privacy: "We do not store your personal phone numbers. Data provided is only used for the delivery of the service purchased."
+    };
+    function showLegal(type) {
+        document.getElementById('legalTitle').innerText = type.toUpperCase();
+        document.getElementById('legalBody').innerText = legal[type];
+        document.getElementById('legalModal').style.display = 'flex';
     }
+    function closeLegal() { document.getElementById('legalModal').style.display = 'none'; }
 </script>
 </body>
 </html>
