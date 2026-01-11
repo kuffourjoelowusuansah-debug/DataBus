@@ -26,22 +26,42 @@
             transition: 0.3s;
         }
 
+        /* --- Receipt Page Overlay --- */
+        #receiptPage {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg); z-index: 20000; display: none;
+            flex-direction: column; align-items: center; justify-content: center;
+            padding: 20px; box-sizing: border-box;
+        }
+        .receipt-card {
+            background: #fff; color: #000; width: 100%; max-width: 350px;
+            padding: 30px; border-radius: 20px; position: relative;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+        .receipt-card::after {
+            content: ''; position: absolute; bottom: -10px; left: 0; width: 100%;
+            height: 20px; background-image: radial-gradient(circle, #fff 5px, transparent 6px);
+            background-size: 15px 15px;
+        }
+        .receipt-header { border-bottom: 2px dashed #eee; padding-bottom: 15px; margin-bottom: 15px; text-align: center; }
+        .receipt-row { display: flex; justify-content: space-between; margin: 10px 0; font-size: 14px; }
+        .receipt-total { border-top: 2px solid #000; margin-top: 15px; padding-top: 10px; font-weight: 900; font-size: 18px; }
+
         /* --- Purchase Notification --- */
         #notification-toast {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
             background: var(--card); border: 1px solid var(--accent); color: var(--text);
             padding: 12px 20px; border-radius: 50px; font-size: 12px; font-weight: 600;
             display: flex; align-items: center; gap: 10px; z-index: 11000;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: 0.5s;
         }
         #notification-toast.show { transform: translateX(-50%) translateY(0); }
 
-        /* --- Side Menu Styling --- */
+        /* --- Menu & FABs --- */
         #sideMenu {
             position: fixed; top: 0; right: -300px; width: 280px; height: 100%;
             background: var(--card); z-index: 12000; transition: 0.4s ease;
             box-shadow: -10px 0 30px rgba(0,0,0,0.5); padding: 40px 20px;
-            border-left: 1px solid var(--glass);
         }
         #sideMenu.active { right: 0; }
         .menu-overlay {
@@ -52,26 +72,11 @@
         .menu-item {
             padding: 15px; margin-bottom: 10px; border-radius: 15px;
             background: var(--glass); display: flex; align-items: center; gap: 12px;
-            cursor: pointer; font-weight: 600; transition: 0.2s;
-        }
-        .menu-item:hover { background: var(--accent); color: #000; }
-
-        #themeModal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 10000;
-            display: none; flex-direction: column; align-items: center; justify-content: center;
-            backdrop-filter: blur(10px);
-        }
-        .modal-box { text-align: center; background: var(--card); padding: 40px; border-radius: 30px; border: 1px solid var(--accent); }
-        .theme-choice-btn { 
-            padding: 15px 30px; margin: 10px; border-radius: 15px; border: none; 
-            font-weight: bold; cursor: pointer; font-size: 16px; display: inline-flex; align-items: center; gap: 8px;
+            cursor: pointer; font-weight: 600;
         }
 
         .header { width: 100%; max-width: 400px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .logo { font-weight: 900; letter-spacing: -1.5px; font-size: 22px; color: var(--accent); }
-        
-        /* --- Home Button Styling --- */
         .home-btn { background: var(--glass); border: 1px solid var(--glass); color: var(--text); padding: 8px 15px; border-radius: 50px; cursor: pointer; display: flex; align-items: center; gap: 5px; font-weight: bold; font-size: 11px; }
 
         .app-container { 
@@ -97,96 +102,71 @@
             font-weight: 700; margin: 0 auto 25px auto; width: 80%;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #eee;
         }
-        .updates-pill .left-content { display: flex; align-items: center; gap: 10px; }
-        .wa-brand-color { color: #25D366; }
 
         .bundle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
         .bundle-card { 
             border: 1px solid var(--bundle-border); 
             padding: 30px 10px; border-radius: 28px; text-align: center; 
             cursor: pointer; background: var(--bundle-bg); position: relative; 
-            transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: 0.2s;
         }
+        .bundle-card.selected { border: 2.5px solid var(--accent); background: var(--accent) !important; color: #000; }
 
-        .stock-tag { font-size: 9px; text-transform: uppercase; font-weight: bold; padding: 4px 8px; border-radius: 10px; position: absolute; top: 10px; right: 10px; }
-        .in-stock { background: rgba(37, 211, 102, 0.1); color: var(--success); }
-        .low-stock { background: rgba(255, 204, 0, 0.1); color: var(--accent); }
-
-        .bundle-card strong { font-size: 32px; display: block; margin-bottom: 2px; font-weight: 900; letter-spacing: -1px; }
-        .bundle-card span { font-size: 13px; opacity: 0.6; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
-
-        .bundle-card.selected { border: 2.5px solid var(--accent); background: var(--accent) !important; color: #000; transform: scale(1.02); }
-        .bundle-card.selected strong, .bundle-card.selected span { color: #000; opacity: 1; }
-
-        #orderForm { display: none; margin-top: 25px; animation: slideUp 0.4s ease; }
+        #orderForm { display: none; margin-top: 25px; }
         #orderForm.active { display: block; }
 
         .copy-box { background: var(--mtn-blue); color: white; padding: 20px; border-radius: 25px; text-align: center; margin-bottom: 15px; }
-        .copy-btn { margin-top: 12px; background: white; border: none; padding: 8px 20px; border-radius: 12px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; color: #003399; }
+        .copy-btn { margin-top: 12px; background: white; border: none; padding: 8px 20px; border-radius: 12px; font-weight: bold; cursor: pointer; color: #003399; }
 
-        input { width: 100%; padding: 18px; border-radius: 20px; border: 1px solid var(--glass); background: var(--glass); color: var(--text); font-size: 18px; text-align: center; box-sizing: border-box; margin-bottom: 15px; outline: none; }
+        input { width: 100%; padding: 18px; border-radius: 20px; border: 1px solid var(--glass); background: var(--glass); color: var(--text); font-size: 18px; text-align: center; margin-bottom: 15px; outline: none; }
         
-        .terms-container { margin: 15px 0; font-size: 11px; display: flex; align-items: center; justify-content: center; gap: 8px; opacity: 0.9; cursor: pointer; }
-        .terms-container input { width: 18px; height: 18px; margin: 0; cursor: pointer; }
-
+        .terms-container { margin: 15px 0; font-size: 11px; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .pay-btn { width: 100%; background: var(--accent); color: black; border: none; padding: 20px; border-radius: 20px; font-size: 18px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .wa-btn { background: #25D366 !important; color: white !important; }
 
-        .info-section { margin-top: 20px; padding: 20px; background: var(--glass); border-radius: 25px; border: 1px solid var(--glass); }
-        .info-title { font-size: 14px; font-weight: 800; color: var(--accent); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
+        .legal-block { margin-top: 30px; font-size: 10px; opacity: 0.6; padding: 10px; border-top: 1px solid var(--glass); }
 
-        .legal-block { margin-top: 30px; font-size: 10px; line-height: 1.4; opacity: 0.6; padding: 10px; border-top: 1px solid var(--glass); }
-        .legal-block h5 { margin: 10px 0 5px; color: var(--accent); font-size: 11px; text-transform: uppercase; }
-
-        /* --- Action Buttons Floating --- */
         .fab-container { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 11000; }
-        .action-fab {
-            width: 60px; height: 60px; border-radius: 50%;
-            background: var(--accent); color: #000;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
-            cursor: pointer; border: none;
-        }
-        .action-fab span { font-size: 9px; font-weight: 900; margin-top: 2px; }
-        .menu-fab { background: #ffffff; color: #000; }
-
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .action-fab { width: 60px; height: 60px; border-radius: 50%; background: var(--accent); color: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 10px 20px rgba(0,0,0,0.4); cursor: pointer; border: none; }
     </style>
 </head>
 <body>
 
 <div id="notification-toast">
-    <div class="wa-brand-color"><i data-lucide="shopping-bag" size="16"></i></div>
+    <div style="color: #25D366;"><i data-lucide="shopping-bag" size="16"></i></div>
     <span id="notif-text">Someone in Accra just bought 5GB</span>
+</div>
+
+<div id="receiptPage">
+    <div class="receipt-card" id="receiptContent">
+        <div class="receipt-header">
+            <h2 style="margin:0; color:#003399">JOELDATA</h2>
+            <p style="font-size:12px; margin:5px 0">Official Digital Receipt</p>
+        </div>
+        <div class="receipt-row"><span>Date:</span> <span id="rDate"></span></div>
+        <div class="receipt-row"><span>Order ID:</span> <span id="rId"></span></div>
+        <div class="receipt-row"><span>Recipient:</span> <span id="rPhone"></span></div>
+        <div class="receipt-row"><span>Bundle:</span> <span id="rBundle"></span></div>
+        <div class="receipt-row"><span>Merchant:</span> <span>Theresa Mensah</span></div>
+        <div class="receipt-total">
+            <div class="receipt-row" style="margin:0"><span>TOTAL PAID</span> <span id="rPrice"></span></div>
+        </div>
+        <p style="text-align:center; font-size:10px; margin-top:20px; color:#777">Thank you for your business!<br>Processing time: 5-30 mins.</p>
+    </div>
+    <button onclick="closeReceipt()" style="margin-top:30px; background:var(--accent); border:none; padding:15px 40px; border-radius:50px; font-weight:bold; cursor:pointer">BACK TO HOME</button>
 </div>
 
 <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
 <div id="sideMenu">
     <h3 style="color: var(--accent); margin-top: 0;">JoelData Menu</h3>
-    <div class="menu-item" onclick="alert('No transactions found yet.')">
-        <i data-lucide="history" size="18"></i> Transaction History
-    </div>
-    <div class="menu-item" onclick="alert('Please complete an order first.')">
+    <div class="menu-item" onclick="viewReceipt()">
         <i data-lucide="file-text" size="18"></i> View Last Receipt
     </div>
     <div class="menu-item" onclick="toggleTheme(); toggleMenu();">
-        <i data-lucide="refresh-cw" size="18"></i> Switch Theme (L/D)
+        <i data-lucide="refresh-cw" size="18"></i> Switch Theme
     </div>
     <div class="menu-item" onclick="toggleMenu()" style="margin-top: 40px; background: #ef4444; color: #fff;">
-        <i data-lucide="x" size="18"></i> Close Menu
-    </div>
-</div>
-
-<div id="themeModal">
-    <div class="modal-box">
-        <h2 style="color:var(--accent); margin-top:0;">Welcome to JoelData</h2>
-        <p>Select your preferred theme:</p>
-        <button class="theme-choice-btn" style="background:#121212; color:white;" onclick="setTheme('dark')">
-            <i data-lucide="moon" size="18" style="color: #60a5fa;"></i> DARK MODE
-        </button>
-        <button class="theme-choice-btn" style="background:#f0f0f0; color:black;" onclick="setTheme('light')">
-            <i data-lucide="sun" size="18" style="color: #f59e0b;"></i> LIGHT MODE
-        </button>
+        <i data-lucide="x" size="18"></i> Close
     </div>
 </div>
 
@@ -224,11 +204,11 @@
     </div>
 
     <a href="https://whatsapp.com/channel/0029Vb80VO3Bfxnx4pIYb11c" class="updates-pill" target="_blank">
-        <div class="left-content">
+        <div class="left-content" style="display:flex; align-items:center; gap:10px">
             <i data-lucide="megaphone" size="18" style="color: #ef4444;"></i> 
             <span>Follow <b>JOELDATA Updates</b></span>
         </div>
-        <div class="wa-brand-color"><i data-lucide="message-circle" size="22"></i></div>
+        <div style="color:#25D366"><i data-lucide="message-circle" size="22"></i></div>
     </a>
 
     <div class="bundle-grid" id="bundleGrid"></div>
@@ -245,7 +225,7 @@
         
         <div class="terms-container">
             <input type="checkbox" id="termsCheck">
-            <label for="termsCheck">I agree to the Terms & Privacy Policy</label>
+            <label for="termsCheck" style="font-size:11px">I agree to the Terms & Privacy Policy</label>
         </div>
 
         <button class="pay-btn" onclick="handleButtonClick()" id="mainBtn">
@@ -256,33 +236,18 @@
         </p>
     </div>
 
-    <div class="info-section">
-        <div class="info-title"><i data-lucide="info" size="16" style="color: var(--accent);"></i> Detailed Payment Rules</div>
-        <div class="info-content">
-            <div class="step-item"><div class="step-num">1</div> Select bundle and copy Merchant: <b>0248745662 (Theresa Mensah)</b>.</div>
-            <div class="step-item"><div class="step-num">2</div> Dial <b>*170#</b>, Choose Transfer Money > MoMo User.</div>
-            <div class="step-item"><div class="step-num">3</div> Enter the Merchant number and exact bundle amount.</div>
-            <div class="step-item"><div class="step-num">4</div> After payment, enter your number here and click "SEND TO WHATSAPP".</div>
-        </div>
-    </div>
-
     <div class="legal-block">
-        <h5>Terms & Conditions</h5>
-        <p>By using JoelData, you agree that all payments made to merchant Theresa Mensah are final. Data is typically delivered within 5-30 minutes.</p>
-        
-        <h5>Privacy Policy</h5>
-        <p>We only collect your phone number to facilitate data delivery. We do not store payment details.</p>
+        <h5 style="color:var(--accent)">Terms & Conditions</h5>
+        <p>By using JoelData, you agree that all payments made to merchant Theresa Mensah are final.</p>
     </div>
 </div>
 
 <div class="fab-container">
-    <button class="action-fab menu-fab" onclick="toggleMenu()">
+    <button class="action-fab" style="background:#fff" onclick="toggleMenu()">
         <i data-lucide="menu" size="22"></i>
-        <span>MENU</span>
     </button>
     <button class="action-fab" onclick="shareApp()">
         <i data-lucide="share-2" size="20"></i>
-        <span>SHARE</span>
     </button>
 </div>
 
@@ -291,7 +256,6 @@
     let selectedGB = 0;
     let paymentInitiated = false;
 
-    // --- Side Menu Logic ---
     function toggleMenu() {
         const menu = document.getElementById('sideMenu');
         const overlay = document.getElementById('menuOverlay');
@@ -299,122 +263,106 @@
         overlay.style.display = isActive ? 'block' : 'none';
     }
 
-    // --- Notification Logic ---
-    const cities = ["Accra", "Kumasi", "Takoradi", "Tamale", "Tema", "Cape Coast", "Koforidua", "Ho", "Sunyani"];
-    const bundles = ["1GB", "2GB", "3GB", "5GB", "6GB", "10GB"];
-    
-    function showNotification() {
-        const city = cities[Math.floor(Math.random() * cities.length)];
-        const bundle = bundles[Math.floor(Math.random() * bundles.length)];
-        const toast = document.getElementById('notification-toast');
-        document.getElementById('notif-text').innerText = `Someone in ${city} just bought ${bundle}`;
+    function generateReceipt(phone, bundle, price) {
+        const orderId = "JD-" + Math.floor(Math.random() * 900000 + 100000);
+        const date = new Date().toLocaleString();
         
-        toast.classList.add('show');
-        setTimeout(() => { toast.classList.remove('show'); }, 4000);
+        const lastOrder = { id: orderId, date, phone, bundle, price };
+        localStorage.setItem('lastOrder', JSON.stringify(lastOrder));
+        
+        document.getElementById('rDate').innerText = date;
+        document.getElementById('rId').innerText = orderId;
+        document.getElementById('rPhone').innerText = phone;
+        document.getElementById('rBundle').innerText = bundle + "GB";
+        document.getElementById('rPrice').innerText = "GHS " + price + ".00";
+        
+        document.getElementById('receiptPage').style.display = 'flex';
     }
 
-    setTimeout(showNotification, 3000);
+    function viewReceipt() {
+        const data = JSON.parse(localStorage.getItem('lastOrder'));
+        if(!data) return alert("No recent orders found.");
+        document.getElementById('rDate').innerText = data.date;
+        document.getElementById('rId').innerText = data.id;
+        document.getElementById('rPhone').innerText = data.phone;
+        document.getElementById('rBundle').innerText = data.bundle + "GB";
+        document.getElementById('rPrice').innerText = "GHS " + data.price + ".00";
+        document.getElementById('receiptPage').style.display = 'flex';
+        toggleMenu();
+    }
+
+    function closeReceipt() {
+        document.getElementById('receiptPage').style.display = 'none';
+    }
+
+    // --- Original Logic ---
+    const cities = ["Accra", "Kumasi", "Takoradi", "Tamale", "Tema"];
+    function showNotification() {
+        const city = cities[Math.floor(Math.random() * cities.length)];
+        const toast = document.getElementById('notification-toast');
+        document.getElementById('notif-text').innerText = `Someone in ${city} just bought data`;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 4000);
+    }
     setInterval(showNotification, 12000);
 
     lucide.createIcons();
 
-    window.onload = () => {
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            setTheme(savedTheme);
-        } else {
-            document.getElementById('themeModal').style.display = 'flex';
-        }
-    }
-
-    function setTheme(mode) {
-        if (mode === 'light') {
-            document.body.classList.add('light-mode');
-        } else {
-            document.body.classList.remove('light-mode');
-        }
-        lucide.createIcons();
-        localStorage.setItem('theme', mode);
-        document.getElementById('themeModal').style.display = 'none';
-    }
-
-    function toggleTheme() {
-        const currentMode = document.body.classList.contains('light-mode') ? 'dark' : 'light';
-        setTheme(currentMode);
-    }
-
     const grid = document.getElementById('bundleGrid');
     for (let gb = 1; gb <= 10; gb++) {
-        const isLow = gb > 8;
         const card = document.createElement('div');
         card.className = 'bundle-card';
-        const price = gb * 5; 
-        card.innerHTML = `
-            <div class="stock-tag ${isLow ? 'low-stock' : 'in-stock'}">${isLow ? 'Low' : 'In Stock'}</div>
-            <strong>${gb}GB</strong>
-            <span>GHS ${price}.00</span>
-        `;
+        card.innerHTML = `<strong>${gb}GB</strong><span>GHS ${gb*5}.00</span>`;
         card.onclick = () => {
             document.querySelectorAll('.bundle-card').forEach(c => c.classList.remove('selected'));
             card.classList.add('selected');
             selectedGB = gb;
             document.getElementById('orderForm').classList.add('active');
-            resetButton();
         };
         grid.appendChild(card);
     }
 
-    function resetButton() {
-        paymentInitiated = false;
-        const btnText = document.getElementById('btnText');
-        const btnIcon = document.getElementById('btnIcon');
-        const mainBtn = document.getElementById('mainBtn');
-        btnText.innerText = "CONFIRM & PAY";
-        btnIcon.setAttribute('data-lucide', 'credit-card');
-        mainBtn.classList.remove('wa-btn');
-        document.getElementById('statusMsg').style.display = "none";
-        lucide.createIcons();
-    }
-
     function copyNum() {
         navigator.clipboard.writeText(myMomo);
-        alert("Number Copied! Merchant: Theresa Mensah");
+        alert("Merchant: Theresa Mensah");
     }
 
     function handleButtonClick() {
         const phone = document.getElementById('recipientPhone').value;
-        const termsAccepted = document.getElementById('termsCheck').checked;
-
-        if(!termsAccepted) return alert("You must agree to the Terms & Privacy Policy.");
-        if(phone.length < 10) return alert("Please enter a valid 10-digit number");
+        if(!document.getElementById('termsCheck').checked) return alert("Accept terms.");
+        if(phone.length < 10) return alert("Valid number required.");
 
         if (!paymentInitiated) {
             window.location.href = "tel:*170#";
             paymentInitiated = true;
             document.getElementById('btnText').innerText = "SEND TO WHATSAPP";
-            document.getElementById('btnIcon').setAttribute('data-lucide', 'phone-forwarded');
             document.getElementById('mainBtn').classList.add('wa-btn');
             document.getElementById('statusMsg').style.display = "block";
             lucide.createIcons();
         } else {
-            const text = `ORDER: ${selectedGB}GB for ${phone}. Payment sent to Theresa Mensah. Please process immediately.`;
-            window.location.href = `https://wa.me/233248745662?text=${encodeURIComponent(text)}`;
+            generateReceipt(phone, selectedGB, selectedGB * 5);
+            setTimeout(() => {
+                const text = `ORDER: ${selectedGB}GB for ${phone}. Paid to Theresa Mensah.`;
+                window.location.href = `https://wa.me/233248745662?text=${encodeURIComponent(text)}`;
+            }, 2000);
         }
     }
 
     function shareApp() {
-        const shareData = {
-            title: 'JoelData Affordable Data',
-            text: 'I just got cheap data from JoelData! Check it out:',
-            url: window.location.href
-        };
-        if (navigator.share) {
-            navigator.share(shareData);
-        } else {
-            window.location.href = `https://wa.me/?text=${encodeURIComponent(shareData.text + " " + shareData.url)}`;
-        }
+        navigator.share({ title: 'JoelData', url: window.location.href });
+    }
+
+    function setTheme(mode) {
+        if (mode === 'light') document.body.classList.add('light-mode');
+        else document.body.classList.remove('light-mode');
+        localStorage.setItem('theme', mode);
+        lucide.createIcons();
+    }
+    
+    function toggleTheme() {
+        const mode = document.body.classList.contains('light-mode') ? 'dark' : 'light';
+        setTheme(mode);
     }
 </script>
-
 </body>
 </html>
