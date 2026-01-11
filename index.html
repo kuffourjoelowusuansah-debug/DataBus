@@ -26,54 +26,41 @@
             transition: 0.3s;
         }
 
-        /* --- Receipt Page Overlay --- */
+        /* --- Receipt Page --- */
         #receiptPage {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg); z-index: 20000; display: none;
             flex-direction: column; align-items: center; justify-content: center;
-            padding: 20px; box-sizing: border-box;
+            padding: 20px; box-sizing: border-box; backdrop-filter: blur(10px);
         }
         .receipt-card {
             background: #fff; color: #000; width: 100%; max-width: 350px;
             padding: 30px; border-radius: 20px; position: relative;
             box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
-        .receipt-card::after {
-            content: ''; position: absolute; bottom: -10px; left: 0; width: 100%;
-            height: 20px; background-image: radial-gradient(circle, #fff 5px, transparent 6px);
-            background-size: 15px 15px;
-        }
         .receipt-header { border-bottom: 2px dashed #eee; padding-bottom: 15px; margin-bottom: 15px; text-align: center; }
         .receipt-row { display: flex; justify-content: space-between; margin: 10px 0; font-size: 14px; }
         .receipt-total { border-top: 2px solid #000; margin-top: 15px; padding-top: 10px; font-weight: 900; font-size: 18px; }
 
-        /* --- Purchase Notification --- */
+        /* --- Notification --- */
         #notification-toast {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
             background: var(--card); border: 1px solid var(--accent); color: var(--text);
             padding: 12px 20px; border-radius: 50px; font-size: 12px; font-weight: 600;
             display: flex; align-items: center; gap: 10px; z-index: 11000;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: 0.5s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         #notification-toast.show { transform: translateX(-50%) translateY(0); }
 
-        /* --- Menu & FABs --- */
+        /* --- Menu --- */
         #sideMenu {
             position: fixed; top: 0; right: -300px; width: 280px; height: 100%;
             background: var(--card); z-index: 12000; transition: 0.4s ease;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.5); padding: 40px 20px;
+            box-shadow: -10px 0 30px rgba(0,0,0,0.5); padding: 40px 20px; border-left: 1px solid var(--glass);
         }
         #sideMenu.active { right: 0; }
-        .menu-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7); z-index: 11500; display: none;
-            backdrop-filter: blur(5px);
-        }
-        .menu-item {
-            padding: 15px; margin-bottom: 10px; border-radius: 15px;
-            background: var(--glass); display: flex; align-items: center; gap: 12px;
-            cursor: pointer; font-weight: 600;
-        }
+        .menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 11500; display: none; backdrop-filter: blur(5px); }
+        .menu-item { padding: 15px; margin-bottom: 10px; border-radius: 15px; background: var(--glass); display: flex; align-items: center; gap: 12px; cursor: pointer; font-weight: 600; transition: 0.2s; }
 
         .header { width: 100%; max-width: 400px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .logo { font-weight: 900; letter-spacing: -1.5px; font-size: 22px; color: var(--accent); }
@@ -103,16 +90,23 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid #eee;
         }
 
+        /* --- RESTORED DATA PLATES --- */
         .bundle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
         .bundle-card { 
             border: 1px solid var(--bundle-border); 
             padding: 30px 10px; border-radius: 28px; text-align: center; 
             cursor: pointer; background: var(--bundle-bg); position: relative; 
-            transition: 0.2s;
+            transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-        .bundle-card.selected { border: 2.5px solid var(--accent); background: var(--accent) !important; color: #000; }
+        .stock-tag { font-size: 9px; text-transform: uppercase; font-weight: bold; padding: 4px 8px; border-radius: 10px; position: absolute; top: 10px; right: 10px; }
+        .in-stock { background: rgba(37, 211, 102, 0.1); color: var(--success); }
+        .low-stock { background: rgba(255, 204, 0, 0.1); color: var(--accent); }
+        .bundle-card strong { font-size: 32px; display: block; margin-bottom: 2px; font-weight: 900; letter-spacing: -1px; }
+        .bundle-card span { font-size: 13px; opacity: 0.6; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+        .bundle-card.selected { border: 2.5px solid var(--accent); background: var(--accent) !important; color: #000; transform: scale(1.02); }
+        .bundle-card.selected strong, .bundle-card.selected span { color: #000; opacity: 1; }
 
-        #orderForm { display: none; margin-top: 25px; }
+        #orderForm { display: none; margin-top: 25px; animation: slideUp 0.4s ease; }
         #orderForm.active { display: block; }
 
         .copy-box { background: var(--mtn-blue); color: white; padding: 20px; border-radius: 25px; text-align: center; margin-bottom: 15px; }
@@ -120,28 +114,31 @@
 
         input { width: 100%; padding: 18px; border-radius: 20px; border: 1px solid var(--glass); background: var(--glass); color: var(--text); font-size: 18px; text-align: center; margin-bottom: 15px; outline: none; }
         
-        .terms-container { margin: 15px 0; font-size: 11px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .terms-container { margin: 15px 0; font-size: 11px; display: flex; align-items: center; justify-content: center; gap: 8px; opacity: 0.9; cursor: pointer; }
         .pay-btn { width: 100%; background: var(--accent); color: black; border: none; padding: 20px; border-radius: 20px; font-size: 18px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .wa-btn { background: #25D366 !important; color: white !important; }
 
-        .legal-block { margin-top: 30px; font-size: 10px; opacity: 0.6; padding: 10px; border-top: 1px solid var(--glass); }
+        .legal-block { margin-top: 30px; font-size: 10px; line-height: 1.4; opacity: 0.6; padding: 10px; border-top: 1px solid var(--glass); }
+        .legal-block h5 { margin: 10px 0 5px; color: var(--accent); text-transform: uppercase; }
 
         .fab-container { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 15px; z-index: 11000; }
         .action-fab { width: 60px; height: 60px; border-radius: 50%; background: var(--accent); color: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 10px 20px rgba(0,0,0,0.4); cursor: pointer; border: none; }
+        
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
 <div id="notification-toast">
     <div style="color: #25D366;"><i data-lucide="shopping-bag" size="16"></i></div>
-    <span id="notif-text">Someone in Accra just bought 5GB</span>
+    <span id="notif-text">Someone in Takoradi just bought 6GB</span>
 </div>
 
 <div id="receiptPage">
-    <div class="receipt-card" id="receiptContent">
+    <div class="receipt-card">
         <div class="receipt-header">
             <h2 style="margin:0; color:#003399">JOELDATA</h2>
-            <p style="font-size:12px; margin:5px 0">Official Digital Receipt</p>
+            <p style="font-size:12px; margin:5px 0">Digital Transaction Receipt</p>
         </div>
         <div class="receipt-row"><span>Date:</span> <span id="rDate"></span></div>
         <div class="receipt-row"><span>Order ID:</span> <span id="rId"></span></div>
@@ -151,19 +148,19 @@
         <div class="receipt-total">
             <div class="receipt-row" style="margin:0"><span>TOTAL PAID</span> <span id="rPrice"></span></div>
         </div>
-        <p style="text-align:center; font-size:10px; margin-top:20px; color:#777">Thank you for your business!<br>Processing time: 5-30 mins.</p>
+        <p style="text-align:center; font-size:10px; margin-top:20px; color:#777">Sent to WhatsApp for processing.</p>
     </div>
-    <button onclick="closeReceipt()" style="margin-top:30px; background:var(--accent); border:none; padding:15px 40px; border-radius:50px; font-weight:bold; cursor:pointer">BACK TO HOME</button>
+    <button onclick="closeReceipt()" style="margin-top:30px; background:var(--accent); border:none; padding:15px 40px; border-radius:50px; font-weight:bold; cursor:pointer">CLOSE</button>
 </div>
 
 <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
 <div id="sideMenu">
     <h3 style="color: var(--accent); margin-top: 0;">JoelData Menu</h3>
     <div class="menu-item" onclick="viewReceipt()">
-        <i data-lucide="file-text" size="18"></i> View Last Receipt
+        <i data-lucide="file-text" size="18"></i> Last Receipt
     </div>
     <div class="menu-item" onclick="toggleTheme(); toggleMenu();">
-        <i data-lucide="refresh-cw" size="18"></i> Switch Theme
+        <i data-lucide="refresh-cw" size="18"></i> Toggle Theme
     </div>
     <div class="menu-item" onclick="toggleMenu()" style="margin-top: 40px; background: #ef4444; color: #fff;">
         <i data-lucide="x" size="18"></i> Close
@@ -220,14 +217,11 @@
             <strong style="font-size: 22px;">0248745662</strong><br>
             <button class="copy-btn" onclick="copyNum()"><i data-lucide="copy" size="14"></i> COPY NUMBER</button>
         </div>
-
         <input type="tel" id="recipientPhone" placeholder="Data Recipient Number" maxlength="10">
-        
         <div class="terms-container">
             <input type="checkbox" id="termsCheck">
             <label for="termsCheck" style="font-size:11px">I agree to the Terms & Privacy Policy</label>
         </div>
-
         <button class="pay-btn" onclick="handleButtonClick()" id="mainBtn">
             <i id="btnIcon" data-lucide="credit-card" size="20"></i> <span id="btnText">CONFIRM & PAY</span>
         </button>
@@ -237,8 +231,10 @@
     </div>
 
     <div class="legal-block">
-        <h5 style="color:var(--accent)">Terms & Conditions</h5>
+        <h5>Terms & Conditions</h5>
         <p>By using JoelData, you agree that all payments made to merchant Theresa Mensah are final.</p>
+        <h5>Privacy Policy</h5>
+        <p>We only collect your phone number to facilitate data delivery and WhatsApp communication.</p>
     </div>
 </div>
 
@@ -256,81 +252,68 @@
     let selectedGB = 0;
     let paymentInitiated = false;
 
-    function toggleMenu() {
-        const menu = document.getElementById('sideMenu');
-        const overlay = document.getElementById('menuOverlay');
-        const isActive = menu.classList.toggle('active');
-        overlay.style.display = isActive ? 'block' : 'none';
-    }
-
-    function generateReceipt(phone, bundle, price) {
-        const orderId = "JD-" + Math.floor(Math.random() * 900000 + 100000);
-        const date = new Date().toLocaleString();
-        
-        const lastOrder = { id: orderId, date, phone, bundle, price };
-        localStorage.setItem('lastOrder', JSON.stringify(lastOrder));
-        
-        document.getElementById('rDate').innerText = date;
-        document.getElementById('rId').innerText = orderId;
-        document.getElementById('rPhone').innerText = phone;
-        document.getElementById('rBundle').innerText = bundle + "GB";
-        document.getElementById('rPrice').innerText = "GHS " + price + ".00";
-        
-        document.getElementById('receiptPage').style.display = 'flex';
-    }
-
-    function viewReceipt() {
-        const data = JSON.parse(localStorage.getItem('lastOrder'));
-        if(!data) return alert("No recent orders found.");
-        document.getElementById('rDate').innerText = data.date;
-        document.getElementById('rId').innerText = data.id;
-        document.getElementById('rPhone').innerText = data.phone;
-        document.getElementById('rBundle').innerText = data.bundle + "GB";
-        document.getElementById('rPrice').innerText = "GHS " + data.price + ".00";
-        document.getElementById('receiptPage').style.display = 'flex';
-        toggleMenu();
-    }
-
-    function closeReceipt() {
-        document.getElementById('receiptPage').style.display = 'none';
-    }
-
-    // --- Original Logic ---
-    const cities = ["Accra", "Kumasi", "Takoradi", "Tamale", "Tema"];
-    function showNotification() {
-        const city = cities[Math.floor(Math.random() * cities.length)];
-        const toast = document.getElementById('notification-toast');
-        document.getElementById('notif-text').innerText = `Someone in ${city} just bought data`;
-        toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 4000);
-    }
-    setInterval(showNotification, 12000);
-
     lucide.createIcons();
 
+    // Restore Original Data Plate Grid Logic
     const grid = document.getElementById('bundleGrid');
     for (let gb = 1; gb <= 10; gb++) {
+        const isLow = gb > 8;
         const card = document.createElement('div');
         card.className = 'bundle-card';
-        card.innerHTML = `<strong>${gb}GB</strong><span>GHS ${gb*5}.00</span>`;
+        card.innerHTML = `
+            <div class="stock-tag ${isLow ? 'low-stock' : 'in-stock'}">${isLow ? 'Low' : 'In Stock'}</div>
+            <strong>${gb}GB</strong>
+            <span>GHS ${gb*5}.00</span>
+        `;
         card.onclick = () => {
             document.querySelectorAll('.bundle-card').forEach(c => c.classList.remove('selected'));
             card.classList.add('selected');
             selectedGB = gb;
             document.getElementById('orderForm').classList.add('active');
+            paymentInitiated = false;
+            resetButton();
         };
         grid.appendChild(card);
     }
 
-    function copyNum() {
-        navigator.clipboard.writeText(myMomo);
-        alert("Merchant: Theresa Mensah");
+    function resetButton() {
+        const btnText = document.getElementById('btnText');
+        const mainBtn = document.getElementById('mainBtn');
+        btnText.innerText = "CONFIRM & PAY";
+        mainBtn.classList.remove('wa-btn');
+        document.getElementById('statusMsg').style.display = "none";
+    }
+
+    function generateReceipt(phone, bundle, price) {
+        const orderId = "JD-" + Math.floor(Math.random() * 900000 + 100000);
+        const date = new Date().toLocaleString();
+        localStorage.setItem('lastOrder', JSON.stringify({id: orderId, date, phone, bundle, price}));
+        document.getElementById('rDate').innerText = date;
+        document.getElementById('rId').innerText = orderId;
+        document.getElementById('rPhone').innerText = phone;
+        document.getElementById('rBundle').innerText = bundle + "GB";
+        document.getElementById('rPrice').innerText = "GHS " + price + ".00";
+        document.getElementById('receiptPage').style.display = 'flex';
+    }
+
+    function viewReceipt() {
+        const data = JSON.parse(localStorage.getItem('lastOrder'));
+        if(!data) return alert("No history.");
+        generateReceipt(data.phone, data.bundle, data.price);
+        toggleMenu();
+    }
+
+    function closeReceipt() { document.getElementById('receiptPage').style.display = 'none'; }
+    function toggleMenu() {
+        const menu = document.getElementById('sideMenu');
+        const isActive = menu.classList.toggle('active');
+        document.getElementById('menuOverlay').style.display = isActive ? 'block' : 'none';
     }
 
     function handleButtonClick() {
         const phone = document.getElementById('recipientPhone').value;
         if(!document.getElementById('termsCheck').checked) return alert("Accept terms.");
-        if(phone.length < 10) return alert("Valid number required.");
+        if(phone.length < 10) return alert("Invalid number.");
 
         if (!paymentInitiated) {
             window.location.href = "tel:*170#";
@@ -338,31 +321,34 @@
             document.getElementById('btnText').innerText = "SEND TO WHATSAPP";
             document.getElementById('mainBtn').classList.add('wa-btn');
             document.getElementById('statusMsg').style.display = "block";
-            lucide.createIcons();
         } else {
             generateReceipt(phone, selectedGB, selectedGB * 5);
             setTimeout(() => {
                 const text = `ORDER: ${selectedGB}GB for ${phone}. Paid to Theresa Mensah.`;
                 window.location.href = `https://wa.me/233248745662?text=${encodeURIComponent(text)}`;
-            }, 2000);
+            }, 1500);
         }
     }
 
-    function shareApp() {
-        navigator.share({ title: 'JoelData', url: window.location.href });
-    }
-
+    function copyNum() { navigator.clipboard.writeText(myMomo); alert("Merchant: Theresa Mensah"); }
+    function shareApp() { navigator.share({title: 'JoelData', url: window.location.href}); }
     function setTheme(mode) {
         if (mode === 'light') document.body.classList.add('light-mode');
         else document.body.classList.remove('light-mode');
         localStorage.setItem('theme', mode);
         lucide.createIcons();
     }
+    function toggleTheme() { setTheme(document.body.classList.contains('light-mode') ? 'dark' : 'light'); }
     
-    function toggleTheme() {
-        const mode = document.body.classList.contains('light-mode') ? 'dark' : 'light';
-        setTheme(mode);
-    }
+    // Notifications
+    const cities = ["Accra", "Kumasi", "Takoradi", "Tamale", "Tema"];
+    setInterval(() => {
+        const city = cities[Math.floor(Math.random() * cities.length)];
+        const toast = document.getElementById('notification-toast');
+        document.getElementById('notif-text').innerText = `Someone in ${city} just bought ${Math.floor(Math.random()*5+1)}GB`;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 4000);
+    }, 12000);
 </script>
 </body>
 </html>
