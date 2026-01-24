@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JoelData | Iconic Store</title>
+    <script src="https://js.paystack.co/v2/inline.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
@@ -124,19 +125,17 @@
     <div id="atSection" class="bundle-section"><div class="bundle-grid" id="atGrid"></div></div>
 
     <div id="orderForm" style="display:none; margin-top:25px;">
-        <div class="copy-box">
+        <div class="copy-box" style="background: var(--glass); border: 1px solid var(--accent);">
             <span id="displayNet" style="font-weight:900; color:var(--accent)">MTN</span><br>
-            <span style="font-size:11px">SEND MOMO TO MERCHANT</span><br>
-            <strong style="font-size:13px">THERESA MENSAH</strong><br>
-            <strong style="font-size: 22px;">0248745662</strong>
-            <button onclick="navigator.clipboard.writeText('0248745662'); alert('Copied!')" style="display:block; margin: 10px auto 0; background:#fff; border:none; padding:5px 15px; border-radius:10px; font-weight:bold; font-size:10px; color:#003399">COPY NUMBER</button>
+            <span style="font-size:11px">SECURE PAYMENT POWERED BY PAYSTACK</span><br>
+            <strong style="font-size:13px">Fast & Reliable Delivery</strong>
         </div>
 
-        <p style="font-size:12px; font-weight:bold; text-align:center; margin-bottom:10px">DETAILED INSTRUCTIONS:</p>
+        <p style="font-size:12px; font-weight:bold; text-align:center; margin-bottom:10px">ORDER DETAILS:</p>
         <ol style="font-size:11px; margin-bottom:20px; opacity:0.8; padding-left:20px">
-            <li>Copy the Merchant number and pay the exact amount.</li>
-            <li>Enter the phone number that should receive the data below.</li>
-            <li>Click "Confirm & Pay" to send your receipt to WhatsApp.</li>
+            <li>Enter the phone number to receive the data.</li>
+            <li>Click "Pay Securely" to pay with Mobile Money.</li>
+            <li>Your data will be sent after successful payment.</li>
         </ol>
 
         <input type="tel" id="recipientPhone" class="large-input" placeholder="Enter Recipient Number" maxlength="10">
@@ -145,12 +144,12 @@
             <input type="checkbox" id="termsCheck"> I agree to the Terms & Privacy Policy
         </div>
 
-        <button class="pay-btn" onclick="handleButtonClick()" id="mainBtn"><i data-lucide="credit-card"></i> <span id="btnText">CONFIRM & PAY</span></button>
+        <button class="pay-btn" onclick="handlePaystackPayment()" id="mainBtn"><i data-lucide="credit-card"></i> <span id="btnText">PAY SECURELY NOW</span></button>
     </div>
 
     <div class="legal-block">
         <h5>Terms & Conditions</h5>
-        <p>By using JoelData, you agree that all payments made to merchant Theresa Mensah are final.</p>
+        <p>By using JoelData, you agree that all payments are processed securely via Paystack.</p>
         <h5>Privacy Policy</h5>
         <p>Your data is processed only for delivery. We do not store or sell your personal contact information.</p>
     </div>
@@ -183,7 +182,8 @@
 </div>
 
 <script>
-    let currentNet = "MTN"; let selectedGB = 0; let selectedPrice = 0; let paymentInitiated = false; let selRole = "";
+    let currentNet = "MTN"; let selectedGB = 0; let selectedPrice = 0; let selRole = "";
+    const PAYSTACK_PUBLIC_KEY = 'pk_live_90305707d30b6282979eac837bbbc9509da579af';
 
     window.onload = () => { 
         if(!localStorage.getItem('theme')) document.getElementById('themeModal').style.display='flex'; 
@@ -215,7 +215,6 @@
         document.getElementById('displayNet').innerText = currentNet;
     }
 
-    // Original Data Plate Construction
     const mtnGrid = document.getElementById('mtnGrid');
     const atGrid = document.getElementById('atGrid');
     const atData = [{g:"1GB",p:4.5},{g:"2GB",p:9},{g:"3GB",p:14},{g:"4GB",p:18},{g:"5GB",p:20.5},{g:"6GB",p:25},{g:"8GB",p:32},{g:"10GB",p:40},{g:"15GB",p:60}];
@@ -232,9 +231,32 @@
         d.onclick = () => { 
             document.querySelectorAll('.bundle-card').forEach(c=>c.classList.remove('selected'));
             d.classList.add('selected'); selectedGB = gb; selectedPrice = pr;
-            document.getElementById('orderForm').style.display='block'; paymentInitiated = false;
+            document.getElementById('orderForm').style.display='block';
         };
         return d;
+    }
+
+    function handlePaystackPayment() {
+        const phone = document.getElementById('recipientPhone').value;
+        if(!document.getElementById('termsCheck').checked) return alert("Please accept the terms.");
+        if(phone.length < 10) return alert("Enter a valid 10-digit number.");
+
+        const paystack = new PaystackPop();
+        paystack.newTransaction({
+            key: PAYSTACK_PUBLIC_KEY,
+            email: 'sales@joeldata.com', // Internal tracking email
+            amount: selectedPrice * 100, // Convert GHS to Pesewas
+            currency: 'GHS',
+            onSuccess: (transaction) => {
+                const order = `PAID ORDER (Ref: ${transaction.reference}):\nBundle: ${selectedGB} (${currentNet})\nRecipient: ${phone}\nStatus: Payment Verified`;
+                localStorage.setItem('lastOrder', order);
+                // Redirect to WhatsApp with receipt info
+                window.location.href=`https://wa.me/233248745662?text=${encodeURIComponent(order)}`;
+            },
+            onCancel: () => {
+                alert("Payment was cancelled.");
+            }
+        });
     }
 
     function openWorkModal() { document.getElementById('workModal').style.display='flex'; toggleMenu(); }
@@ -244,21 +266,6 @@
     function submitWork() {
         const text = `JOELDATA WORK APP:\nRole: ${selRole}\nName: ${document.getElementById('wName').value}\nPhone: ${document.getElementById('wPhone').value}`;
         window.location.href = `https://wa.me/233248745662?text=${encodeURIComponent(text)}`;
-    }
-
-    function handleButtonClick() {
-        const phone = document.getElementById('recipientPhone').value;
-        if(!document.getElementById('termsCheck').checked) return alert("Please accept the terms.");
-        if(phone.length < 10) return alert("Enter a valid 10-digit number.");
-        if(!paymentInitiated) { 
-            window.location.href="tel:*170#"; 
-            paymentInitiated=true; 
-            document.getElementById('btnText').innerText="SEND TO WHATSAPP"; 
-        } else {
-            const order = `NEW ORDER:\nBundle: ${selectedGB} (${currentNet})\nRecipient: ${phone}\nMerchant: Theresa Mensah`;
-            localStorage.setItem('lastOrder', order);
-            window.location.href=`https://wa.me/233248745662?text=${encodeURIComponent(order)}`;
-        }
     }
 
     function viewReceipt() {
