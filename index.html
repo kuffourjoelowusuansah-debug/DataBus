@@ -24,22 +24,13 @@
             margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;
         }
 
-        /* FULL WIDTH HEADER */
-        .header { 
-            width: 100%; max-width: 1200px; padding: 25px; 
-            display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; 
-        }
+        .header { width: 100%; max-width: 1200px; padding: 25px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; }
         .logo { font-weight: 900; letter-spacing: -1.5px; font-size: 26px; background: var(--accent-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        /* SPREAD OUT MAIN SECTION */
-        .app-container { 
-            width: 100%; max-width: 1200px; padding: 0 25px 50px 25px; box-sizing: border-box; 
-        }
+        .app-container { width: 100%; max-width: 1200px; padding: 0 25px 50px 25px; box-sizing: border-box; }
 
-        /* VIRTUE PANEL SPREAD OUT */
         .features-box { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
             gap: 15px; background: var(--accent-grad);
             padding: 25px; border-radius: 25px; margin-bottom: 30px; 
             color: white; box-shadow: 0 15px 30px rgba(255, 59, 48, 0.2);
@@ -55,54 +46,45 @@
             text-decoration: none; font-size: 14px; font-weight: 700; margin-bottom: 30px; 
         }
 
-        /* TABS */
-        .tabs-container { 
-            display: inline-flex; background: var(--glass); padding: 6px; border-radius: 20px; margin-bottom: 30px; border: 1px solid var(--glass);
-        }
+        .tabs-container { display: inline-flex; background: var(--glass); padding: 6px; border-radius: 20px; margin-bottom: 30px; border: 1px solid var(--glass); }
         .tab-btn { padding: 12px 30px; border: none; border-radius: 15px; background: none; color: var(--text); font-weight: 800; cursor: pointer; transition: 0.3s; }
         .tab-btn.active { background: var(--accent-grad); color: #fff; }
 
-        /* THE GRID: INTEGRATED & RESPONSIVE */
-        .bundle-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
-            gap: 20px; width: 100%;
-        }
+        .bundle-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; width: 100%; }
 
-        /* THE DATA PLATE */
+        /* UPDATED PLATE DESIGN */
         .bundle-card { 
             background: var(--accent-grad); border-radius: 25px; padding: 25px;
-            display: grid; grid-template-columns: 1fr 90px; grid-template-rows: auto auto auto;
-            gap: 5px; cursor: pointer; transition: 0.3s ease; color: white;
+            display: flex; flex-direction: column; gap: 15px;
+            cursor: pointer; transition: 0.3s ease; color: white;
             box-shadow: 0 10px 20px rgba(0,0,0,0.1); border: 2px solid transparent;
         }
-        .bundle-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(255, 59, 48, 0.3); }
-        .bundle-card.selected { border-color: #ffffff; box-shadow: 0 0 0 4px rgba(255,255,255,0.2); }
+        .bundle-card:hover { transform: translateY(-5px); }
+        .bundle-card.selected { border-color: #ffffff; }
 
-        .plate-net { font-size: 13px; font-weight: 800; text-transform: uppercase; }
-        .plate-expiry { font-size: 11px; background: rgba(0,0,0,0.2); padding: 5px 12px; border-radius: 10px; justify-self: end; }
-        .plate-amt { font-size: 42px; font-weight: 900; grid-row: 2; margin-top: 5px; }
-        .plate-label { font-size: 13px; opacity: 0.8; grid-row: 2; align-self: end; margin-bottom: 15px; }
-        .plate-logo { width: 70px; height: 70px; border-radius: 18px; grid-column: 2; grid-row: 2; justify-self: end; background: white; padding: 4px; object-fit: contain; }
-        .plate-price { font-size: 28px; font-weight: 800; grid-row: 3; }
-        .plate-buy-btn { 
-            grid-column: 2; grid-row: 3; background: #000; color: #fff; border: none; 
-            padding: 12px; border-radius: 14px; font-weight: 800; cursor: pointer;
-        }
+        .plate-header { display: flex; justify-content: space-between; align-items: center; }
+        .plate-amt { font-size: 48px; font-weight: 900; line-height: 1; }
+        .plate-logo { width: 50px; height: 50px; border-radius: 12px; background: white; padding: 4px; object-fit: contain; }
 
-        /* ORDER FORM CENTERED */
-        #orderForm { 
-            max-width: 500px; margin: 50px auto; background: var(--card); padding: 40px; border-radius: 30px; border: 1px solid var(--accent);
+        .plate-details { 
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; 
+            background: rgba(0,0,0,0.15); padding: 15px; border-radius: 15px; font-size: 12px;
         }
-        .large-input { width: 100%; padding: 20px; border-radius: 15px; border: 2px solid var(--accent); background: var(--glass); color: var(--text); font-size: 24px; text-align: center; margin-bottom: 20px; box-sizing: border-box; }
+        .detail-item { display: flex; flex-direction: column; gap: 2px; }
+        .detail-label { opacity: 0.7; font-weight: 600; text-transform: uppercase; font-size: 10px; }
+        .detail-val { font-weight: 800; font-size: 14px; }
+
+        .plate-buy-btn { width: 100%; background: #000; color: #fff; border: none; padding: 15px; border-radius: 15px; font-weight: 800; cursor: pointer; }
+
+        /* FORM */
+        #orderForm { max-width: 500px; margin: 50px auto; background: var(--card); padding: 40px; border-radius: 30px; border: 1px solid var(--accent); display: none; }
+        .large-input { width: 100%; padding: 18px; border-radius: 12px; border: 2px solid var(--accent); background: var(--glass); color: var(--text); font-size: 18px; text-align: center; margin-bottom: 15px; box-sizing: border-box; outline: none; }
         .pay-btn { width: 100%; background: var(--accent-grad); color: white; border: none; padding: 20px; border-radius: 15px; font-size: 18px; font-weight: 800; cursor: pointer; }
 
-        /* SIDE MENU */
         #sideMenu { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: var(--card); z-index: 50000; transition: 0.4s; padding: 40px 20px; border-left: 2px solid var(--accent); }
         #sideMenu.active { right: 0; }
         .menu-item { padding: 18px; margin-bottom: 12px; border-radius: 15px; background: var(--glass); cursor: pointer; display: flex; align-items: center; gap: 12px; font-weight: 700; }
 
-        /* MODALS */
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100000; display: none; padding: 20px; box-sizing: border-box; overflow-y: auto; justify-content: center; align-items: center; }
         .modal-content { background: var(--card); padding: 30px; border-radius: 25px; border: 1px solid var(--accent); width: 100%; max-width: 500px; }
     </style>
@@ -139,11 +121,6 @@
         <div class="feature-item"><i data-lucide="trending-down"></i><div><h4>Affordable</h4><p>Best Rates</p></div></div>
     </div>
 
-    <a href="https://whatsapp.com/channel/0029Vb80VO3Bfxnx4pIYb11c" class="updates-pill" target="_blank">
-        <div style="display:flex; align-items:center; gap:12px"><i data-lucide="megaphone" style="color:#ef4444;"></i><span>Follow <b>JOELDATA Updates</b> on WhatsApp</span></div>
-        <i data-lucide="chevron-right"></i>
-    </a>
-
     <div style="text-align: center;">
         <div class="tabs-container">
             <button class="tab-btn active" onclick="switchTab('mtn')">MTN Non-Expiry</button>
@@ -154,10 +131,12 @@
     <div id="mtnGrid" class="bundle-grid"></div>
     <div id="atGrid" class="bundle-grid" style="display:none;"></div>
 
-    <div id="orderForm" style="display:none;">
+    <div id="orderForm">
         <h2 id="orderLabel" style="text-align:center; color:var(--accent); margin-bottom:20px;"></h2>
-        <input type="tel" id="recipientPhone" class="large-input" placeholder="02XXXXXXXX" maxlength="10">
-        <button class="pay-btn" onclick="handlePayment()"><i data-lucide="credit-card"></i> PAY & ACTIVATE NOW</button>
+        <input type="tel" id="recipientPhone" class="large-input" placeholder="Recipient Phone (02XXXXXXXX)" maxlength="10">
+        <input type="email" id="buyerEmail" class="large-input" placeholder="Your Email (For Receipt)">
+        <button class="pay-btn" onclick="handlePayment()">CONFIRM & PAY NOW</button>
+        <p style="font-size:11px; text-align:center; color: #ef4444; margin-top:15px; font-weight: bold;">Note: Verify your number. No refunds for wrong entries.</p>
     </div>
 </main>
 
@@ -178,13 +157,17 @@
             const card = document.createElement('div');
             card.className = 'bundle-card';
             card.innerHTML = `
-                <div class="plate-net">${net}</div>
-                <div class="plate-expiry">${exp}</div>
-                <div class="plate-amt">${d.g}</div>
-                <div class="plate-label">Data Bundle</div>
-                <img src="${logo}" class="plate-logo" onerror="this.src='https://i.ibb.co/L6vV8yH/at-logo.png'">
-                <div class="plate-price">₵${d.p.toFixed(2)}</div>
-                <button class="plate-buy-btn">BUY</button>
+                <div class="plate-header">
+                    <div class="plate-amt">${d.g}</div>
+                    <img src="${logo}" class="plate-logo" onerror="this.src='https://i.ibb.co/L6vV8yH/at-logo.png'">
+                </div>
+                <div class="plate-details">
+                    <div class="detail-item"><span class="detail-label">Price</span><span class="detail-val">₵${d.p.toFixed(2)}</span></div>
+                    <div class="detail-item"><span class="detail-label">Stock</span><span class="detail-val" style="color:#2ecc71">In Stock</span></div>
+                    <div class="detail-item"><span class="detail-label">Duration</span><span class="detail-val">${exp}</span></div>
+                    <div class="detail-item"><span class="detail-label">Delivery</span><span class="detail-val">Instant</span></div>
+                </div>
+                <button class="plate-buy-btn">BUY BUNDLE</button>
             `;
             card.onclick = () => {
                 document.querySelectorAll('.bundle-card').forEach(c => c.classList.remove('selected'));
@@ -200,22 +183,38 @@
 
     function handlePayment() {
         const phone = document.getElementById('recipientPhone').value;
-        if(phone.length < 10) return alert("Enter valid number");
+        const email = document.getElementById('buyerEmail').value;
+        
+        if(phone.length < 10) return alert("Enter a valid phone number.");
+        if(!email.includes('@')) return alert("Enter a valid email address for your receipt.");
+        
+        const confirmCheck = confirm("IMPORTANT NOTICE:\nWrong numbers have no refunds. Please confirm that " + phone + " is correct.");
+        
+        if(!confirmCheck) return;
+
         let fee = selP < 30 ? 0.3 : 0.9;
         let total = selP + fee;
 
         const handler = PaystackPop.setup({
             key: 'pk_live_90305707d30b6282979eac837bbbc9509da579af',
-            email: 'sales@joeldata.com',
+            email: email,
             amount: Math.round(total * 100),
             currency: 'GHS',
             callback: (response) => {
                 const receipt = { date: new Date().toLocaleString(), net: currentNet, gb: selG, phone: phone, ref: response.reference, price: total };
                 localStorage.setItem('lastReceipt', JSON.stringify(receipt));
-                window.location.href = `https://wa.me/233248745662?text=ORDER: ${selG} ${currentNet} to ${phone}. Ref: ${response.reference}`;
+                window.location.href = `https://wa.me/233248745662?text=ORDER: ${selG} ${currentNet} to ${phone}. Receipt sent to ${email}. Ref: ${response.reference}`;
             }
         });
         handler.openIframe();
+    }
+
+    function switchTab(net) {
+        currentNet = net.toUpperCase();
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+        document.getElementById('mtnGrid').style.display = net === 'mtn' ? 'grid' : 'none';
+        document.getElementById('atGrid').style.display = net === 'at' ? 'grid' : 'none';
     }
 
     function showReceipt() {
@@ -229,17 +228,9 @@
     function showModal(type) {
         const body = document.getElementById('modalBody');
         if(type === 'work') body.innerHTML = `<h2>Work With Us</h2><input class="large-input" placeholder="Name"><button class="pay-btn">Apply</button>`;
-        else if(type === 'help') body.innerHTML = `<h2>Instructions</h2><p>1. Pick Bundle<br>2. Enter Phone<br>3. Pay Securely</p>`;
-        else if(type === 'terms') body.innerHTML = `<h2>Terms</h2><p>All sales are final once activated.</p>`;
+        else if(type === 'help') body.innerHTML = `<h2>Instructions</h2><p>1. Pick Bundle<br>2. Enter Phone & Email<br>3. Pay Securely</p>`;
+        else if(type === 'terms') body.innerHTML = `<h2>Terms</h2><p>All sales are final once activated. Wrong numbers are not eligible for refunds.</p>`;
         document.getElementById('genericModal').style.display = 'flex';
-    }
-
-    function switchTab(net) {
-        currentNet = net.toUpperCase();
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        event.currentTarget.classList.add('active');
-        document.getElementById('mtnGrid').style.display = net === 'mtn' ? 'grid' : 'none';
-        document.getElementById('atGrid').style.display = net === 'at' ? 'grid' : 'none';
     }
 
     function toggleMenu() { document.getElementById('sideMenu').classList.toggle('active'); }
