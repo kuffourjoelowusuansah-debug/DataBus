@@ -9,7 +9,6 @@
     <style>
         :root {
             --bg: #0a0a0a; --card: #161616; --text: #ffffff;
-            /* Updated to Modern Red-Orange Gradient */
             --accent: #FF3B30; 
             --accent-grad: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
             --mtn-blue: #003399;
@@ -42,6 +41,10 @@
         .logo { font-weight: 900; letter-spacing: -1.5px; font-size: 22px; background: var(--accent-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .app-container { background: var(--card); width: 100%; max-width: 400px; border-radius: 35px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); padding: 25px; box-sizing: border-box; border: 1px solid var(--glass); }
         .tagline { text-align: center; font-weight: 800; font-size: 28px; margin-bottom: 20px; line-height: 1.2; }
+
+        /* --- Network Logos Styling --- */
+        .net-logo-small { height: 20px; margin-bottom: 5px; object-fit: contain; }
+        .net-logo-header { height: 30px; vertical-align: middle; margin-right: 5px; }
 
         /* --- Feature Box & Updates --- */
         .features-box { background: #fff; border-radius: 25px; padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; }
@@ -120,16 +123,22 @@
     </a>
 
     <div class="tabs-container">
-        <button class="tab-btn active" onclick="switchTab('mtn')">MTN PACKAGES<span>Non-Expiry</span></button>
-        <button class="tab-btn" onclick="switchTab('at')">AT PREMIUM<span>30 Days</span></button>
+        <button class="tab-btn active" onclick="switchTab('mtn')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/af/MTN_Logo.svg" class="net-logo-small" alt="MTN">
+            MTN<span>Non-Expiry</span>
+        </button>
+        <button class="tab-btn" onclick="switchTab('at')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/09/Airtel_logo.svg" class="net-logo-small" alt="AT">
+            AT PREMIUM<span>30 Days</span>
+        </button>
     </div>
 
     <div id="mtnSection" class="bundle-section active"><div class="bundle-grid" id="mtnGrid"></div></div>
     <div id="atSection" class="bundle-section"><div class="bundle-grid" id="atGrid"></div></div>
 
     <div id="orderForm" style="display:none; margin-top:25px;">
-        <div class="copy-box" style="background: var(--glass); border: 1px solid var(--accent);">
-            <span id="displayNet" style="font-weight:900; color:var(--accent)">MTN</span><br>
+        <div class="copy-box" id="networkStatus" style="background: var(--glass); border: 1px solid var(--accent);">
+            <div id="displayNet" style="font-weight:900; color:var(--accent); font-size:20px; margin-bottom:5px;">MTN</div>
             <span style="font-size:11px">SECURE PAYMENT POWERED BY PAYSTACK</span><br>
             <strong style="font-size:13px">Fast & Reliable Delivery</strong>
         </div>
@@ -206,16 +215,19 @@
     function switchTab(net) {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.querySelectorAll('.bundle-section').forEach(s => s.classList.remove('active'));
+        const displayNet = document.getElementById('displayNet');
+        
         if(net === 'mtn') { 
             document.querySelector('.tab-btn:nth-child(1)').classList.add('active'); 
             document.getElementById('mtnSection').classList.add('active'); 
             currentNet = "MTN"; 
+            displayNet.innerHTML = `<img src="https://upload.wikimedia.org/wikipedia/commons/a/af/MTN_Logo.svg" class="net-logo-header"> MTN`;
         } else { 
             document.querySelector('.tab-btn:nth-child(2)').classList.add('active'); 
             document.getElementById('atSection').classList.add('active'); 
             currentNet = "AT"; 
+            displayNet.innerHTML = `<img src="https://upload.wikimedia.org/wikipedia/commons/0/09/Airtel_logo.svg" class="net-logo-header"> AT`;
         }
-        document.getElementById('displayNet').innerText = currentNet;
     }
 
     const mtnGrid = document.getElementById('mtnGrid');
@@ -253,7 +265,6 @@
             onSuccess: (transaction) => {
                 const order = `PAID ORDER (Ref: ${transaction.reference}):\nBundle: ${selectedGB} (${currentNet})\nRecipient: ${phone}\nStatus: Payment Verified`;
                 localStorage.setItem('lastOrder', order);
-                // Redirect to WhatsApp with receipt info
                 window.location.href=`https://wa.me/233248745662?text=${encodeURIComponent(order)}`;
             },
             onCancel: () => {
