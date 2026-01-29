@@ -10,7 +10,6 @@
         :root {
             --bg: #0a0a0a; --card: #161616; --text: #ffffff;
             --accent: #FF3B30; 
-            /* YOUR GRADIENT */
             --accent-grad: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
             --glass: rgba(255, 255, 255, 0.05); --success: #2ecc71;
             --bundle-bg: #1a1f26; --bundle-border: #2d3748;
@@ -39,13 +38,12 @@
         .app-container { background: var(--card); width: 100%; max-width: 450px; border-radius: 35px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); padding: 25px; box-sizing: border-box; border: 1px solid var(--glass); }
         .tagline { text-align: center; font-weight: 800; font-size: 28px; margin-bottom: 20px; line-height: 1.2; }
 
-        /* --- UPDATED FEATURES BOX (VIRTUE PANEL) WITH GRADIENT --- */
+        /* VIRTUE PANEL WITH GRADIENT */
         .features-box { 
             display: flex; justify-content: space-around; 
-            background: var(--accent-grad); /* GRADIENT APPLIED */
+            background: var(--accent-grad);
             padding: 15px; border-radius: 20px; margin-bottom: 20px; 
-            color: white; /* Text color changed to white for contrast */
-            box-shadow: 0 10px 20px rgba(255, 59, 48, 0.2);
+            color: white; box-shadow: 0 10px 20px rgba(255, 59, 48, 0.2);
         }
         .feature-item { text-align: center; }
         .feature-item h4 { margin: 0; font-size: 12px; font-weight: 800; }
@@ -55,14 +53,12 @@
 
         .tabs-container { display: flex; width: 100%; background: var(--glass); padding: 5px; border-radius: 20px; margin-bottom: 25px; border: 1px solid var(--glass); }
         .tab-btn { flex: 1; padding: 12px; border: none; border-radius: 15px; background: none; color: var(--text); font-weight: 800; font-size: 12px; cursor: pointer; display: flex; flex-direction: column; align-items: center; transition: 0.2s; }
-        .tab-btn span { font-size: 9px; opacity: 0.7; font-weight: 400; }
         .tab-btn.active { background: var(--accent-grad); color: #fff; }
 
-        /* --- UPDATED DATA PLATE DESIGN WITH GRADIENT --- */
+        /* DATA PLATE DESIGN WITH GRADIENT */
         .bundle-grid { display: flex; flex-direction: column; gap: 18px; }
         .bundle-card { 
-            background: var(--accent-grad); /* GRADIENT APPLIED */
-            border: none; /* Removed border for cleaner gradient look */
+            background: var(--accent-grad);
             border-radius: 22px;
             padding: 22px;
             display: grid;
@@ -70,37 +66,24 @@
             grid-template-rows: auto auto auto;
             gap: 5px;
             cursor: pointer;
-            transition: transform 0.2s;
-            color: white; /* Ensure all text on card is white */
+            transition: 0.2s;
+            color: white;
             box-shadow: 0 10px 25px rgba(255, 59, 48, 0.3);
         }
-        .bundle-card:active { transform: scale(0.98); }
-        /* Updated selected state for visibility against gradient */
         .bundle-card.selected { border: 3px solid #FFCC00; transform: scale(1.02); } 
 
         .plate-net { font-size: 12px; font-weight: 800; opacity: 0.9; text-transform: uppercase; }
-        /* Updated expiry pill for contrast */
         .plate-expiry { font-size: 10px; background: rgba(0,0,0,0.2); padding: 4px 12px; border-radius: 8px; color: white; justify-self: end; font-weight: 700; }
-        
         .plate-amt { font-size: 38px; font-weight: 900; grid-row: 2; align-self: center; margin-top: 5px; }
-        /* Updated label color */
         .plate-label { font-size: 12px; color: white; opacity: 0.8; grid-row: 2; align-self: end; margin-bottom: 15px; }
-        
-        .plate-logo { width: 65px; height: 65px; border-radius: 15px; grid-column: 2; grid-row: 2; justify-self: end; object-fit: cover; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-        
-        /* Updated price color to white for contrast */
+        .plate-logo { width: 65px; height: 65px; border-radius: 15px; grid-column: 2; grid-row: 2; justify-self: end; object-fit: cover; }
         .plate-price { font-size: 26px; font-weight: 800; color: white; grid-row: 3; align-self: center; }
-        
-        /* Updated Buy button to Black for contrast against the gradient card */
         .plate-buy-btn { 
             grid-column: 2; grid-row: 3; 
-            background: #000000; /* Black button */
-            color: white; border: none; 
+            background: #000000; color: white; border: none; 
             padding: 10px 18px; border-radius: 12px; 
             font-weight: 800; font-size: 14px;
-            display: flex; align-items: center; gap: 8px;
-            justify-content: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            display: flex; align-items: center; gap: 8px; justify-content: center;
         }
 
         .large-input { width: 100%; padding: 25px 15px; border-radius: 25px; border: 2px solid var(--accent); background: var(--glass); color: var(--text); font-size: 24px; font-weight: 900; text-align: center; margin-bottom: 20px; outline: none; box-sizing: border-box; }
@@ -109,6 +92,7 @@
         #sideMenu { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: var(--card); z-index: 12000; transition: 0.4s ease; padding: 40px 20px; border-left: 1px solid var(--glass); }
         #sideMenu.active { right: 0; }
         .menu-item { padding: 15px; margin-bottom: 10px; border-radius: 15px; background: var(--glass); display: flex; align-items: center; gap: 12px; cursor: pointer; font-weight: 600; }
+        #workModal, #receiptPage { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 30000; display: none; flex-direction: column; padding: 25px; box-sizing: border-box; overflow-y: auto; }
     </style>
 </head>
 <body>
@@ -118,6 +102,14 @@
     <p>Please choose a theme to start:</p>
     <button class="pay-btn" onclick="setTheme('dark')" style="margin-bottom:15px">DARK MODE</button>
     <button class="pay-btn" onclick="setTheme('light')" style="background:#fff; color:#000;">LIGHT MODE</button>
+</div>
+
+<div id="sideMenu">
+    <h3 style="color: var(--accent)">JoelData Menu</h3>
+    <div class="menu-item" onclick="openWorkModal()"><i data-lucide="briefcase"></i> Work With Us</div>
+    <div class="menu-item" onclick="viewReceipt()"><i data-lucide="file-text"></i> Last Receipt</div>
+    <div class="menu-item" onclick="toggleTheme(); toggleMenu();"><i data-lucide="refresh-cw"></i> Toggle Theme</div>
+    <div class="menu-item" onclick="toggleMenu()" style="margin-top:20px; background:#ef4444; color:#fff"><i data-lucide="x"></i> Close</div>
 </div>
 
 <div class="header">
@@ -133,6 +125,11 @@
         <div class="feature-item"><h4>Secured</h4><p>100% Encrypted</p></div>
     </div>
 
+    <a href="https://whatsapp.com/channel/0029Vb80VO3Bfxnx4pIYb11c" class="updates-pill" target="_blank">
+        <div style="display:flex; align-items:center; gap:10px"><i data-lucide="megaphone" size="18" style="color:#ef4444;"></i><span>Follow <b>JOELDATA Updates</b></span></div>
+        <div><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" style="height:24px;" alt="WA"></div>
+    </a>
+
     <div class="tabs-container">
         <button class="tab-btn active" onclick="switchTab('mtn')">MTN<span>Non-Expiry</span></button>
         <button class="tab-btn" onclick="switchTab('at')">AT<span>30 Days</span></button>
@@ -147,24 +144,28 @@
     </div>
 </div>
 
-<div id="sideMenu">
-    <h3 style="color: var(--accent)">JoelData</h3>
-    <div class="menu-item" onclick="toggleTheme()"><i data-lucide="refresh-cw"></i> Toggle Theme</div>
-    <div class="menu-item" onclick="toggleMenu()" style="margin-top:20px; background:#ef4444; color:#fff"><i data-lucide="x"></i> Close</div>
-</div>
-
 <script>
     let currentNet = "MTN"; let selectedGB = 0; let selectedPrice = 0;
     const PAYSTACK_PUBLIC_KEY = 'pk_live_90305707d30b6282979eac837bbbc9509da579af';
 
-    const mtnData = [{g:"1GB",p:5},{g:"2GB",p:10},{g:"5GB",p:25},{g:"10GB",p:50}];
-    const atData = [{g:"1GB",p:4.5},{g:"2GB",p:9},{g:"5GB",p:20.5},{g:"10GB",p:40}];
+    const mtnData = [
+        {g:"1GB",p:5},{g:"2GB",p:10},{g:"3GB",p:15},{g:"4GB",p:20},{g:"5GB",p:25},
+        {g:"6GB",p:30},{g:"8GB",p:40},{g:"10GB",p:50},{g:"12GB",p:55},{g:"15GB",p:65},
+        {g:"20GB",p:85},{g:"25GB",p:105},{g:"30GB",p:130},{g:"40GB",p:165},{g:"50GB",p:200}
+    ];
+
+    const atData = [
+        {g:"1GB",p:4.5},{g:"2GB",p:9},{g:"3GB",p:14},{g:"4GB",p:18},{g:"5GB",p:20.5},
+        {g:"6GB",p:25},{g:"8GB",p:32},{g:"10GB",p:40},{g:"12GB",p:50},{g:"15GB",p:60},
+        {g:"25GB",p:100},{g:"30GB",p:125},{g:"40GB",p:160},{g:"50GB",p:205}
+    ];
 
     window.onload = () => {
         renderGrid('mtnGrid', mtnData, 'MTN', 'Non Expiry', 'https://upload.wikimedia.org/wikipedia/commons/a/af/MTN_Logo.svg');
         renderGrid('atGrid', atData, 'AT', '30 Days', 'https://i.ibb.co/L6vV8yH/at-logo.png');
         lucide.createIcons();
         if(!localStorage.getItem('theme')) document.getElementById('themeModal').style.display='flex';
+        else setTheme(localStorage.getItem('theme'));
     };
 
     function renderGrid(containerId, data, net, exp, logo) {
@@ -195,7 +196,8 @@
     function switchTab(net) {
         currentNet = net.toUpperCase();
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        event.currentTarget.classList.add('active');
+        if(net === 'mtn') document.querySelectorAll('.tab-btn')[0].classList.add('active');
+        else document.querySelectorAll('.tab-btn')[1].classList.add('active');
         document.getElementById('mtnSection').style.display = net === 'mtn' ? 'block' : 'none';
         document.getElementById('atSection').style.display = net === 'at' ? 'block' : 'none';
     }
@@ -208,13 +210,18 @@
             key: PAYSTACK_PUBLIC_KEY, email: 'sales@joeldata.com',
             amount: Math.round((selectedPrice + (selectedPrice < 30 ? 0.3 : 0.9)) * 100),
             currency: 'GHS',
-            onSuccess: (t) => window.location.href=`https://wa.me/233248745662?text=ORDER: ${selectedGB} ${currentNet} to ${phone}`
+            onSuccess: (t) => {
+                const order = `JOELDATA ORDER: ${selectedGB} ${currentNet} to ${phone}`;
+                window.location.href=`https://wa.me/233248745662?text=${encodeURIComponent(order)}`;
+            }
         });
     }
 
     function setTheme(m) { document.body.className = m === 'light' ? 'light-mode' : ''; document.getElementById('themeModal').style.display='none'; localStorage.setItem('theme', m); }
     function toggleTheme() { setTheme(document.body.classList.contains('light-mode') ? 'dark' : 'light'); }
     function toggleMenu() { document.getElementById('sideMenu').classList.toggle('active'); }
+    function openWorkModal() { alert("Work with us form opening..."); }
+    function viewReceipt() { alert("Viewing last receipt..."); }
 </script>
 </body>
 </html>
