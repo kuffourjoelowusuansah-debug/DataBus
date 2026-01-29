@@ -123,8 +123,8 @@
             MTN<span>Non-Expiry</span>
         </button>
         <button class="tab-btn" onclick="switchTab('at')">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Airtel_logo_2011.svg" class="net-logo-small" alt="AT">
-            AT PREMIUM<span>30 Days</span>
+            <img src="https://upload.wikimedia.org/wikipedia/en/b/b3/AirtelTigo_logo.png" class="net-logo-small" alt="AT">
+            AIRTELTIGO<span>30 Days</span>
         </button>
     </div>
 
@@ -222,15 +222,14 @@
         } else { 
             document.querySelector('.tab-btn:nth-child(2)').classList.add('active'); 
             document.getElementById('atSection').classList.add('active'); 
-            currentNet = "AT"; 
-            displayNet.innerHTML = `<img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Airtel_logo_2011.svg" class="net-logo-header"> AT`;
+            currentNet = "AIRTELTIGO"; 
+            displayNet.innerHTML = `<img src="https://upload.wikimedia.org/wikipedia/en/b/b3/AirtelTigo_logo.png" class="net-logo-header"> AIRTELTIGO`;
         }
     }
 
     const mtnGrid = document.getElementById('mtnGrid');
     const atGrid = document.getElementById('atGrid');
     
-    // Updated MTN Data with exact pricing
     const mtnData = [
         {g:"1GB",p:5},{g:"2GB",p:10},{g:"3GB",p:15},{g:"4GB",p:20},{g:"5GB",p:25},
         {g:"6GB",p:30},{g:"8GB",p:40},{g:"10GB",p:50},{g:"12GB",p:55},{g:"15GB",p:65},
@@ -258,15 +257,15 @@
         if(!document.getElementById('termsCheck').checked) return alert("Please accept the terms.");
         if(phone.length < 10) return alert("Enter a valid 10-digit number.");
 
-        // Processing Fee Logic
-        let fee = selectedPrice < 30 ? 0.30 : 0.70;
+        // Updated Processing Fee Logic: 30p for < 30, 90p for >= 30
+        let fee = selectedPrice < 30 ? 0.30 : 0.90;
         let finalAmount = selectedPrice + fee;
 
         const paystack = new PaystackPop();
         paystack.newTransaction({
             key: PAYSTACK_PUBLIC_KEY,
             email: 'sales@joeldata.com', 
-            amount: finalAmount * 100, 
+            amount: Math.round(finalAmount * 100), // Ensures precise Pesewa conversion
             currency: 'GHS',
             onSuccess: (transaction) => {
                 const order = `PAID ORDER (Ref: ${transaction.reference}):\nBundle: ${selectedGB} (${currentNet})\nRecipient: ${phone}\nTotal Paid: GHS ${finalAmount.toFixed(2)}\nStatus: Payment Verified`;
