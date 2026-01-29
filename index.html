@@ -28,7 +28,6 @@
             transition: 0.3s;
         }
 
-        /* --- Theme Modal --- */
         #themeModal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.95); z-index: 50000; display: none;
@@ -36,7 +35,6 @@
             backdrop-filter: blur(10px);
         }
 
-        /* --- Header & Layout --- */
         .header { width: 100%; max-width: 400px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .logo { font-weight: 900; letter-spacing: -1.5px; font-size: 22px; background: var(--accent-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .app-container { background: var(--card); width: 100%; max-width: 400px; border-radius: 35px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); padding: 25px; box-sizing: border-box; border: 1px solid var(--glass); }
@@ -123,7 +121,7 @@
             MTN<span>Non-Expiry</span>
         </button>
         <button class="tab-btn" onclick="switchTab('at')">
-            <img src="https://upload.wikimedia.org/wikipedia/en/b/b3/AirtelTigo_logo.png" class="net-logo-small" alt="AT">
+            <img src="https://logowik.com/content/uploads/images/airteltigo9466.jpg" class="net-logo-small" alt="AT">
             AIRTELTIGO<span>30 Days</span>
         </button>
     </div>
@@ -147,7 +145,7 @@
             <li>Your data will be sent after successful payment.</li>
         </ol>
 
-        <input type="tel" id="recipientPhone" class="large-input" placeholder="Enter Recipient Number" maxlength="10">
+        <input type="tel" id="recipientPhone" class="large-input" placeholder="02XXXXXXXX" maxlength="10">
         
         <div style="font-size:11px; margin-bottom:15px; text-align:center;">
             <input type="checkbox" id="termsCheck"> I agree to the Terms & Privacy Policy
@@ -223,7 +221,7 @@
             document.querySelector('.tab-btn:nth-child(2)').classList.add('active'); 
             document.getElementById('atSection').classList.add('active'); 
             currentNet = "AIRTELTIGO"; 
-            displayNet.innerHTML = `<img src="https://upload.wikimedia.org/wikipedia/en/b/b3/AirtelTigo_logo.png" class="net-logo-header"> AIRTELTIGO`;
+            displayNet.innerHTML = `<img src="https://logowik.com/content/uploads/images/airteltigo9466.jpg" class="net-logo-header"> AIRTELTIGO`;
         }
     }
 
@@ -236,10 +234,14 @@
         {g:"20GB",p:85},{g:"25GB",p:105},{g:"30GB",p:130},{g:"40GB",p:165},{g:"50GB",p:200}
     ];
 
-    const atData = [{g:"1GB",p:4.5},{g:"2GB",p:9},{g:"3GB",p:14},{g:"4GB",p:18},{g:"5GB",p:20.5},{g:"6GB",p:25},{g:"8GB",p:32},{g:"10GB",p:40},{g:"15GB",p:60}];
+    const atData = [
+        {g:"1GB",p:4.5},{g:"2GB",p:9},{g:"3GB",p:14},{g:"4GB",p:18},{g:"5GB",p:20.5},
+        {g:"6GB",p:25},{g:"8GB",p:32},{g:"10GB",p:40},{g:"12GB",p:50},{g:"15GB",p:60},
+        {g:"25GB",p:100},{g:"30GB",p:125},{g:"40GB",p:160},{g:"50GB",p:205}
+    ];
 
-    mtnData.forEach(d => mtnGrid.appendChild(createCard(d.g, d.p, d.p > 100)));
-    atData.forEach(d => atGrid.appendChild(createCard(d.g, d.p, d.p > 40)));
+    mtnData.forEach(d => mtnGrid.appendChild(createCard(d.g, d.p, d.p > 130)));
+    atData.forEach(d => atGrid.appendChild(createCard(d.g, d.p, d.p > 160)));
 
     function createCard(gb, pr, low) {
         const d = document.createElement('div'); d.className = 'bundle-card';
@@ -248,6 +250,7 @@
             document.querySelectorAll('.bundle-card').forEach(c=>c.classList.remove('selected'));
             d.classList.add('selected'); selectedGB = gb; selectedPrice = pr;
             document.getElementById('orderForm').style.display='block';
+            window.scrollTo({ top: document.getElementById('orderForm').offsetTop, behavior: 'smooth' });
         };
         return d;
     }
@@ -257,7 +260,6 @@
         if(!document.getElementById('termsCheck').checked) return alert("Please accept the terms.");
         if(phone.length < 10) return alert("Enter a valid 10-digit number.");
 
-        // Updated Processing Fee Logic: 30p for < 30, 90p for >= 30
         let fee = selectedPrice < 30 ? 0.30 : 0.90;
         let finalAmount = selectedPrice + fee;
 
@@ -265,16 +267,14 @@
         paystack.newTransaction({
             key: PAYSTACK_PUBLIC_KEY,
             email: 'sales@joeldata.com', 
-            amount: Math.round(finalAmount * 100), // Ensures precise Pesewa conversion
+            amount: Math.round(finalAmount * 100), 
             currency: 'GHS',
             onSuccess: (transaction) => {
-                const order = `PAID ORDER (Ref: ${transaction.reference}):\nBundle: ${selectedGB} (${currentNet})\nRecipient: ${phone}\nTotal Paid: GHS ${finalAmount.toFixed(2)}\nStatus: Payment Verified`;
+                const order = `*JOELDATA ORDER RECEIVED*\nRef: ${transaction.reference}\n--------------------\nNetwork: ${currentNet}\nBundle: ${selectedGB}\nRecipient: ${phone}\nTotal Paid: GHS ${finalAmount.toFixed(2)}`;
                 localStorage.setItem('lastOrder', order);
                 window.location.href=`https://wa.me/233248745662?text=${encodeURIComponent(order)}`;
             },
-            onCancel: () => {
-                alert("Payment was cancelled.");
-            }
+            onCancel: () => { alert("Payment was cancelled."); }
         });
     }
 
