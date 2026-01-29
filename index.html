@@ -40,19 +40,12 @@
         .feature-item h4 { margin: 0; font-size: 14px; font-weight: 800; }
         .feature-item p { margin: 2px 0 0; font-size: 11px; opacity: 0.9; }
 
-        .updates-pill { 
-            display: flex; align-items: center; justify-content: space-between; 
-            background: #ffffff; color: #000; padding: 15px 25px; border-radius: 50px; 
-            text-decoration: none; font-size: 14px; font-weight: 700; margin-bottom: 30px; 
-        }
-
         .tabs-container { display: inline-flex; background: var(--glass); padding: 6px; border-radius: 20px; margin-bottom: 30px; border: 1px solid var(--glass); }
         .tab-btn { padding: 12px 30px; border: none; border-radius: 15px; background: none; color: var(--text); font-weight: 800; cursor: pointer; transition: 0.3s; }
         .tab-btn.active { background: var(--accent-grad); color: #fff; }
 
         .bundle-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; width: 100%; }
 
-        /* UPDATED PLATE DESIGN */
         .bundle-card { 
             background: var(--accent-grad); border-radius: 25px; padding: 25px;
             display: flex; flex-direction: column; gap: 15px;
@@ -76,7 +69,6 @@
 
         .plate-buy-btn { width: 100%; background: #000; color: #fff; border: none; padding: 15px; border-radius: 15px; font-weight: 800; cursor: pointer; }
 
-        /* FORM */
         #orderForm { max-width: 500px; margin: 50px auto; background: var(--card); padding: 40px; border-radius: 30px; border: 1px solid var(--accent); display: none; }
         .large-input { width: 100%; padding: 18px; border-radius: 12px; border: 2px solid var(--accent); background: var(--glass); color: var(--text); font-size: 18px; text-align: center; margin-bottom: 15px; box-sizing: border-box; outline: none; }
         .pay-btn { width: 100%; background: var(--accent-grad); color: white; border: none; padding: 20px; border-radius: 15px; font-size: 18px; font-weight: 800; cursor: pointer; }
@@ -87,9 +79,26 @@
 
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100000; display: none; padding: 20px; box-sizing: border-box; overflow-y: auto; justify-content: center; align-items: center; }
         .modal-content { background: var(--card); padding: 30px; border-radius: 25px; border: 1px solid var(--accent); width: 100%; max-width: 500px; }
+
+        /* POPUP NOTIFICATION STYLES */
+        .purchase-toast {
+            position: fixed; bottom: 20px; left: 20px; background: var(--card); 
+            border: 1px solid var(--accent); padding: 12px 20px; border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 12px;
+            z-index: 999999; transform: translateY(150%); transition: 0.5s ease;
+        }
+        .purchase-toast.show { transform: translateY(0); }
+        .toast-img { width: 35px; height: 35px; border-radius: 8px; object-fit: contain; background: white; padding: 2px; }
+        .toast-text { font-size: 12px; font-weight: 600; line-height: 1.3; }
+        .toast-text span { color: var(--accent); font-weight: 800; }
     </style>
 </head>
 <body>
+
+<div id="toast" class="purchase-toast">
+    <img id="toastLogo" src="" class="toast-img">
+    <div class="toast-text" id="toastMsg"></div>
+</div>
 
 <div id="sideMenu">
     <h3 style="color:var(--accent)">JOELDATA</h3>
@@ -142,13 +151,17 @@
 
 <script>
     let currentNet = "MTN"; let selG = ""; let selP = 0;
+    const mtnLogo = 'https://upload.wikimedia.org/wikipedia/commons/a/af/MTN_Logo.svg';
+    const atLogo = 'https://i.ibb.co/L6vV8yH/at-logo.png'; // Using the AT logo from your provided image source
+
     const mtnData = [{g:"1GB",p:5},{g:"2GB",p:10},{g:"3GB",p:15},{g:"5GB",p:25},{g:"10GB",p:50},{g:"20GB",p:85},{g:"50GB",p:200}];
     const atData = [{g:"1GB",p:4.5},{g:"2GB",p:9},{g:"5GB",p:20.5},{g:"10GB",p:40},{g:"50GB",p:205}];
 
     window.onload = () => {
-        renderGrid('mtnGrid', mtnData, 'MTN', 'Non Expiry', 'https://upload.wikimedia.org/wikipedia/commons/a/af/MTN_Logo.svg');
-        renderGrid('atGrid', atData, 'AT', '30 Days', 'https://seeklogo.com/images/A/at-ghana-logo-50953E2333-seeklogo.com.png');
+        renderGrid('mtnGrid', mtnData, 'MTN', 'Non Expiry', mtnLogo);
+        renderGrid('atGrid', atData, 'AT', '30 Days', atLogo);
         lucide.createIcons();
+        startPopups();
     };
 
     function renderGrid(id, data, net, exp, logo) {
@@ -159,7 +172,7 @@
             card.innerHTML = `
                 <div class="plate-header">
                     <div class="plate-amt">${d.g}</div>
-                    <img src="${logo}" class="plate-logo" onerror="this.src='https://i.ibb.co/L6vV8yH/at-logo.png'">
+                    <img src="${logo}" class="plate-logo">
                 </div>
                 <div class="plate-details">
                     <div class="detail-item"><span class="detail-label">Price</span><span class="detail-val">₵${d.p.toFixed(2)}</span></div>
@@ -181,20 +194,36 @@
         });
     }
 
+    // SOCIAL PROOF POPUP LOGIC
+    function startPopups() {
+        const locations = ["Accra", "Kumasi", "Tema", "Kasoa", "Takoradi", "Tamale", "Ho", "Sunyani"];
+        const sizes = ["1GB", "2GB", "5GB", "10GB", "20GB", "50GB"];
+        const toast = document.getElementById('toast');
+        const toastImg = document.getElementById('toastLogo');
+        const toastMsg = document.getElementById('toastMsg');
+
+        setInterval(() => {
+            const loc = locations[Math.floor(Math.random() * locations.length)];
+            const size = sizes[Math.floor(Math.random() * sizes.length)];
+            const isMtn = Math.random() > 0.4;
+            
+            toastImg.src = isMtn ? mtnLogo : atLogo;
+            toastMsg.innerHTML = `Someone from <span>${loc}</span><br>just bought <b>${size} ${isMtn ? 'MTN' : 'AT'}</b>`;
+            
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 4000);
+        }, 10000); // Pops up every 10 seconds
+    }
+
     function handlePayment() {
         const phone = document.getElementById('recipientPhone').value;
         const email = document.getElementById('buyerEmail').value;
-        
         if(phone.length < 10) return alert("Enter a valid phone number.");
-        if(!email.includes('@')) return alert("Enter a valid email address for your receipt.");
-        
-        const confirmCheck = confirm("IMPORTANT NOTICE:\nWrong numbers have no refunds. Please confirm that " + phone + " is correct.");
-        
+        if(!email.includes('@')) return alert("Enter a valid email address.");
+        const confirmCheck = confirm("Confirm " + phone + " is correct. No refunds for mistakes.");
         if(!confirmCheck) return;
 
-        let fee = selP < 30 ? 0.3 : 0.9;
-        let total = selP + fee;
-
+        let total = selP + (selP < 30 ? 0.3 : 0.9);
         const handler = PaystackPop.setup({
             key: 'pk_live_90305707d30b6282979eac837bbbc9509da579af',
             email: email,
@@ -203,7 +232,7 @@
             callback: (response) => {
                 const receipt = { date: new Date().toLocaleString(), net: currentNet, gb: selG, phone: phone, ref: response.reference, price: total };
                 localStorage.setItem('lastReceipt', JSON.stringify(receipt));
-                window.location.href = `https://wa.me/233248745662?text=ORDER: ${selG} ${currentNet} to ${phone}. Receipt sent to ${email}. Ref: ${response.reference}`;
+                window.location.href = `https://wa.me/233248745662?text=ORDER: ${selG} ${currentNet} to ${phone}. Ref: ${response.reference}`;
             }
         });
         handler.openIframe();
@@ -215,6 +244,7 @@
         event.currentTarget.classList.add('active');
         document.getElementById('mtnGrid').style.display = net === 'mtn' ? 'grid' : 'none';
         document.getElementById('atGrid').style.display = net === 'at' ? 'grid' : 'none';
+        document.getElementById('orderForm').style.display = 'none';
     }
 
     function showReceipt() {
