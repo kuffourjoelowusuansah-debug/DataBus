@@ -42,12 +42,10 @@
         .app-container { background: var(--card); width: 100%; max-width: 400px; border-radius: 35px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); padding: 25px; box-sizing: border-box; border: 1px solid var(--glass); }
         .tagline { text-align: center; font-weight: 800; font-size: 28px; margin-bottom: 20px; line-height: 1.2; }
 
-        /* --- Network Logos Styling --- */
         .net-logo-small { height: 22px; margin-bottom: 6px; object-fit: contain; }
         .net-logo-header { height: 26px; vertical-align: middle; margin-right: 8px; border-radius: 4px; }
         .wa-logo { height: 24px; object-fit: contain; }
 
-        /* --- Feature Box & Updates --- */
         .features-box { background: #fff; border-radius: 25px; padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; }
         .feature-item { text-align: center; color: #1a365d; }
         .feature-item .icon-wrap { color: #FF3B30; margin-bottom: 8px; }
@@ -55,7 +53,6 @@
         .feature-item p { margin: 4px 0 0; font-size: 10px; color: #718096; line-height: 1.4; }
         .updates-pill { display: flex; align-items: center; justify-content: space-between; background: #ffffff; color: #000; padding: 12px 20px; border-radius: 50px; text-decoration: none; font-size: 14px; font-weight: 700; margin-bottom: 25px; border: 1px solid #eee; }
 
-        /* --- Tabs System --- */
         .tabs-container { display: flex; width: 100%; background: var(--glass); padding: 5px; border-radius: 20px; margin-bottom: 25px; border: 1px solid var(--glass); }
         .tab-btn { flex: 1; padding: 12px; border: none; border-radius: 15px; background: none; color: var(--text); font-weight: 800; font-size: 12px; cursor: pointer; display: flex; flex-direction: column; align-items: center; transition: 0.2s; }
         .tab-btn span { font-size: 9px; opacity: 0.7; font-weight: 400; }
@@ -63,7 +60,6 @@
         .bundle-section { display: none; }
         .bundle-section.active { display: block; }
 
-        /* --- Data Plates --- */
         .bundle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
         .bundle-card { border: 1px solid var(--bundle-border); padding: 30px 10px; border-radius: 28px; text-align: center; cursor: pointer; background: var(--bundle-bg); position: relative; transition: 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .bundle-card strong { font-size: 32px; display: block; margin-bottom: 2px; font-weight: 900; letter-spacing: -1px; }
@@ -73,12 +69,10 @@
         .in-stock { background: rgba(37, 211, 102, 0.1); color: var(--success); }
         .low-stock { background: rgba(255, 59, 48, 0.1); color: var(--accent); }
 
-        /* --- Recipient Space & Order Form --- */
         .large-input { width: 100%; padding: 25px 15px; border-radius: 25px; border: 2px solid var(--accent); background: var(--glass); color: var(--text); font-size: 24px; font-weight: 900; text-align: center; margin-bottom: 20px; outline: none; box-sizing: border-box; }
         .copy-box { background: var(--mtn-blue); color: white; padding: 20px; border-radius: 25px; text-align: center; margin-bottom: 15px; }
         .pay-btn { width: 100%; background: var(--accent-grad); color: white; border: none; padding: 20px; border-radius: 20px; font-size: 18px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 10px 20px rgba(255, 59, 48, 0.2); }
 
-        /* --- Modals & UI --- */
         #sideMenu { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: var(--card); z-index: 12000; transition: 0.4s ease; padding: 40px 20px; border-left: 1px solid var(--glass); }
         #sideMenu.active { right: 0; }
         .menu-item { padding: 15px; margin-bottom: 10px; border-radius: 15px; background: var(--glass); display: flex; align-items: center; gap: 12px; cursor: pointer; font-weight: 600; }
@@ -235,12 +229,17 @@
 
     const mtnGrid = document.getElementById('mtnGrid');
     const atGrid = document.getElementById('atGrid');
+    
+    // Updated MTN Data with exact pricing
+    const mtnData = [
+        {g:"1GB",p:5},{g:"2GB",p:10},{g:"3GB",p:15},{g:"4GB",p:20},{g:"5GB",p:25},
+        {g:"6GB",p:30},{g:"8GB",p:40},{g:"10GB",p:50},{g:"12GB",p:55},{g:"15GB",p:65},
+        {g:"20GB",p:85},{g:"25GB",p:105},{g:"30GB",p:130},{g:"40GB",p:165},{g:"50GB",p:200}
+    ];
+
     const atData = [{g:"1GB",p:4.5},{g:"2GB",p:9},{g:"3GB",p:14},{g:"4GB",p:18},{g:"5GB",p:20.5},{g:"6GB",p:25},{g:"8GB",p:32},{g:"10GB",p:40},{g:"15GB",p:60}];
 
-    for(let i=1;i<=10;i++) {
-        const isLow = i > 8;
-        mtnGrid.appendChild(createCard(i+"GB", i*5, isLow));
-    }
+    mtnData.forEach(d => mtnGrid.appendChild(createCard(d.g, d.p, d.p > 100)));
     atData.forEach(d => atGrid.appendChild(createCard(d.g, d.p, d.p > 40)));
 
     function createCard(gb, pr, low) {
@@ -259,14 +258,18 @@
         if(!document.getElementById('termsCheck').checked) return alert("Please accept the terms.");
         if(phone.length < 10) return alert("Enter a valid 10-digit number.");
 
+        // Processing Fee Logic
+        let fee = selectedPrice < 30 ? 0.30 : 0.70;
+        let finalAmount = selectedPrice + fee;
+
         const paystack = new PaystackPop();
         paystack.newTransaction({
             key: PAYSTACK_PUBLIC_KEY,
             email: 'sales@joeldata.com', 
-            amount: selectedPrice * 100, 
+            amount: finalAmount * 100, 
             currency: 'GHS',
             onSuccess: (transaction) => {
-                const order = `PAID ORDER (Ref: ${transaction.reference}):\nBundle: ${selectedGB} (${currentNet})\nRecipient: ${phone}\nStatus: Payment Verified`;
+                const order = `PAID ORDER (Ref: ${transaction.reference}):\nBundle: ${selectedGB} (${currentNet})\nRecipient: ${phone}\nTotal Paid: GHS ${finalAmount.toFixed(2)}\nStatus: Payment Verified`;
                 localStorage.setItem('lastOrder', order);
                 window.location.href=`https://wa.me/233248745662?text=${encodeURIComponent(order)}`;
             },
