@@ -12,216 +12,189 @@
             --accent: #FF3B30; 
             --accent-grad: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
             --glass: rgba(255, 255, 255, 0.05); --success: #2ecc71;
-            --bundle-border: #2d3748;
+            --bundle-bg: #1a1f26; --bundle-border: #2d3748;
         }
 
         .light-mode {
             --bg: #f8f9fa; --card: #ffffff; --text: #121212; --glass: rgba(0, 0, 0, 0.05);
-            --bundle-border: #e2e8f0;
+            --bundle-bg: #ffffff; --bundle-border: #e2e8f0;
         }
 
-        body { 
-            font-family: 'Inter', -apple-system, sans-serif; 
-            background-color: var(--bg); color: var(--text); 
-            margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
 
-        #themeModal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); z-index: 50000; display: none;
-            flex-direction: column; align-items: center; justify-content: center;
-            backdrop-filter: blur(10px);
-        }
-
-        .header { width: 100%; max-width: 450px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .logo { font-weight: 900; letter-spacing: -1.5px; font-size: 22px; background: var(--accent-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .app-container { background: var(--card); width: 100%; max-width: 450px; border-radius: 35px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); padding: 25px; box-sizing: border-box; border: 1px solid var(--glass); }
-        .tagline { text-align: center; font-weight: 800; font-size: 28px; margin-bottom: 20px; line-height: 1.2; }
-
-        /* VIRTUE PANEL */
+        /* VIRTUE PANEL (GRADIENT) */
         .features-box { 
-            display: flex; justify-content: space-around; 
-            background: var(--accent-grad);
-            padding: 15px; border-radius: 20px; margin-bottom: 20px; 
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 450px;
+            background: var(--accent-grad); padding: 15px; border-radius: 20px; margin-bottom: 20px; 
             color: white; box-shadow: 0 10px 20px rgba(255, 59, 48, 0.2);
         }
-        .feature-item { text-align: center; }
-        .feature-item h4 { margin: 0; font-size: 12px; font-weight: 800; }
-        .feature-item p { margin: 2px 0 0; font-size: 10px; opacity: 0.9; }
+        .feature-item { display: flex; align-items: center; gap: 8px; font-size: 11px; }
+        .feature-item h4 { margin: 0; font-size: 13px; font-weight: 800; }
 
-        .updates-pill { display: flex; align-items: center; justify-content: space-between; background: #ffffff; color: #000; padding: 12px 20px; border-radius: 50px; text-decoration: none; font-size: 14px; font-weight: 700; margin-bottom: 25px; border: 1px solid #eee; }
-
-        .tabs-container { display: flex; width: 100%; background: var(--glass); padding: 5px; border-radius: 20px; margin-bottom: 25px; border: 1px solid var(--glass); }
-        .tab-btn { flex: 1; padding: 12px; border: none; border-radius: 15px; background: none; color: var(--text); font-weight: 800; font-size: 12px; cursor: pointer; display: flex; flex-direction: column; align-items: center; transition: 0.2s; }
-        .tab-btn.active { background: var(--accent-grad); color: #fff; }
+        .app-container { background: var(--card); width: 100%; max-width: 450px; border-radius: 35px; padding: 25px; box-sizing: border-box; border: 1px solid var(--glass); }
+        .logo { font-weight: 900; font-size: 22px; background: var(--accent-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
         /* DATA PLATES */
-        .bundle-grid { display: flex; flex-direction: column; gap: 18px; }
+        .bundle-grid { display: flex; flex-direction: column; gap: 15px; }
         .bundle-card { 
-            background: var(--accent-grad);
-            border-radius: 22px;
-            padding: 22px;
-            display: grid;
-            grid-template-columns: 1fr 100px;
-            grid-template-rows: auto auto auto;
-            gap: 5px;
-            cursor: pointer;
-            transition: 0.2s;
-            color: white;
-            box-shadow: 0 10px 25px rgba(255, 59, 48, 0.3);
+            background: var(--accent-grad); border-radius: 22px; padding: 20px;
+            display: grid; grid-template-columns: 1fr 80px; grid-template-rows: auto auto auto;
+            cursor: pointer; transition: 0.2s; color: white; box-shadow: 0 8px 20px rgba(255, 59, 48, 0.2);
         }
-        .bundle-card.selected { border: 3px solid #ffffff; transform: scale(1.02); } 
+        .bundle-card.selected { border: 3px solid #fff; }
+        .plate-amt { font-size: 34px; font-weight: 900; grid-row: 2; }
+        .plate-logo { width: 60px; height: 60px; border-radius: 12px; grid-column: 2; grid-row: 2; background: white; padding: 2px; }
+        .plate-price { font-size: 24px; font-weight: 800; grid-row: 3; }
+        .plate-buy-btn { grid-column: 2; grid-row: 3; background: #000; color: #fff; border: none; padding: 8px; border-radius: 10px; font-weight: 800; }
 
-        .plate-net { font-size: 12px; font-weight: 800; opacity: 0.9; text-transform: uppercase; }
-        .plate-expiry { font-size: 10px; background: rgba(0,0,0,0.2); padding: 4px 12px; border-radius: 8px; color: white; justify-self: end; font-weight: 700; }
-        .plate-amt { font-size: 38px; font-weight: 900; grid-row: 2; align-self: center; margin-top: 5px; }
-        .plate-label { font-size: 12px; color: white; opacity: 0.8; grid-row: 2; align-self: end; margin-bottom: 15px; }
-        .plate-logo { width: 65px; height: 65px; border-radius: 15px; grid-column: 2; grid-row: 2; justify-self: end; object-fit: cover; background: white; padding: 2px; }
-        .plate-price { font-size: 26px; font-weight: 800; color: white; grid-row: 3; align-self: center; }
-        .plate-buy-btn { 
-            grid-column: 2; grid-row: 3; 
-            background: #000000; color: white; border: none; 
-            padding: 10px 18px; border-radius: 12px; 
-            font-weight: 800; font-size: 14px;
-            display: flex; align-items: center; gap: 8px; justify-content: center;
-        }
+        /* MODALS */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100000; display: none; flex-direction: column; padding: 30px; box-sizing: border-box; overflow-y: auto; }
+        .modal-content { background: var(--card); padding: 25px; border-radius: 25px; border: 1px solid var(--accent); }
+        
+        .large-input { width: 100%; padding: 20px; border-radius: 15px; border: 2px solid var(--accent); background: var(--glass); color: var(--text); font-size: 20px; text-align: center; margin-bottom: 15px; box-sizing: border-box; }
+        .pay-btn { width: 100%; background: var(--accent-grad); color: white; border: none; padding: 18px; border-radius: 15px; font-weight: 800; cursor: pointer; }
 
-        .large-input { width: 100%; padding: 25px 15px; border-radius: 25px; border: 2px solid var(--accent); background: var(--glass); color: var(--text); font-size: 24px; font-weight: 900; text-align: center; margin-bottom: 20px; outline: none; box-sizing: border-box; }
-        .pay-btn { width: 100%; background: var(--accent-grad); color: white; border: none; padding: 20px; border-radius: 20px; font-size: 18px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .tabs-container { display: flex; background: var(--glass); padding: 5px; border-radius: 15px; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 10px; border: none; border-radius: 10px; background: none; color: var(--text); font-weight: 800; }
+        .tab-btn.active { background: var(--accent-grad); color: white; }
 
-        #sideMenu { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: var(--card); z-index: 12000; transition: 0.4s ease; padding: 40px 20px; border-left: 1px solid var(--glass); }
+        #sideMenu { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: var(--card); z-index: 50000; transition: 0.4s; padding: 30px 20px; border-left: 2px solid var(--accent); }
         #sideMenu.active { right: 0; }
-        .menu-item { padding: 15px; margin-bottom: 10px; border-radius: 15px; background: var(--glass); display: flex; align-items: center; gap: 12px; cursor: pointer; font-weight: 600; }
+        .menu-item { padding: 15px; margin-bottom: 10px; border-radius: 12px; background: var(--glass); cursor: pointer; display: flex; align-items: center; gap: 10px; }
     </style>
 </head>
 <body>
 
-<div id="themeModal">
-    <h2 style="color:var(--accent)">Welcome to JoelData</h2>
-    <p>Please choose a theme to start:</p>
-    <button class="pay-btn" onclick="setTheme('dark')" style="margin-bottom:15px">DARK MODE</button>
-    <button class="pay-btn" onclick="setTheme('light')" style="background:#fff; color:#000;">LIGHT MODE</button>
-</div>
-
 <div id="sideMenu">
-    <h3 style="color: var(--accent)">JoelData Menu</h3>
-    <div class="menu-item" onclick="toggleTheme()"><i data-lucide="refresh-cw"></i> Toggle Theme</div>
-    <div class="menu-item" onclick="toggleMenu()" style="margin-top:20px; background:#ef4444; color:#fff"><i data-lucide="x"></i> Close</div>
+    <h3 style="color:var(--accent)">JOELDATA</h3>
+    <div class="menu-item" onclick="showModal('work')"><i data-lucide="briefcase"></i> Work With Us</div>
+    <div class="menu-item" onclick="showReceipt()"><i data-lucide="file-text"></i> Last Receipt</div>
+    <div class="menu-item" onclick="showModal('help')"><i data-lucide="help-circle"></i> How to Buy/Pay</div>
+    <div class="menu-item" onclick="showModal('terms')"><i data-lucide="shield"></i> Terms & Policy</div>
+    <div class="menu-item" onclick="toggleTheme()" style="margin-top:20px"><i data-lucide="refresh-cw"></i> Change Theme</div>
+    <button class="pay-btn" onclick="toggleMenu()" style="margin-top:20px; background: #ef4444;">CLOSE</button>
 </div>
 
-<div class="header">
+<div id="genericModal" class="modal">
+    <div class="modal-content" id="modalBody"></div>
+    <button class="pay-btn" style="margin-top:20px" onclick="closeModal()">CLOSE</button>
+</div>
+
+<div class="header" style="width:100%; max-width:450px; display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
     <div class="logo">JOELDATA.</div>
-    <button class="pay-btn" onclick="toggleMenu()" style="width:auto; padding:8px 15px; font-size:12px">MENU</button>
+    <button onclick="toggleMenu()" style="background:var(--glass); border:none; color:var(--text); padding:10px; border-radius:10px;"><i data-lucide="menu"></i></button>
+</div>
+
+<div class="features-box">
+    <div class="feature-item"><i data-lucide="zap"></i><div><h4>Fast Delivery</h4><p>Instant Activation</p></div></div>
+    <div class="feature-item"><i data-lucide="shield-check"></i><div><h4>Secured</h4><p>100% Encrypted</p></div></div>
+    <div class="feature-item"><i data-lucide="headphones"></i><div><h4>24/7 Support</h4><p>Always Online</p></div></div>
+    <div class="feature-item"><i data-lucide="trending-down"></i><div><h4>Affordable</h4><p>Best Rates</p></div></div>
 </div>
 
 <div class="app-container">
-    <div class="tagline">Stay online<br>Everytime</div>
-
-    <div class="features-box">
-        <div class="feature-item"><h4>Fast Delivery</h4><p>Instant Activation</p></div>
-        <div class="feature-item"><h4>Secured</h4><p>100% Encrypted</p></div>
-    </div>
-
-    <a href="https://whatsapp.com/channel/0029Vb80VO3Bfxnx4pIYb11c" class="updates-pill" target="_blank">
-        <div style="display:flex; align-items:center; gap:10px"><i data-lucide="megaphone" size="18" style="color:#ef4444;"></i><span>Follow <b>JOELDATA Updates</b></span></div>
-        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" style="height:24px;">
-    </a>
-
     <div class="tabs-container">
-        <button class="tab-btn active" onclick="switchTab('mtn')">MTN<span>Non-Expiry</span></button>
-        <button class="tab-btn" onclick="switchTab('at')">AT<span>30 Days</span></button>
+        <button class="tab-btn active" onclick="switchTab('mtn')">MTN</button>
+        <button class="tab-btn" onclick="switchTab('at')">AT</button>
     </div>
 
-    <div id="mtnSection" class="bundle-section active"><div class="bundle-grid" id="mtnGrid"></div></div>
-    <div id="atSection" class="bundle-section" style="display:none;"><div class="bundle-grid" id="atGrid"></div></div>
+    <div id="mtnGrid" class="bundle-grid"></div>
+    <div id="atGrid" class="bundle-grid" style="display:none;"></div>
 
-    <div id="orderForm" style="display:none; margin-top:30px;">
-        <div style="text-align:center; margin-bottom:10px; font-weight:bold;" id="orderLabel"></div>
-        <input type="tel" id="recipientPhone" class="large-input" placeholder="02XXXXXXXX" maxlength="10">
-        <div style="text-align:center; font-size:11px; margin-bottom:15px;">
-            <input type="checkbox" checked> I agree to terms & conditions
-        </div>
-        <button class="pay-btn" onclick="handlePaystackPayment()"><i data-lucide="credit-card"></i> PAY SECURELY NOW</button>
+    <div id="orderForm" style="display:none; margin-top:25px; border-top:1px solid var(--glass); padding-top:20px;">
+        <h3 id="orderLabel" style="text-align:center; color:var(--accent)"></h3>
+        <input type="tel" id="recipientPhone" class="large-input" placeholder="Recipient Number" maxlength="10">
+        <button class="pay-btn" onclick="handlePayment()">PAY SECURELY NOW</button>
+        <p style="font-size:10px; text-align:center; opacity:0.6; margin-top:10px;">By paying, you agree to our Terms & Privacy Policy.</p>
     </div>
 </div>
 
 <script>
-    let currentNet = "MTN"; let selectedGB = 0; let selectedPrice = 0;
-    const PAYSTACK_PUBLIC_KEY = 'pk_live_90305707d30b6282979eac837bbbc9509da579af';
-
-    const mtnData = [
-        {g:"1GB",p:5},{g:"2GB",p:10},{g:"3GB",p:15},{g:"4GB",p:20},{g:"5GB",p:25},
-        {g:"10GB",p:50},{g:"20GB",p:85},{g:"50GB",p:200}
-    ];
-
-    const atData = [
-        {g:"1GB",p:4.5},{g:"2GB",p:9},{g:"5GB",p:20.5},{g:"10GB",p:40},{g:"50GB",p:205}
-    ];
+    let currentNet = "MTN"; let selG = ""; let selP = 0;
+    const mtnData = [{g:"1GB",p:5},{g:"2GB",p:10},{g:"5GB",p:25},{g:"10GB",p:50}];
+    const atData = [{g:"1GB",p:4.5},{g:"2GB",p:9},{g:"5GB",p:20.5},{g:"10GB",p:40}];
 
     window.onload = () => {
         renderGrid('mtnGrid', mtnData, 'MTN', 'Non Expiry', 'https://upload.wikimedia.org/wikipedia/commons/a/af/MTN_Logo.svg');
         renderGrid('atGrid', atData, 'AT', '30 Days', 'https://seeklogo.com/images/A/at-ghana-logo-50953E2333-seeklogo.com.png');
         lucide.createIcons();
-        if(!localStorage.getItem('theme')) document.getElementById('themeModal').style.display='flex';
-        else setTheme(localStorage.getItem('theme'));
     };
 
-    function renderGrid(containerId, data, net, exp, logo) {
-        const grid = document.getElementById(containerId);
+    function renderGrid(id, data, net, exp, logo) {
+        const grid = document.getElementById(id);
         data.forEach(d => {
             const card = document.createElement('div');
             card.className = 'bundle-card';
             card.innerHTML = `
-                <div class="plate-net">${net}</div>
-                <div class="plate-expiry">${exp}</div>
+                <div style="font-size:12px; font-weight:bold;">${net} • ${exp}</div>
                 <div class="plate-amt">${d.g}</div>
-                <div class="plate-label">Data Bundle</div>
-                <img src="${logo}" class="plate-logo" onerror="this.src='https://i.ibb.co/L6vV8yH/at-logo.png'">
+                <img src="${logo}" class="plate-logo">
                 <div class="plate-price">₵${d.p.toFixed(2)}</div>
-                <button class="plate-buy-btn">Buy</button>
+                <button class="plate-buy-btn">BUY</button>
             `;
             card.onclick = () => {
                 document.querySelectorAll('.bundle-card').forEach(c => c.classList.remove('selected'));
                 card.classList.add('selected');
-                selectedGB = d.g; selectedPrice = d.p;
+                selG = d.g; selP = d.p;
                 document.getElementById('orderForm').style.display = 'block';
-                document.getElementById('orderLabel').innerText = `Ordering ${d.g} ${net}`;
+                document.getElementById('orderLabel').innerText = `Buying ${d.g} for ₵${d.p}`;
             };
             grid.appendChild(card);
         });
+    }
+
+    function handlePayment() {
+        const phone = document.getElementById('recipientPhone').value;
+        if(phone.length < 10) return alert("Enter valid number");
+        
+        let fee = selP < 30 ? 0.3 : 0.9;
+        let total = selP + fee;
+
+        const handler = PaystackPop.setup({
+            key: 'pk_live_90305707d30b6282979eac837bbbc9509da579af',
+            email: 'sales@joeldata.com',
+            amount: Math.round(total * 100),
+            currency: 'GHS',
+            callback: (response) => {
+                const receipt = { date: new Date().toLocaleString(), net: currentNet, gb: selG, phone: phone, ref: response.reference, price: total };
+                localStorage.setItem('lastReceipt', JSON.stringify(receipt));
+                window.location.href = `https://wa.me/233248745662?text=ORDER: ${selG} ${currentNet} to ${phone}. Ref: ${response.reference}`;
+            }
+        });
+        handler.openIframe();
+    }
+
+    function showReceipt() {
+        const r = JSON.parse(localStorage.getItem('lastReceipt'));
+        const body = document.getElementById('modalBody');
+        if(!r) body.innerHTML = "<h2>No Receipt Found</h2><p>You haven't made a purchase yet.</p>";
+        else body.innerHTML = `<h2>Last Receipt</h2><hr><p><b>Date:</b> ${r.date}</p><p><b>Network:</b> ${r.net}</p><p><b>Bundle:</b> ${r.gb}</p><p><b>Phone:</b> ${r.phone}</p><p><b>Price:</b> ₵${r.price}</p><p><b>Ref:</b> ${r.ref}</p>`;
+        document.getElementById('genericModal').style.display = 'flex';
+    }
+
+    function showModal(type) {
+        const body = document.getElementById('modalBody');
+        if(type === 'work') {
+            body.innerHTML = `<h2>Work With Us</h2><p>Join the JoelData distribution team.</p><input class="large-input" placeholder="Full Name"><input class="large-input" placeholder="Location"><button class="pay-btn" onclick="alert('Sent!')">Apply Now</button>`;
+        } else if(type === 'help') {
+            body.innerHTML = `<h2>How to Buy/Pay</h2><p><b>1. Select:</b> Choose your network and data bundle plate.</p><p><b>2. Number:</b> Enter the 10-digit recipient phone number.</p><p><b>3. Pay:</b> Click pay and use MoMo or Card via our secure gateway.</p>`;
+        } else if(type === 'terms') {
+            body.innerHTML = `<h2>Terms & Privacy</h2><p><b>Refunds:</b> No refunds on successful deliveries.</p><p><b>Privacy:</b> We never share your data or phone numbers with third parties.</p>`;
+        }
+        document.getElementById('genericModal').style.display = 'flex';
     }
 
     function switchTab(net) {
         currentNet = net.toUpperCase();
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         event.currentTarget.classList.add('active');
-        document.getElementById('mtnSection').style.display = net === 'mtn' ? 'block' : 'none';
-        document.getElementById('atSection').style.display = net === 'at' ? 'block' : 'none';
+        document.getElementById('mtnGrid').style.display = net === 'mtn' ? 'flex' : 'none';
+        document.getElementById('atGrid').style.display = net === 'at' ? 'flex' : 'none';
     }
 
-    function handlePaystackPayment() {
-        const phone = document.getElementById('recipientPhone').value;
-        if(phone.length < 10) return alert("Please enter a valid 10-digit number.");
-        
-        let fee = selectedPrice < 30 ? 0.30 : 0.90;
-        let finalAmount = selectedPrice + fee;
-
-        const paystack = new PaystackPop();
-        paystack.newTransaction({
-            key: PAYSTACK_PUBLIC_KEY, 
-            email: 'sales@joeldata.com',
-            amount: Math.round(finalAmount * 100),
-            currency: 'GHS',
-            onSuccess: (t) => {
-                const msg = `JOELDATA ORDER: ${selectedGB} ${currentNet} to ${phone}. Ref: ${t.reference}`;
-                window.location.href=`https://wa.me/233248745662?text=${encodeURIComponent(msg)}`;
-            }
-        });
-    }
-
-    function setTheme(m) { document.body.className = m === 'light' ? 'light-mode' : ''; document.getElementById('themeModal').style.display='none'; localStorage.setItem('theme', m); }
-    function toggleTheme() { setTheme(document.body.classList.contains('light-mode') ? 'dark' : 'light'); }
     function toggleMenu() { document.getElementById('sideMenu').classList.toggle('active'); }
+    function closeModal() { document.getElementById('genericModal').style.display = 'none'; }
+    function toggleTheme() { document.body.classList.toggle('light-mode'); }
 </script>
 </body>
 </html>
