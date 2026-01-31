@@ -11,52 +11,129 @@
             --bg: #0a0a0a; --card: #161616; --text: #ffffff;
             --accent: #FF3B30; 
             --accent-grad: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
-            --glass: rgba(255, 255, 255, 0.05);
+            --glass: rgba(255, 255, 255, 0.05); --success: #2ecc71;
         }
-        .light-mode { --bg: #f8f9fa; --card: #ffffff; --text: #121212; --glass: rgba(0, 0, 0, 0.05); }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
+
+        .light-mode {
+            --bg: #f8f9fa; --card: #ffffff; --text: #121212; --glass: rgba(0, 0, 0, 0.05);
+        }
+
+        body { 
+            font-family: 'Inter', -apple-system, sans-serif; 
+            background-color: var(--bg); color: var(--text); 
+            margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;
+        }
+
         .header { width: 100%; max-width: 1200px; padding: 25px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; }
-        .logo { font-weight: 900; font-size: 26px; background: var(--accent-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .logo { font-weight: 900; letter-spacing: -1.5px; font-size: 26px; background: var(--accent-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
         .app-container { width: 100%; max-width: 1200px; padding: 0 25px 50px 25px; box-sizing: border-box; }
-        .features-box { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; background: var(--accent-grad); padding: 25px; border-radius: 25px; margin-bottom: 30px; color: white; box-shadow: 0 10px 20px rgba(255, 59, 48, 0.2); }
+
+        .features-box { 
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 15px; background: var(--accent-grad);
+            padding: 25px; border-radius: 25px; margin-bottom: 30px; 
+            color: white; box-shadow: 0 15px 30px rgba(255, 59, 48, 0.2);
+        }
+        .feature-item { display: flex; align-items: center; gap: 12px; }
+        .feature-item i { background: rgba(0,0,0,0.2); padding: 10px; border-radius: 12px; }
+        .feature-item h4 { margin: 0; font-size: 14px; font-weight: 800; }
+        .feature-item p { margin: 2px 0 0; font-size: 11px; opacity: 0.9; }
+
         .tabs-container { display: inline-flex; background: var(--glass); padding: 6px; border-radius: 20px; margin-bottom: 30px; border: 1px solid var(--glass); }
-        .tab-btn { padding: 12px 30px; border: none; border-radius: 15px; background: none; color: var(--text); font-weight: 800; cursor: pointer; }
+        .tab-btn { padding: 12px 30px; border: none; border-radius: 15px; background: none; color: var(--text); font-weight: 800; cursor: pointer; transition: 0.3s; }
         .tab-btn.active { background: var(--accent-grad); color: #fff; }
+
         .bundle-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; width: 100%; }
-        
+
         .bundle-card { 
             background: var(--accent-grad); border-radius: 25px; padding: 25px;
-            display: flex; flex-direction: column; gap: 15px; color: white; transition: 0.3s;
+            display: flex; flex-direction: column; gap: 15px;
+            cursor: pointer; transition: 0.3s ease; color: white;
             box-shadow: 0 10px 20px rgba(0,0,0,0.1); border: 2px solid transparent;
         }
         .bundle-card:hover { transform: translateY(-5px); }
-        .bundle-card.selected { border-color: white; }
+        .bundle-card.selected { border-color: #ffffff; }
+
+        .plate-header { display: flex; justify-content: space-between; align-items: center; }
         .plate-amt { font-size: 48px; font-weight: 900; line-height: 1; }
-        .plate-details { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: rgba(0,0,0,0.15); padding: 15px; border-radius: 15px; }
-        .detail-label { opacity: 0.7; font-size: 10px; text-transform: uppercase; font-weight: bold; }
-        .detail-val { font-size: 14px; font-weight: 800; }
+        .plate-logo { width: 50px; height: 50px; border-radius: 12px; background: white; padding: 4px; object-fit: contain; }
+
+        .plate-details { 
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; 
+            background: rgba(0,0,0,0.15); padding: 15px; border-radius: 15px; font-size: 12px;
+        }
+        .detail-item { display: flex; flex-direction: column; gap: 2px; }
+        .detail-label { opacity: 0.7; font-weight: 600; text-transform: uppercase; font-size: 10px; }
+        .detail-val { font-weight: 800; font-size: 14px; }
+
         .plate-buy-btn { width: 100%; background: #000; color: #fff; border: none; padding: 15px; border-radius: 15px; font-weight: 800; cursor: pointer; }
 
-        #orderForm { max-width: 500px; margin: 40px auto; background: var(--card); padding: 30px; border-radius: 25px; border: 1px solid var(--accent); display: none; }
-        .large-input { width: 100%; padding: 18px; border-radius: 12px; border: 2px solid var(--accent); background: var(--glass); color: var(--text); font-size: 18px; margin-bottom: 15px; box-sizing: border-box; text-align: center; outline: none; }
+        #orderForm { max-width: 500px; margin: 50px auto; background: var(--card); padding: 40px; border-radius: 30px; border: 1px solid var(--accent); display: none; }
+        .large-input { width: 100%; padding: 18px; border-radius: 12px; border: 2px solid var(--accent); background: var(--glass); color: var(--text); font-size: 18px; text-align: center; margin-bottom: 15px; box-sizing: border-box; outline: none; }
+        .pay-btn { width: 100%; background: var(--accent-grad); color: white; border: none; padding: 20px; border-radius: 15px; font-size: 18px; font-weight: 800; cursor: pointer; }
+
+        #sideMenu { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: var(--card); z-index: 50000; transition: 0.4s; padding: 40px 20px; border-left: 2px solid var(--accent); }
+        #sideMenu.active { right: 0; }
+        .menu-item { padding: 18px; margin-bottom: 12px; border-radius: 15px; background: var(--glass); cursor: pointer; display: flex; align-items: center; gap: 12px; font-weight: 700; }
+
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100000; display: none; padding: 20px; box-sizing: border-box; overflow-y: auto; justify-content: center; align-items: center; }
+        .modal-content { background: var(--card); padding: 30px; border-radius: 25px; border: 1px solid var(--accent); width: 100%; max-width: 500px; }
+
+        /* POPUP NOTIFICATION STYLES */
+        .purchase-toast {
+            position: fixed; bottom: 20px; left: 20px; background: var(--card); 
+            border: 1px solid var(--accent); padding: 12px 20px; border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3); display: flex; align-items: center; gap: 12px;
+            z-index: 999999; transform: translateY(150%); transition: 0.5s ease;
+        }
+        .purchase-toast.show { transform: translateY(0); }
+        .toast-img { width: 35px; height: 35px; border-radius: 8px; object-fit: contain; background: white; padding: 2px; }
+        .toast-text { font-size: 12px; font-weight: 600; line-height: 1.3; }
+        .toast-text span { color: var(--accent); font-weight: 800; }
     </style>
 </head>
 <body>
 
+<div id="toast" class="purchase-toast">
+    <img id="toastLogo" src="" class="toast-img">
+    <div class="toast-text" id="toastMsg"></div>
+</div>
+
+<div id="sideMenu">
+    <h3 style="color:var(--accent)">JOELDATA</h3>
+    <div class="menu-item" onclick="showModal('work')"><i data-lucide="briefcase"></i> Work With Us</div>
+    <div class="menu-item" onclick="showReceipt()"><i data-lucide="file-text"></i> Last Receipt</div>
+    <div class="menu-item" onclick="showModal('help')"><i data-lucide="help-circle"></i> How to Buy/Pay</div>
+    <div class="menu-item" onclick="showModal('terms')"><i data-lucide="shield"></i> Terms & Policy</div>
+    <div class="menu-item" onclick="toggleTheme()" style="margin-top:20px"><i data-lucide="refresh-cw"></i> Change Theme</div>
+    <button class="pay-btn" onclick="toggleMenu()" style="margin-top:20px; background: #ef4444;">CLOSE</button>
+</div>
+
+<div id="genericModal" class="modal">
+    <div class="modal-content">
+        <div id="modalBody"></div>
+        <button class="pay-btn" style="margin-top:20px" onclick="closeModal()">CLOSE</button>
+    </div>
+</div>
+
 <header class="header">
     <div class="logo">JOELDATA.</div>
+    <button onclick="toggleMenu()" style="background:var(--accent-grad); border:none; color:white; padding:12px 20px; border-radius:12px; font-weight:bold; cursor:pointer;">MENU</button>
 </header>
 
 <main class="app-container">
     <div class="features-box">
-        <div style="display:flex; align-items:center; gap:10px;"><i data-lucide="zap"></i> <div><b>Fast Delivery</b><br><small>Instant Activation</small></div></div>
-        <div style="display:flex; align-items:center; gap:10px;"><i data-lucide="shield"></i> <div><b>Secured</b><br><small>100% Encrypted</small></div></div>
+        <div class="feature-item"><i data-lucide="zap"></i><div><h4>Fast Delivery</h4><p>Instant Activation</p></div></div>
+        <div class="feature-item"><i data-lucide="shield-check"></i><div><h4>Secured</h4><p>100% Encrypted</p></div></div>
+        <div class="feature-item"><i data-lucide="headphones"></i><div><h4>24/7 Support</h4><p>Always Online</p></div></div>
+        <div class="feature-item"><i data-lucide="trending-down"></i><div><h4>Affordable</h4><p>Best Rates</p></div></div>
     </div>
 
     <div style="text-align: center;">
         <div class="tabs-container">
             <button class="tab-btn active" onclick="switchTab('mtn')">MTN Non-Expiry</button>
-            <button class="tab-btn" onclick="switchTab('at')">AT 30 Days</button>
+            <button class="tab-btn" onclick="switchTab('at')">AT Ghana 30 Days</button>
         </div>
     </div>
 
@@ -66,30 +143,42 @@
     <div id="orderForm">
         <h2 id="orderLabel" style="text-align:center; color:var(--accent); margin-bottom:20px;"></h2>
         <input type="tel" id="recipientPhone" class="large-input" placeholder="Recipient Phone (02XXXXXXXX)" maxlength="10">
-        <input type="email" id="buyerEmail" class="large-input" placeholder="Email for Receipt">
-        <button class="plate-buy-btn" onclick="handlePayment()" style="background:var(--accent-grad); font-size:18px;">CONFIRM & PAY</button>
-        <p style="font-size:11px; text-align:center; color:#FF3B30; margin-top:15px; font-weight:bold;">⚠️ NOTICE: Wrong numbers have no refunds. Please verify.</p>
+        <input type="email" id="buyerEmail" class="large-input" placeholder="Your Email (For Receipt)">
+        <button class="pay-btn" onclick="handlePayment()">CONFIRM & PAY NOW</button>
+        <p style="font-size:11px; text-align:center; color: #ef4444; margin-top:15px; font-weight: bold;">Note: Verify your number. No refunds for wrong entries.</p>
     </div>
 </main>
 
 <script>
     let currentNet = "MTN"; let selG = ""; let selP = 0;
+    const mtnLogo = 'https://upload.wikimedia.org/wikipedia/commons/a/af/MTN_Logo.svg';
+    const atLogo = 'https://i.ibb.co/L6vV8yH/at-logo.png'; 
+
+    const mtnData = [{g:"1GB",p:5},{g:"2GB",p:10},{g:"3GB",p:15},{g:"5GB",p:25},{g:"10GB",p:50},{g:"20GB",p:85},{g:"50GB",p:200}];
     
-    const mtnData = [
-        {g:"1GB",p:6},{g:"2GB",p:12},{g:"3GB",p:18},
-        {g:"5GB",p:30},{g:"10GB",p:60},{g:"20GB",p:115},
-        {g:"50GB",p:280}
-    ];
+    // UPDATED AT DATA LIST FROM IMAGES
     const atData = [
-        {g:"1GB",p:5},{g:"2GB",p:10},{g:"3GB",p:15},
-        {g:"5GB",p:25},{g:"10GB",p:48},{g:"20GB",p:95},
-        {g:"50GB",p:240}
+        {g:"1GB",p:4.5},
+        {g:"2GB",p:9},
+        {g:"3GB",p:14},
+        {g:"4GB",p:18},
+        {g:"5GB",p:20.5},
+        {g:"6GB",p:25},
+        {g:"8GB",p:32},
+        {g:"10GB",p:40},
+        {g:"12GB",p:50},
+        {g:"15GB",p:60},
+        {g:"25GB",p:100},
+        {g:"30GB",p:125},
+        {g:"40GB",p:160},
+        {g:"50GB",p:205}
     ];
 
     window.onload = () => {
-        renderGrid('mtnGrid', mtnData, 'MTN', 'Non Expiry', 'https://upload.wikimedia.org/wikipedia/commons/a/af/MTN_Logo.svg');
-        renderGrid('atGrid', atData, 'AT', '30 Days', 'https://i.ibb.co/L6vV8yH/at-logo.png');
+        renderGrid('mtnGrid', mtnData, 'MTN', 'Non Expiry', mtnLogo);
+        renderGrid('atGrid', atData, 'AT', '30 Days', atLogo);
         lucide.createIcons();
+        startPopups();
     };
 
     function renderGrid(id, data, net, exp, logo) {
@@ -98,15 +187,15 @@
             const card = document.createElement('div');
             card.className = 'bundle-card';
             card.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span class="plate-amt">${d.g}</span>
-                    <img src="${logo}" style="width:50px; height:50px; background:white; padding:5px; border-radius:12px; object-fit:contain;">
+                <div class="plate-header">
+                    <div class="plate-amt">${d.g}</div>
+                    <img src="${logo}" class="plate-logo">
                 </div>
                 <div class="plate-details">
-                    <div class="detail-item"><div class="detail-label">Price</div><div class="detail-val">₵${d.p.toFixed(2)}</div></div>
-                    <div class="detail-item"><div class="detail-label">Stock</div><div class="detail-val" style="color:#2ecc71">In Stock</div></div>
-                    <div class="detail-item"><div class="detail-label">Duration</div><div class="detail-val">${exp}</div></div>
-                    <div class="detail-item"><div class="detail-label">Delivery</div><div class="detail-val">Instant</div></div>
+                    <div class="detail-item"><span class="detail-label">Price</span><span class="detail-val">₵${d.p.toFixed(2)}</span></div>
+                    <div class="detail-item"><span class="detail-label">Stock</span><span class="detail-val" style="color:#2ecc71">In Stock</span></div>
+                    <div class="detail-item"><span class="detail-label">Duration</span><span class="detail-val">${exp}</span></div>
+                    <div class="detail-item"><span class="detail-label">Delivery</span><span class="detail-val">Instant</span></div>
                 </div>
                 <button class="plate-buy-btn">BUY BUNDLE</button>
             `;
@@ -122,38 +211,77 @@
         });
     }
 
+    function startPopups() {
+        const locations = ["Accra", "Kumasi", "Tema", "Kasoa", "Takoradi", "Tamale", "Ho", "Sunyani"];
+        const sizes = ["1GB", "2GB", "5GB", "10GB", "20GB", "50GB"];
+        const toast = document.getElementById('toast');
+        const toastImg = document.getElementById('toastLogo');
+        const toastMsg = document.getElementById('toastMsg');
+
+        setInterval(() => {
+            const loc = locations[Math.floor(Math.random() * locations.length)];
+            const size = sizes[Math.floor(Math.random() * sizes.length)];
+            const isMtn = Math.random() > 0.4;
+            
+            toastImg.src = isMtn ? mtnLogo : atLogo;
+            toastMsg.innerHTML = `Someone from <span>${loc}</span><br>just bought <b>${size} ${isMtn ? 'MTN' : 'AT'}</b>`;
+            
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 4000);
+        }, 10000);
+    }
+
     function handlePayment() {
         const phone = document.getElementById('recipientPhone').value;
         const email = document.getElementById('buyerEmail').value;
         if(phone.length < 10) return alert("Enter a valid phone number.");
-        if(!email.includes('@')) return alert("Enter a valid email for your receipt.");
-        
-        const confirmed = confirm("⚠️ FINAL VERIFICATION:\n\nIs " + phone + " correct?\n\nWrong numbers have NO REFUNDS. Proceed to payment?");
-        
-        if(confirmed) {
-            let fee = selP < 30 ? 0.3 : 0.9;
-            let total = selP + fee;
+        if(!email.includes('@')) return alert("Enter a valid email address.");
+        const confirmCheck = confirm("Confirm " + phone + " is correct. No refunds for mistakes.");
+        if(!confirmCheck) return;
 
-            const handler = PaystackPop.setup({
-                key: 'pk_live_90305707d30b6282979eac837bbbc9509da579af',
-                email: email,
-                amount: Math.round(total * 100),
-                currency: 'GHS',
-                callback: (response) => {
-                    window.location.href = `https://wa.me/233248745662?text=ORDER: ${selG} ${currentNet} to ${phone}. Ref: ${response.reference}`;
-                }
-            });
-            handler.openIframe();
-        }
+        let total = selP + (selP < 30 ? 0.3 : 0.9);
+        const handler = PaystackPop.setup({
+            key: 'pk_live_90305707d30b6282979eac837bbbc9509da579af',
+            email: email,
+            amount: Math.round(total * 100),
+            currency: 'GHS',
+            callback: (response) => {
+                const receipt = { date: new Date().toLocaleString(), net: currentNet, gb: selG, phone: phone, ref: response.reference, price: total };
+                localStorage.setItem('lastReceipt', JSON.stringify(receipt));
+                window.location.href = `https://wa.me/233248745662?text=ORDER: ${selG} ${currentNet} to ${phone}. Ref: ${response.reference}`;
+            }
+        });
+        handler.openIframe();
     }
 
     function switchTab(net) {
         currentNet = net.toUpperCase();
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        event.target.classList.add('active');
+        if(event) event.currentTarget.classList.add('active');
         document.getElementById('mtnGrid').style.display = net === 'mtn' ? 'grid' : 'none';
         document.getElementById('atGrid').style.display = net === 'at' ? 'grid' : 'none';
+        document.getElementById('orderForm').style.display = 'none';
     }
+
+    function showReceipt() {
+        const r = JSON.parse(localStorage.getItem('lastReceipt'));
+        const body = document.getElementById('modalBody');
+        if(!r) body.innerHTML = "<h2>No Receipt</h2><p>No recent purchases found.</p>";
+        else body.innerHTML = `<h2>Last Receipt</h2><hr><p><b>Net:</b> ${r.net}</p><p><b>Size:</b> ${r.gb}</p><p><b>Phone:</b> ${r.phone}</p><p><b>Paid:</b> ₵${r.price}</p><p><b>Ref:</b> ${r.ref}</p>`;
+        document.getElementById('genericModal').style.display = 'flex';
+    }
+
+    function showModal(type) {
+        const body = document.getElementById('modalBody');
+        if(type === 'work') body.innerHTML = `<h2>Work With Us</h2><input class="large-input" placeholder="Name"><button class="pay-btn">Apply</button>`;
+        else if(type === 'help') body.innerHTML = `<h2>Instructions</h2><p>1. Pick Bundle<br>2. Enter Phone & Email<br>3. Pay Securely</p>`;
+        else if(type === 'terms') body.innerHTML = `<h2>Terms</h2><p>All sales are final once activated. Wrong numbers are not eligible for refunds.</p>`;
+        document.getElementById('genericModal').style.display = 'flex';
+    }
+
+    function toggleMenu() { document.getElementById('sideMenu').classList.toggle('active'); }
+    function closeModal() { document.getElementById('genericModal').style.display = 'none'; }
+    function toggleTheme() { document.body.classList.toggle('light-mode'); }
 </script>
 </body>
 </html>
