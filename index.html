@@ -6,6 +6,7 @@
     <title>JoelData | Iconic Store</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://js.paystack.co/v2/inline.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -14,7 +15,6 @@
             --accent: #FF3B30; 
             --accent-grad: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
             --glass: rgba(255, 255, 255, 0.05); --success: #2ecc71;
-            /* Network Specific Gradients */
             --mtn-grad: linear-gradient(135deg, #FFD700 0%, #FF8C00 100%);
             --at-grad: linear-gradient(135deg, #33C1FF 0%, #4B0082 100%);
         }
@@ -24,7 +24,6 @@
         .logo { font-weight: 900; letter-spacing: -1.5px; font-size: 26px; background: var(--accent-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .app-container { width: 100%; max-width: 1200px; padding: 0 25px 50px 25px; box-sizing: border-box; }
         .features-box { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; background: var(--accent-grad); padding: 25px; border-radius: 25px; margin-bottom: 30px; color: white; box-shadow: 0 15px 30px rgba(255, 59, 48, 0.2); transition: 0.4s ease; }
-        /* Theme Classes */
         .features-box.mtn-theme { background: var(--mtn-grad); box-shadow: 0 15px 30px rgba(255, 215, 0, 0.2); }
         .features-box.at-theme { background: var(--at-grad); box-shadow: 0 15px 30px rgba(75, 0, 130, 0.2); }
         .feature-item { display: flex; align-items: center; gap: 12px; }
@@ -75,6 +74,7 @@
 <div id="sideMenu">
     <h3 style="color:var(--accent)">JOELDATA</h3>
     <div class="menu-item" id="authBtn" onclick="handleAuthClick()"><i data-lucide="user"></i> Sign In</div>
+    <div class="menu-item" id="profileBtn" onclick="showModal('profile')" style="display:none;"><i data-lucide="layout-dashboard"></i> My Dashboard</div>
     <div class="menu-item" onclick="showModal('work')"><i data-lucide="briefcase"></i> Work With Us</div>
     <div class="menu-item" onclick="showReceipt()"><i data-lucide="file-text"></i> Last Receipt</div>
     <div class="menu-item" onclick="showModal('help')"><i data-lucide="help-circle"></i> How to Buy/Pay</div>
@@ -123,7 +123,6 @@
 </main>
 
 <script>
-    // --- FIREBASE CONFIG ---
     const firebaseConfig = {
         apiKey: "AIzaSyCqg3E9tuKRcEnq2DdP6FjtG0LqnAjCHfM",
         authDomain: "joeldata-25d06.firebaseapp.com",
@@ -134,6 +133,7 @@
     };
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
+    const db = firebase.firestore();
 
     let currentNet = "MTN"; let selG = ""; let selP = 0;
     const mtnLogo = 'https://upload.wikimedia.org/wikipedia/commons/a/af/MTN_Logo.svg';
@@ -151,11 +151,14 @@
 
     auth.onAuthStateChanged(user => {
         const btn = document.getElementById('authBtn');
+        const pBtn = document.getElementById('profileBtn');
         if (user) {
-            btn.innerHTML = `<i data-lucide="log-out"></i> Sign Out (${user.email.split('@')[0]})`;
+            btn.innerHTML = `<i data-lucide="log-out"></i> Log Out`;
+            pBtn.style.display = 'flex';
             document.getElementById('buyerEmail').value = user.email;
         } else {
             btn.innerHTML = `<i data-lucide="user"></i> Sign In`;
+            pBtn.style.display = 'none';
         }
         lucide.createIcons();
     });
@@ -163,8 +166,8 @@
     function handleAuthClick() { auth.currentUser ? auth.signOut() : showModal('login'); }
 
     function signInGoogle() {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        auth.signInWithPopup(provider).then(() => closeModal()).catch(e => alert("Enable Google Auth in Firebase Console first!"));
+        const p = new firebase.auth.GoogleAuthProvider();
+        auth.signInWithPopup(p).then(() => closeModal());
     }
 
     function renderGrid(id, data, net, exp, logo) {
@@ -187,59 +190,87 @@
 
     function switchTab(net) {
         currentNet = net.toUpperCase();
-        const fBox = document.getElementById('mainFeatures');
-        const mtnBtn = document.getElementById('mtnTab');
-        const atBtn = document.getElementById('atTab');
+        const f = document.getElementById('mainFeatures');
+        const m = document.getElementById('mtnTab');
+        const a = document.getElementById('atTab');
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active', 'mtn-active', 'at-active'));
         if(net === 'mtn') {
-            fBox.className = 'features-box mtn-theme';
-            mtnBtn.classList.add('active', 'mtn-active');
+            f.className = 'features-box mtn-theme';
+            m.classList.add('active', 'mtn-active');
             document.getElementById('mtnGrid').style.display = 'grid';
             document.getElementById('atGrid').style.display = 'none';
         } else {
-            fBox.className = 'features-box at-theme';
-            atBtn.classList.add('active', 'at-active');
+            f.className = 'features-box at-theme';
+            a.classList.add('active', 'at-active');
             document.getElementById('mtnGrid').style.display = 'none';
             document.getElementById('atGrid').style.display = 'grid';
         }
-        document.getElementById('orderForm').style.display = 'none';
     }
 
     function handlePayment() {
         const phone = document.getElementById('recipientPhone').value;
         const email = document.getElementById('buyerEmail').value;
-        if(phone.length < 10) return alert("Valid number required.");
-        if(!email.includes('@')) return alert("Valid email required.");
+        if(phone.length < 10) return alert("Enter valid phone.");
         let total = selP + (selP < 30 ? 0.3 : 0.9);
-        const handler = PaystackPop.setup({
+        const h = PaystackPop.setup({
             key: 'pk_live_90305707d30b6282979eac837bbbc9509da579af',
             email: email, amount: Math.round(total * 100), currency: 'GHS',
-            callback: (res) => window.location.href = `https://wa.me/233248745662?text=ORDER: ${selG} ${currentNet} to ${phone}. Ref: ${res.reference}`
+            callback: (res) => {
+                if(auth.currentUser) {
+                    db.collection('orders').add({
+                        email: auth.currentUser.email,
+                        amount: selP,
+                        bundle: `${selG} ${currentNet}`,
+                        ref: res.reference,
+                        date: new Date().toLocaleDateString('en-GB'),
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+                window.location.href = `https://wa.me/233248745662?text=ORDER: ${selG} ${currentNet} to ${phone}. Ref: ${res.reference}`;
+            }
         });
-        handler.openIframe();
+        h.openIframe();
     }
 
-    function showModal(type) {
+    async function showModal(type) {
         const body = document.getElementById('modalBody');
-        if(type === 'login') {
-            body.innerHTML = `<h2>Sign In</h2><p>Sign in with Google to auto-fill your email and keep things iconic.</p><button class="pay-btn" style="background:#4285F4" onclick="signInGoogle()">CONTINUE WITH GOOGLE</button>`;
+        if(type === 'profile') {
+            const u = auth.currentUser;
+            body.innerHTML = '<h3>Syncing Data...</h3>';
+            const snap = await db.collection('orders').where('email', '==', u.email).orderBy('timestamp', 'desc').get();
+            let total = 0; let list = '';
+            snap.forEach(d => { total += d.data().amount; list += `<div style="background:var(--glass); padding:10px; border-radius:10px; margin-bottom:10px; font-size:12px;"><b>${d.data().bundle}</b> - ₵${d.data().amount.toFixed(2)}<br><small>${d.data().date}</small></div>`; });
+            body.innerHTML = `
+                <div style="text-align:center">
+                    <img src="${u.photoURL}" style="width:60px; border-radius:50%; border:2px solid var(--accent)">
+                    <h2 style="margin:5px 0">${u.displayName.split(' ')[0]}'s Profile</h2>
+                    <div style="background:var(--accent-grad); padding:15px; border-radius:15px; color:white; margin:15px 0">
+                        <small>Total Invested</small><h1 style="margin:0">₵${total.toFixed(2)}</h1>
+                    </div>
+                </div>
+                <div class="menu-item" onclick="showModal('work')"><i data-lucide="briefcase"></i> Work With Us</div>
+                <h4 style="margin-bottom:10px">Recent Orders</h4>
+                <div style="max-height:180px; overflow-y:auto">${list || 'No orders yet.'}</div>`;
+        } else if(type === 'login') {
+            body.innerHTML = `<h2>Sign In</h2><p>Sign in to track orders and save your details.</p><button class="pay-btn" style="background:#4285F4" onclick="signInGoogle()">GOOGLE SIGN IN</button>`;
         } else if(type === 'work') {
-            body.innerHTML = `<h2>Work With Us</h2><input class="large-input" placeholder="Name"><button class="pay-btn">Apply</button>`;
+            body.innerHTML = `<h2>Join the Team</h2><p>Contact us on WhatsApp to become a vendor.</p><button class="pay-btn" onclick="window.location.href='https://wa.me/233248745662'">MESSAGE JOEL</button>`;
         } else if(type === 'help') {
-            body.innerHTML = `<h2>Instructions</h2><p>1. Pick Bundle<br>2. Enter Details<br>3. Pay Securely</p>`;
+            body.innerHTML = `<h2>How to Buy</h2><p>1. Select Bundle<br>2. Enter Phone & Email<br>3. Pay with MoMo/Card<br>4. Instant Activation</p>`;
         } else if(type === 'terms') {
-            body.innerHTML = `<h2>Terms</h2><p>All sales are final.</p>`;
+            body.innerHTML = `<h2>Policy</h2><p>Strictly no refunds for wrong numbers. Verify before payment.</p>`;
         }
+        lucide.createIcons();
         document.getElementById('genericModal').style.display = 'flex';
     }
 
     function startPopups() {
-        const locations = ["Accra", "Kumasi", "Tema", "Kasoa"];
+        const locs = ["Accra", "Kumasi", "Tema", "Kasoa", "Ho", "Tamale"];
         setInterval(() => {
-            const loc = locations[Math.floor(Math.random() * locations.length)];
+            const l = locs[Math.floor(Math.random() * locs.length)];
             const isMtn = Math.random() > 0.4;
             document.getElementById('toastLogo').src = isMtn ? mtnLogo : atLogo;
-            document.getElementById('toastMsg').innerHTML = `Someone from <span>${loc}</span><br>just bought <b>Data</b>`;
+            document.getElementById('toastMsg').innerHTML = `Someone from <span>${l}</span><br>bought <b>${isMtn?'MTN':'AT'} Data</b>`;
             document.getElementById('toast').classList.add('show');
             setTimeout(() => document.getElementById('toast').classList.remove('show'), 4000);
         }, 10000);
@@ -248,7 +279,7 @@
     function toggleMenu() { document.getElementById('sideMenu').classList.toggle('active'); }
     function closeModal() { document.getElementById('genericModal').style.display = 'none'; }
     function toggleTheme() { document.body.classList.toggle('light-mode'); }
-    function showReceipt() { /* Local logic */ }
+    function showReceipt() { alert("Check your Dashboard for order history!"); }
 </script>
 </body>
 </html>
