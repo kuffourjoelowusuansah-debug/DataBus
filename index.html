@@ -1,4 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JoelData | Iconic Store</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://js.paystack.co/v2/inline.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg: #0a0a0a; --card: #161616; --text: #ffffff;
+            --accent: #FF3B30; 
+            --accent-grad: linear-gradient(135deg, #FF3B30 0%, #FF9500 100%);
+            --glass: rgba(255, 255, 255, 0.05);
+            --mtn-grad: linear-gradient(135deg, #FFD700 0%, #FF8C00 100%);
+            --at-grad: linear-gradient(135deg, #33C1FF 0%, #4B0082 100%);
+        }
+        .light-mode { --bg: #f8f9fa; --card: #ffffff; --text: #121212; --glass: rgba(0, 0, 0, 0.05); }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
+        
+        /* HEADER */
+        .header { width: 100%; max-width: 1200px; padding: 25px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; }
+        .logo { font-weight: 900; letter-spacing: -1.5px; font-size: 26px; background: var(--accent-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        /* THE MENU (SCROLLABLE) */
+        #sideMenu { 
+            position: fixed; top: 0; right: -320px; width: 300px; height: 100%; 
+            background: var(--card); z-index: 50000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+            padding: 30px 20px; border-left: 2px solid var(--accent);
+            overflow-y: auto; /* ENABLES SCROLL */
+            box-sizing: border-box;
+        }
+        #sideMenu.active { right: 0; }
+        
+        /* Custom Scrollbar for Menu */
+        #sideMenu::-webkit-scrollbar { width: 5px; }
+        #sideMenu::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
+
+        .menu-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .menu-item { padding: 18px; margin-bottom: 12px; border-radius: 15px; background: var(--glass); cursor: pointer; display: flex; align-items: center; gap: 12px; font-weight: 700; transition: 0.2s; }
+        .menu-item:hover { background: rgba(255,255,255,0.1); }
+
+        /* BUNDLE GRID */
+        .app-container { width: 100%; max-width: 1200px; padding: 0 25px 50px; box-sizing: border-box; }
+        .bundle-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; width: 100%; }
+        
+        /* THE CARDS */
+        .bundle-card { border-radius: 25px; padding: 25px; display: flex; flex-direction: column; gap: 15px; cursor: pointer; transition: 0.3s ease; color: white; position: relative; overflow: hidden; }
+        .bundle-card:hover { transform: translateY(-5px); filter: brightness(1.1); }
+        
+        .plate-header { display: flex; justify-content: space-between; align-items: center; z-index: 2; }
+        .plate-amt { font-size: 48px; font-weight: 900; line-height: 1; }
+        .plate-logo { width: 50px; height: 50px; border-radius: 12px; background: white; padding: 4px; object-fit: contain; }
+        
+        .plate-details { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: rgba(0,0,0,0.15); padding: 15px; border-radius: 15px; font-size: 12px; z-index: 2; }
+        .detail-label { opacity: 0.7; font-weight: 600; text-transform: uppercase; font-size: 10px; }
+        .detail-val { font-weight: 800; font-size: 14px; }
+        
+        .plate-buy-btn { width: 100%; background: #000; color: #fff; border: none; padding: 15px; border-radius: 15px; font-weight: 800; cursor: pointer; z-index: 2; }
+
+        /* TABS */
+        .tabs-container { display: inline-flex; background: var(--glass); padding: 6px; border-radius: 20px; margin-bottom: 30px; border: 1px solid var(--glass); }
+        .tab-btn { padding: 12px 30px; border: none; border-radius: 15px; background: none; color: var(--text); font-weight: 800; cursor: pointer; transition: 0.3s; }
+        .tab-btn.active { background: var(--accent-grad); color: #fff; }
+
+        /* MODALS */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 100000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { background: var(--card); padding: 30px; border-radius: 30px; border: 1px solid var(--accent); width: 100%; max-width: 480px; position: relative; }
+        
+        /* ORDER FORM */
+        #orderForm { max-width: 500px; margin: 40px auto; background: var(--card); padding: 35px; border-radius: 25px; border: 2px solid var(--accent); display: none; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        .large-input { width: 100%; padding: 18px; border-radius: 12px; border: 1px solid var(--accent); background: var(--glass); color: var(--text); font-size: 18px; margin-bottom: 15px; box-sizing: border-box; outline: none; }
+        .pay-btn { width: 100%; background: var(--accent-grad); color: white; border: none; padding: 20px; border-radius: 15px; font-size: 18px; font-weight: 900; cursor: pointer; }
+
+        /* TOAST */
+        .purchase-toast { position: fixed; bottom: 20px; left: 20px; background: var(--card); border: 1px solid var(--accent); padding: 12px 20px; border-radius: 15px; display: flex; align-items: center; gap: 12px; z-index: 999999; transform: translateY(200%); transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .purchase-toast.show { transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+<div id="toast" class="purchase-toast">
+    <img id="toastLogo" src="" style="width:35px; background:white; border-radius:8px; padding:2px;">
+    <div id="toastMsg" style="font-size:12px; line-height:1.4;"></div>
+</div>
+
+<div id="sideMenu">
+    <div class="menu-header">
+        <h2 style="color:var(--accent); margin:0; font-weight:900;">JOELDATA</h2>
+        <button onclick="toggleMenu()" style="background:var(--accent); border:none; color:white; border-radius:50%; width:35px; height:35px; cursor:pointer;"><i data-lucide="x"></i></button>
+    </div>
+    
+    <div class="menu-item" id="authBtn" onclick="handleAuthClick()"><i data-lucide="user"></i> Sign In</div>
+    <div class="menu-item" id="profileBtn" onclick="showModal('profile')" style="display:none;"><i data-lucide="layout-dashboard"></i> My Dashboard</div>
+    <div class="menu-item" onclick="showModal('work')"><i data-lucide="briefcase"></i> Work With Us</div>
+    <div class="menu-item" onclick="showModal('help')"><i data-lucide="help-circle"></i> How to Buy/Pay</div>
+    <div class="menu-item" onclick="showModal('terms')"><i data-lucide="shield"></i> Terms & Policy</div>
+    <div class="menu-item" onclick="toggleTheme()" style="margin-top:20px"><i data-lucide="moon"></i> Change Theme</div>
+    
+    <div style="margin-top:40px; text-align:center; opacity:0.3; font-size:10px;">Iconic JoelData v3.0</div>
+</div>
+
+<div id="genericModal" class="modal">
+    <div class="modal-content">
+        <div id="modalBody"></div>
+        <button class="pay-btn" style="margin-top:25px; background:#222;" onclick="closeModal()">CLOSE WINDOW</button>
+    </div>
+</div>
+
+<header class="header">
+    <div class="logo">JOELDATA.</div>
+    <button onclick="toggleMenu()" style="background:var(--accent-grad); border:none; color:white; padding:12px 22px; border-radius:12px; font-weight:bold; cursor:pointer; display:flex; align-items:center; gap:8px;">
+        <i data-lucide="menu"></i> MENU
+    </button>
+</header>
+
+<main class="app-container">
+    <div style="text-align: center;">
+        <div class="tabs-container">
+            <button id="mtnTab" class="tab-btn active" onclick="switchTab('mtn')">MTN Non-Expiry</button>
+            <button id="atTab" class="tab-btn" onclick="switchTab('at')">AT GH 30 Days</button>
+        </div>
+    </div>
+
+    <div id="mtnGrid" class="bundle-grid"></div>
+    
+    <div id="atGrid" class="bundle-grid" style="display:none;"></div>
+
+    <div id="orderForm">
+        <h2 id="orderLabel" style="text-align:center; color:var(--accent); margin-top:0;"></h2>
+        <p style="text-align:center; font-size:12px; opacity:0.7; margin-bottom:20px;">Enter the recipient number below</p>
+        <input type="tel" id="recipientPhone" class="large-input" placeholder="02XXXXXXXX" maxlength="10">
+        <input type="email" id="buyerEmail" class="large-input" placeholder="Email for receipt">
+        <button class="pay-btn" onclick="handlePayment()">PROCEED TO SECURE PAY</button>
+    </div>
+</main>
+
 <script>
+    // FIREBASE CONFIG
     const firebaseConfig = {
         apiKey: "AIzaSyCqg3E9tuKRcEnq2DdP6FjtG0LqnAjCHfM",
         authDomain: "joeldata-25d06.firebaseapp.com",
@@ -7,98 +148,154 @@
         messagingSenderId: "555857869458",
         appId: "1:555857869458:web:db96a97fca5983b142044b"
     };
-    
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    let currentNet = "MTN"; let selG = ""; let selP = 0;
     const mtnLogo = 'https://upload.wikimedia.org/wikipedia/commons/a/af/MTN_Logo.svg';
-    const atLogo = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAbFBMVEX///8AAAD8/PwEBAT29vb5+fnw8PDm5ubS0tL09PS+vr7W1tbh4eHS0tLk5OTm5ubIyMi5ubm3t7fNzc3V1dXExMSsrKyamprAwMC/v79BQUFmZmZqamp3d3dycnJ9fX14eHhTU1NGRkZHR0dMTEyqjU8qAAAE90lEQVR4nO2daXeiOhSGE8Y5Yp0HnLHe///XHeocp62lbKAn66v9vS6W9SInuSR7QicAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgG+AnidG5N6T+S9Yk27S0v00YvT906f3TscP5mSbuv963I+9q/V7N6Rnu/tWp4DkZ89P/Y/nU7317Lne2iY16qZ3C8h+NvzUrB/N/u7Wc70NSXo1un999C7f+17Bf6YfBWh6YfBUl6Y58X1j6F7XFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4VvzFz6N3eA7VbT7uXp6MvX1O5+X1j3V7u79e95f68p96S6q765T2uT6pX/Nf8B9zX/BfgUvEIAAAAASUVORK5CYII=';
+    const atLogo = 'https://upload.wikimedia.org/wikipedia/commons/b/b8/Airtel-Tigo-Logo.png'; 
 
-    // Track login state
+    // ALL YOUR DATA IS HERE
+    const mtnData = [
+        {g:"1 GB", p:5}, {g:"2 GB", p:10}, {g:"3 GB", p:15}, 
+        {g:"5 GB", p:25}, {g:"10 GB", p:50}, {g:"20 GB", p:85}, 
+        {g:"30 GB", p:130}, {g:"50 GB", p:200}
+    ];
+    const atData = [
+        {g:"1GB",p:4.5}, {g:"5GB",p:20}, {g:"10GB",p:40}, 
+        {g:"25GB",p:100}, {g:"50GB",p:205}
+    ];
+
+    let selG = ""; let selP = 0; let currentNet = "MTN";
+
+    window.onload = () => {
+        renderGrid('mtnGrid', mtnData, 'MTN', 'Non Expiry', mtnLogo, 'var(--mtn-grad)');
+        renderGrid('atGrid', atData, 'AT', '30 Days', atLogo, 'var(--at-grad)');
+        lucide.createIcons();
+        startPopups();
+    };
+
     auth.onAuthStateChanged(user => {
-        const btn = document.getElementById('authBtn');
         const pBtn = document.getElementById('profileBtn');
+        const aBtn = document.getElementById('authBtn');
         if (user) {
-            btn.innerHTML = `<i data-lucide="log-out"></i> Log Out`;
             pBtn.style.display = 'flex';
+            aBtn.innerHTML = `<i data-lucide="log-out"></i> Log Out`;
             document.getElementById('buyerEmail').value = user.email;
         } else {
-            btn.innerHTML = `<i data-lucide="user"></i> Sign In`;
             pBtn.style.display = 'none';
+            aBtn.innerHTML = `<i data-lucide="user"></i> Sign In`;
         }
         lucide.createIcons();
     });
 
-    // Close Menu Function
-    function toggleMenu() { 
-        document.getElementById('sideMenu').classList.toggle('active'); 
-    }
+    function toggleMenu() { document.getElementById('sideMenu').classList.toggle('active'); }
+    function closeModal() { document.getElementById('genericModal').style.display = 'none'; }
+    function toggleTheme() { document.body.classList.toggle('light-mode'); }
 
-    function handleAuthClick() { 
-        if(auth.currentUser) {
-            auth.signOut();
-            toggleMenu(); // Close menu after signing out
-        } else {
-            showModal('login'); 
-        }
-    }
-
-    function signInGoogle() {
-        const p = new firebase.auth.GoogleAuthProvider();
-        auth.signInWithPopup(p).then(() => {
-            closeModal();
-            toggleMenu(); // Close menu after sign in
+    function renderGrid(id, data, net, exp, logo, grad) {
+        const grid = document.getElementById(id);
+        data.forEach(d => {
+            const card = document.createElement('div');
+            card.className = 'bundle-card';
+            card.style.background = grad;
+            card.innerHTML = `
+                <div class="plate-header"><div class="plate-amt">${d.g}</div><img src="${logo}" class="plate-logo"></div>
+                <div class="plate-details">
+                    <div class="detail-item"><span class="detail-label">Price</span><span class="detail-val">₵${d.p.toFixed(2)}</span></div>
+                    <div class="detail-item"><span class="detail-label">Validity</span><span class="detail-val">${exp}</span></div>
+                </div>
+                <button class="plate-buy-btn">PURCHASE BUNDLE</button>`;
+            card.onclick = () => {
+                selG = d.g; selP = d.p; currentNet = net;
+                document.getElementById('orderForm').style.display = 'block';
+                document.getElementById('orderLabel').innerText = `Buy ${d.g} ${net}`;
+                window.scrollTo({ top: document.getElementById('orderForm').offsetTop - 50, behavior: 'smooth' });
+            };
+            grid.appendChild(card);
         });
     }
 
-    // Modal and Dashboard Logic
+    function switchTab(net) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        if(net === 'mtn') {
+            document.getElementById('mtnTab').classList.add('active');
+            document.getElementById('mtnGrid').style.display = 'grid';
+            document.getElementById('atGrid').style.display = 'none';
+        } else {
+            document.getElementById('atTab').classList.add('active');
+            document.getElementById('atGrid').style.display = 'grid';
+            document.getElementById('mtnGrid').style.display = 'none';
+        }
+        document.getElementById('orderForm').style.display = 'none';
+    }
+
     async function showModal(type) {
         const body = document.getElementById('modalBody');
         document.getElementById('genericModal').style.display = 'flex';
         
         if(type === 'profile') {
-            const u = auth.currentUser;
-            body.innerHTML = '<h3>Syncing Data...</h3>';
-            
+            body.innerHTML = '<h3 style="text-align:center">Syncing Records...</h3>';
             try {
-                const snap = await db.collection('orders')
-                    .where('email', '==', u.email)
-                    .orderBy('timestamp', 'desc')
-                    .get();
-                
+                const snap = await db.collection('orders').where('email', '==', auth.currentUser.email).get();
                 let total = 0; let list = '';
                 snap.forEach(d => { 
                     total += d.data().amount; 
-                    list += `<div style="background:var(--glass); padding:10px; border-radius:10px; margin-bottom:10px; font-size:12px;"><b>${d.data().bundle}</b> - ₵${d.data().amount.toFixed(2)}<br><small>${d.data().date}</small></div>`; 
+                    list += `<div style="padding:12px; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between;"><span>${d.data().bundle}</span><b>₵${d.data().amount}</b></div>`; 
                 });
-                
                 body.innerHTML = `
-                    <div style="text-align:center">
-                        <img src="${u.photoURL}" style="width:60px; border-radius:50%; border:2px solid var(--accent)">
-                        <h2 style="margin:5px 0">${u.displayName.split(' ')[0]}'s Profile</h2>
-                        <div style="background:var(--accent-grad); padding:15px; border-radius:15px; color:white; margin:15px 0">
-                            <small>Total Invested</small><h1 style="margin:0">₵${total.toFixed(2)}</h1>
-                        </div>
+                    <h2 style="margin-top:0">My Dashboard</h2>
+                    <div style="background:var(--accent-grad); padding:25px; border-radius:20px; text-align:center; color:white;">
+                        <span style="font-size:12px; opacity:0.8;">LIFETIME SPENT</span>
+                        <h1 style="margin:5px 0; font-size:40px;">₵${total.toFixed(2)}</h1>
                     </div>
-                    <h4 style="margin-bottom:10px">Recent Orders</h4>
-                    <div style="max-height:180px; overflow-y:auto">${list || 'No orders yet.'}</div>`;
-            } catch (e) {
-                body.innerHTML = `<h3>Profile Error</h3><p>Make sure Cloud Firestore is enabled in your console.</p>`;
-            }
+                    <h4 style="margin:20px 0 10px;">Order History</h4>
+                    <div style="max-height:200px; overflow-y:auto; background:var(--glass); border-radius:15px;">${list || '<p style="padding:20px; text-align:center;">No history found.</p>'}</div>`;
+            } catch(e) { body.innerHTML = `<h3>Error Loading Records</h3>`; }
         } else if(type === 'login') {
-            body.innerHTML = `<h2>Sign In</h2><button class="pay-btn" onclick="signInGoogle()">GOOGLE SIGN IN</button>`;
+            body.innerHTML = `<h2>Secure Sign In</h2><p>Sign in with Google to save your history.</p><button class="pay-btn" onclick="auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(closeModal)">CONTINUE WITH GOOGLE</button>`;
         } else if(type === 'work') {
-            body.innerHTML = `<h2>Work With Us</h2><p>Message Joel to start.</p><button class="pay-btn" onclick="window.location.href='https://wa.me/233248745662'">WHATSAPP</button>`;
+            body.innerHTML = `<h2>Vendor Program</h2><p>Contact Joel to get started as a vendor.</p><button class="pay-btn" onclick="window.location.href='https://wa.me/233248745662'">OPEN WHATSAPP</button>`;
         }
         lucide.createIcons();
     }
 
-    function closeModal() { document.getElementById('genericModal').style.display = 'none'; }
-    
-    // Existing functions (renderGrid, switchTab, handlePayment, etc.) should remain here...
-    // IMPORTANT: In your handlePayment callback, ensure you use:
-    // db.collection('orders').add({...}) to track the money!
+    function handlePayment() {
+        const phone = document.getElementById('recipientPhone').value;
+        const email = document.getElementById('buyerEmail').value;
+        if(phone.length < 10) return alert("Please enter a valid Ghana phone number");
+        
+        const handler = PaystackPop.setup({
+            key: 'pk_live_90305707d30b6282979eac837bbbc9509da579af',
+            email: email || 'customer@joeldata.com', 
+            amount: Math.round(selP * 100), 
+            currency: 'GHS',
+            callback: (res) => {
+                db.collection('orders').add({
+                    email: email, amount: selP, bundle: `${selG} ${currentNet}`, ref: res.reference, date: new Date().toLocaleDateString(), timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                window.location.href = `https://wa.me/233248745662?text=ORDER: ${selG} ${currentNet} to ${phone} (Ref: ${res.reference})`;
+            }
+        });
+        handler.openIframe();
+    }
+
+    function startPopups() {
+        const locs = ["Accra", "Kumasi", "Tema", "Kasoa", "Ho", "Sunyani", "Tamale"];
+        setInterval(() => {
+            const loc = locs[Math.floor(Math.random()*locs.length)];
+            const isMtn = Math.random() > 0.4;
+            document.getElementById('toastLogo').src = isMtn ? mtnLogo : atLogo;
+            document.getElementById('toastMsg').innerHTML = `Someone from <b>${loc}</b><br>just bought <b>Data Bundle</b>!`;
+            document.getElementById('toast').classList.add('show');
+            setTimeout(() => document.getElementById('toast').classList.remove('show'), 4000);
+        }, 10000);
+    }
+
+    function handleAuthClick() {
+        if(auth.currentUser) { auth.signOut(); toggleMenu(); }
+        else { showModal('login'); }
+    }
 </script>
+</body>
+</html>
