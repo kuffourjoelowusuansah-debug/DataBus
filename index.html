@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JoelData | #1 Data Store</title>
+    <title>JoelData | Iconic Store</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -52,8 +52,11 @@
         #orderForm { max-width: 500px; margin: 50px auto; background: var(--card); padding: 40px; border-radius: 30px; border: 1px solid var(--accent); display: none; }
         .large-input { width: 100%; padding: 18px; border-radius: 12px; border: 2px solid var(--accent); background: var(--glass); color: var(--text); font-size: 18px; text-align: center; margin-bottom: 15px; box-sizing: border-box; outline: none; }
         .pay-btn { width: 100%; background: var(--accent-grad); color: white; border: none; padding: 20px; border-radius: 15px; font-size: 18px; font-weight: 800; cursor: pointer; }
-        #sideMenu { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: var(--card); z-index: 50000; transition: 0.4s; padding: 40px 20px; border-left: 2px solid var(--accent); }
+        
+        /* FIXED SIDE MENU WITH SCROLLBAR */
+        #sideMenu { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: var(--card); z-index: 50000; transition: 0.4s; padding: 40px 20px; border-left: 2px solid var(--accent); overflow-y: auto; box-sizing: border-box; }
         #sideMenu.active { right: 0; }
+        
         .menu-item { padding: 18px; margin-bottom: 12px; border-radius: 15px; background: var(--glass); cursor: pointer; display: flex; align-items: center; gap: 12px; font-weight: 700; }
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100000; display: none; padding: 20px; box-sizing: border-box; overflow-y: auto; justify-content: center; align-items: center; }
         .modal-content { background: var(--card); padding: 30px; border-radius: 25px; border: 1px solid var(--accent); width: 100%; max-width: 500px; }
@@ -86,7 +89,7 @@
 <div id="genericModal" class="modal">
     <div class="modal-content">
         <div id="modalBody"></div>
-        <button class="pay-btn" style="margin-top:20px" onclick="closeModal()">CLOSE</button>
+        <button id="modalCloseBtn" class="pay-btn" style="margin-top:20px" onclick="closeModal()">CLOSE</button>
     </div>
 </div>
 
@@ -139,14 +142,13 @@
     const mtnLogo = 'https://upload.wikimedia.org/wikipedia/commons/a/af/MTN_Logo.svg';
     const atLogo = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAbFBMVEX///8AAAD8/PwEBAT29vb5+fnw8PDm5ubS0tL09PS+vr7W1tbh4eHS0tLk5OTm5ubIyMi5ubm3t7fNzc3V1dXExMSsrKyamprAwMC/v79BQUFmZmZqamp3d3dycnJ9fX14eHhTU1NGRkZHR0dMTEyqjU8qAAAE90lEQVR4nO2daXeiOhSGE8Y5Yp0HnLHe///XHeocp62lbKAn66v9vS6W9SInuSR7QicAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgG+AnidG5N6T+S9Yk27S0v00YvT906f3TscP5mSbuv963I+9q/V7N6Rnu/tWp4DkZ89P/Y/nU7317Lne2iY16qZ3C8h+NvzUrB/N/u7Wc70NSXo1un999C7f+17Bf6YfBWh6YfBUl6Y58X1j6F7XFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4Vv3Fz6FbXFq4VvzFz6N3eA7VbT7uXp6MvX1O5+X1j3V7u79e95f68p96S6q765T2uT6pX/Nf8B9zX/BfgUvEIAAAAASUVORK5CYII='; 
 
-    const mtnData = [{g:"1 GB", p:5}, {g:"2 GB", p:10}, {g:"3 GB", p:15}, {g:"4 GB", p:20}, {g:"5 GB", p:25}, {g:"6 GB", p:30}, {g:"8 GB", p:40}, {g:"10 GB", p:50}, {g:"12 GB", p:55}, {g:"15 GB", p:65}, {g:"20 GB", p:85}, {g:"25 GB", p:105}, {g:"30 GB", p:130}, {g:"40 GB", p:165}, {g:"50 GB", p:200}];
-    const atData = [{g:"1GB",p:4.5}, {g:"2GB",p:9}, {g:"3GB",p:14}, {g:"4GB",p:18}, {g:"5GB",p:20.5}, {g:"6GB",p:25}, {g:"8GB",p:32}, {g:"10GB",p:40}, {g:"12GB",p:50}, {g:"15GB",p:60}, {g:"25GB",p:100}, {g:"30GB",p:125}, {g:"40GB",p:160}, {g:"50GB",p:205}];
-
     window.onload = () => {
         renderGrid('mtnGrid', mtnData, 'MTN', 'Non Expiry', mtnLogo);
         renderGrid('atGrid', atData, 'AT', '30 Days', atLogo);
         lucide.createIcons();
         startPopups();
+        // FORCE THEME CHOICE ON START
+        showModal('initialTheme');
     };
 
     auth.onAuthStateChanged(user => {
@@ -234,23 +236,36 @@
 
     async function showModal(type) {
         const body = document.getElementById('modalBody');
+        const closeBtn = document.getElementById('modalCloseBtn');
+        closeBtn.style.display = 'block';
+
         if(type === 'profile') {
             const u = auth.currentUser;
             body.innerHTML = '<h3>Syncing Data...</h3>';
-            const snap = await db.collection('orders').where('email', '==', u.email).orderBy('timestamp', 'desc').get();
-            let total = 0; let list = '';
-            snap.forEach(d => { total += d.data().amount; list += `<div style="background:var(--glass); padding:10px; border-radius:10px; margin-bottom:10px; font-size:12px;"><b>${d.data().bundle}</b> - ₵${d.data().amount.toFixed(2)}<br><small>${d.data().date}</small></div>`; });
-            body.innerHTML = `
-                <div style="text-align:center">
-                    <img src="${u.photoURL}" style="width:60px; border-radius:50%; border:2px solid var(--accent)">
-                    <h2 style="margin:5px 0">${u.displayName.split(' ')[0]}'s Profile</h2>
-                    <div style="background:var(--accent-grad); padding:15px; border-radius:15px; color:white; margin:15px 0">
-                        <small>Total Invested</small><h1 style="margin:0">₵${total.toFixed(2)}</h1>
+            try {
+                const snap = await db.collection('orders').where('email', '==', u.email).orderBy('timestamp', 'desc').get();
+                let total = 0; let list = '';
+                snap.forEach(d => { total += d.data().amount; list += `<div style="background:var(--glass); padding:10px; border-radius:10px; margin-bottom:10px; font-size:12px;"><b>${d.data().bundle}</b> - ₵${d.data().amount.toFixed(2)}<br><small>${d.data().date}</small></div>`; });
+                body.innerHTML = `
+                    <div style="text-align:center">
+                        <img src="${u.photoURL}" style="width:60px; border-radius:50%; border:2px solid var(--accent)">
+                        <h2 style="margin:5px 0">${u.displayName.split(' ')[0]}'s Profile</h2>
+                        <div style="background:var(--accent-grad); padding:15px; border-radius:15px; color:white; margin:15px 0">
+                            <small>Total Invested</small><h1 style="margin:0">₵${total.toFixed(2)}</h1>
+                        </div>
                     </div>
-                </div>
-                <div class="menu-item" onclick="showModal('work')"><i data-lucide="briefcase"></i> Work With Us</div>
-                <h4 style="margin-bottom:10px">Recent Orders</h4>
-                <div style="max-height:180px; overflow-y:auto">${list || 'No orders yet.'}</div>`;
+                    <div class="menu-item" onclick="showModal('work')"><i data-lucide="briefcase"></i> Work With Us</div>
+                    <h4 style="margin-bottom:10px">Recent Orders</h4>
+                    <div style="max-height:180px; overflow-y:auto">${list || 'No orders yet.'}</div>`;
+            } catch (e) {
+                body.innerHTML = `<h3>Error loading dashboard</h3><p>Ensure you have created a Firestore Index for your orders collection.</p>`;
+                console.error(e);
+            }
+        } else if(type === 'initialTheme') {
+            closeBtn.style.display = 'none';
+            body.innerHTML = `<h2>Welcome to JoelData</h2><p>Select your preferred theme to continue:</p>
+                <button class="pay-btn" style="background:#121212; margin-bottom:10px;" onclick="setTheme('dark')">DARK MODE</button>
+                <button class="pay-btn" style="background:#ffffff; color:#000; border:1px solid #ccc" onclick="setTheme('light')">LIGHT MODE</button>`;
         } else if(type === 'login') {
             body.innerHTML = `<h2>Sign In</h2><p>Sign in to track orders and save your details.</p><button class="pay-btn" style="background:#4285F4" onclick="signInGoogle()">GOOGLE SIGN IN</button>`;
         } else if(type === 'work') {
@@ -262,6 +277,12 @@
         }
         lucide.createIcons();
         document.getElementById('genericModal').style.display = 'flex';
+    }
+
+    function setTheme(mode) {
+        if(mode === 'light') { document.body.classList.add('light-mode'); }
+        else { document.body.classList.remove('light-mode'); }
+        closeModal();
     }
 
     function startPopups() {
