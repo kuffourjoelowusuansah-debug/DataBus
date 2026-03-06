@@ -100,12 +100,9 @@
                         <h1 id="totalSpent" class="text-5xl font-black tracking-tighter text-white">0.00</h1>
                     </div>
                     <div class="flex gap-3 mt-8">
-                        <button class="flex-1 bg-white text-black py-4 rounded-2xl text-[10px] font-black uppercase tracking-wider flex items-center justify-center gap-2">
-                            Top-up Wallet 
-                            <span class="flex items-center gap-1 bg-green-500/10 text-green-600 px-2 py-0.5 rounded-full border border-green-200">
-                                <span class="w-1.5 h-1.5 bg-green-500 rounded-full pulse-green"></span>
-                                <span class="text-[8px]">LIVE</span>
-                            </span>
+                        <button class="flex-1 bg-green-500/20 border border-green-500/40 text-green-400 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2">
+                            <span class="w-2 h-2 bg-green-500 rounded-full pulse-green"></span>
+                            Live: <span id="passengerCount">42</span> <span class="text-[8px] opacity-60">Passengers</span>
                         </button>
                         <button onclick="showHistory()" class="flex-1 bg-white/10 border border-white/20 py-4 rounded-2xl text-[10px] font-black uppercase tracking-wider">History</button>
                     </div>
@@ -216,6 +213,18 @@
 
         let currentNet = "MTN"; let selG = ""; let selP = 0;
         function refreshIcons() { lucide.createIcons(); }
+
+        // LIVE COUNTER LOGIC
+        function updateCounter() {
+            const el = document.getElementById('passengerCount');
+            const current = parseInt(el.innerText);
+            const change = Math.floor(Math.random() * 5) - 2; // -2 to +2
+            let newVal = current + change;
+            if(newVal < 30) newVal = 35;
+            if(newVal > 99) newVal = 90;
+            el.innerText = newVal;
+        }
+        setInterval(updateCounter, 3000);
 
         const dataSets = {
             MTN: { title: "MTN Bundles", headerClass: "bundle-header-mtn", btnClass: "bg-yellow-400 text-black", prices: [{gb:"1 GB", price:"5"}, {gb:"2 GB", price:"10"}, {gb:"3 GB", price:"15"}, {gb:"4 GB", price:"20"}, {gb:"5 GB", price:"25"}, {gb:"6 GB", price:"30"}, {gb:"8 GB", price:"40"}, {gb:"10 GB", price:"50"}, {gb:"12 GB", price:"55"}, {gb:"15 GB", price:"65"}, {gb:"20 GB", price:"85"}, {gb:"25 GB", price:"105"}, {gb:"30 GB", price:"130"}, {gb:"40 GB", price:"165"}, {gb:"50 GB", price:"200"}] },
