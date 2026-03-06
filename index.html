@@ -54,7 +54,7 @@
                 <h2 id="orderLabel" class="text-xl font-black text-yellow-400 uppercase tracking-tight"></h2>
                 <p class="text-slate-500 text-[10px] font-bold uppercase mt-1">Instant Activation Service</p>
             </div>
-            <input type="tel" id="recipientPhone" class="w-full p-4 rounded-2xl bg-slate-900 border border-slate-800 text-white font-bold outline-none focus:border-yellow-400 transition-all" placeholder="Recipient Number (02XXXXXXXX)" maxlength="10">
+            <input type="tel" id="recipientPhone" class="w-full p-4 rounded-2xl bg-slate-900 border border-slate-800 text-white font-bold house-none focus:border-yellow-400 transition-all" placeholder="Recipient Number (02XXXXXXXX)" maxlength="10">
             <input type="email" id="buyerEmail" class="w-full p-4 rounded-2xl bg-slate-900 border border-slate-800 text-white font-bold outline-none focus:border-yellow-400 transition-all" placeholder="Your Email Address">
             <button onclick="handlePayment()" class="w-full bg-yellow-400 text-black py-5 rounded-2xl font-black uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all">Proceed to Payment</button>
             <button onclick="closeOrder()" class="w-full text-slate-500 text-[10px] font-black uppercase tracking-widest">Cancel Order</button>
@@ -91,7 +91,7 @@
             <div id="statusCard" class="status-card rounded-[2.5rem] p-8 shadow-2xl relative overflow-hidden">
                 <div class="relative z-10">
                     <div class="flex justify-between items-center">
-                        <p id="userName" class="text-xs font-black uppercase tracking-[0.2em] text-white opacity-80">Good Morning, Passenger</p>
+                        <p id="userName" class="text-xs font-black uppercase tracking-[0.2em] text-white opacity-80">Loading Greeting...</p>
                         <span class="text-[9px] font-black px-3 py-1 bg-white/10 rounded-full border border-white/20">PASSENGER</span>
                     </div>
                     <p class="mt-10 text-[10px] font-black text-white/50 uppercase tracking-widest">Total Spent</p>
@@ -214,11 +214,18 @@
         let currentNet = "MTN"; let selG = ""; let selP = 0;
         function refreshIcons() { lucide.createIcons(); }
 
-        // LIVE COUNTER LOGIC
+        // DYNAMIC GREETING LOGIC
+        function getGreeting() {
+            const hour = new Date().getHours();
+            if (hour < 12) return "Good Morning";
+            if (hour < 17) return "Good Afternoon";
+            return "Good Evening";
+        }
+
         function updateCounter() {
             const el = document.getElementById('passengerCount');
             const current = parseInt(el.innerText);
-            const change = Math.floor(Math.random() * 5) - 2; // -2 to +2
+            const change = Math.floor(Math.random() * 5) - 2;
             let newVal = current + change;
             if(newVal < 30) newVal = 35;
             if(newVal > 99) newVal = 90;
@@ -269,16 +276,17 @@
 
         auth.onAuthStateChanged(async (user) => {
             const btn = document.getElementById('authBtn');
+            const greeting = getGreeting();
             if (user) {
                 btn.innerHTML = `<i data-lucide="log-out" class="w-4 h-4"></i> LOGOUT`;
-                document.getElementById('userName').innerText = `Welcome, ${user.displayName.split(' ')[0]}`;
+                document.getElementById('userName').innerText = `${greeting}, ${user.displayName.split(' ')[0]}`;
                 document.getElementById('buyerEmail').value = user.email;
                 const snap = await db.collection('orders').where('email', '==', user.email).get();
                 let total = 0; snap.forEach(doc => total += parseFloat(doc.data().amount));
                 document.getElementById('totalSpent').innerText = total.toFixed(2);
             } else {
                 btn.innerHTML = `<i data-lucide="user" class="w-4 h-4"></i> LOGIN`;
-                document.getElementById('userName').innerText = `Good Morning, Passenger`;
+                document.getElementById('userName').innerText = `${greeting}, Passenger`;
                 document.getElementById('totalSpent').innerText = "0.00";
             }
             refreshIcons();
