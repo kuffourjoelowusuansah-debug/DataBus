@@ -34,32 +34,16 @@
         .hidden-view { display: none !important; }
         .text-dim { color: #94a3b8; font-weight: 500; }
 
-        /* Order Overlay */
-        #orderOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100; display: none; align-items: center; justify-content: center; padding: 20px; }
-        .order-container { background: #0f172a; border: 1px solid #facc15; padding: 30px; border-radius: 2.5rem; width: 100%; max-width: 400px; box-shadow: 0 0 50px rgba(250, 204, 21, 0.1); }
-        
-        /* History Layout */
-        .history-card { background: #0f172a; border-left: 4px solid #facc15; padding: 20px; border-radius: 1.5rem; margin-bottom: 15px; border-top: 1px solid #1e293b; border-right: 1px solid #1e293b; border-bottom: 1px solid #1e293b; }
-        
+        /* Checkout Layout */
+        .checkout-receipt { background: #0f172a; border: 1px solid #1e293b; border-radius: 2.5rem; position: relative; overflow: hidden; }
+        .checkout-receipt::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--cyber-yellow); }
+
         /* Live Pulse Animation */
         .pulse-green { animation: pulse-green 2s infinite; }
         @keyframes pulse-green { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
     </style>
 </head>
 <body class="max-w-md mx-auto min-h-screen border-x border-slate-900 shadow-2xl relative">
-
-    <div id="orderOverlay">
-        <div class="order-container space-y-5">
-            <div class="text-center">
-                <h2 id="orderLabel" class="text-xl font-black text-yellow-400 uppercase tracking-tight"></h2>
-                <p class="text-slate-500 text-[10px] font-bold uppercase mt-1">Instant Activation Service</p>
-            </div>
-            <input type="tel" id="recipientPhone" class="w-full p-4 rounded-2xl bg-slate-900 border border-slate-800 text-white font-bold house-none focus:border-yellow-400 transition-all" placeholder="Recipient Number (02XXXXXXXX)" maxlength="10">
-            <input type="email" id="buyerEmail" class="w-full p-4 rounded-2xl bg-slate-900 border border-slate-800 text-white font-bold outline-none focus:border-yellow-400 transition-all" placeholder="Your Email Address">
-            <button onclick="handlePayment()" class="w-full bg-yellow-400 text-black py-5 rounded-2xl font-black uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all">Proceed to Payment</button>
-            <button onclick="closeOrder()" class="w-full text-slate-500 text-[10px] font-black uppercase tracking-widest">Cancel Order</button>
-        </div>
-    </div>
 
     <div id="homeView">
         <header class="p-5 flex justify-between items-center bg-black/50 backdrop-blur-xl sticky top-0 z-50">
@@ -195,6 +179,60 @@
         <main class="p-6 space-y-8" id="bundleList"></main>
     </div>
 
+    <div id="checkoutView" class="hidden-view">
+        <header class="p-6 flex items-center gap-4">
+            <button onclick="showBundles(currentNet)" class="p-2 hover:bg-slate-800 rounded-xl">
+                <i data-lucide="arrow-left" class="w-6 h-6 text-yellow-400"></i>
+            </button>
+            <h1 class="text-xl font-black tracking-tight uppercase">Checkout</h1>
+        </header>
+        <main class="p-6 space-y-6">
+            <div class="checkout-receipt p-8 space-y-6 shadow-2xl">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h2 id="checkBundle" class="text-3xl font-black text-white">0GB</h2>
+                        <p id="checkNet" class="text-yellow-400 text-[10px] font-black uppercase tracking-widest mt-1">Network</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-slate-500 text-[9px] font-black uppercase">Ref ID</p>
+                        <p id="checkRef" class="text-white font-mono text-[10px]">DB-000000</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4 pt-6 border-t border-slate-800">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-400">Bundle Price</span>
+                        <span id="checkPrice" class="text-white font-bold">₵ 0.00</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-400">Platform Fee</span>
+                        <span id="checkFee" class="text-white font-bold">₵ 0.00</span>
+                    </div>
+                    <div class="flex justify-between pt-4 border-t border-dashed border-slate-700">
+                        <span class="text-white font-black uppercase text-xs">Total Payment</span>
+                        <span id="checkTotal" class="text-yellow-400 font-black text-xl tracking-tight">₵ 0.00</span>
+                    </div>
+                </div>
+
+                <div class="space-y-4 pt-6">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black uppercase text-slate-500 tracking-widest">Recipient Number</label>
+                        <input type="tel" id="recipientPhone" class="w-full p-4 rounded-2xl bg-slate-900 border border-slate-800 text-white font-bold outline-none focus:border-yellow-400" placeholder="02XXXXXXXX" maxlength="10">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black uppercase text-slate-500 tracking-widest">Billing Email</label>
+                        <input type="email" id="buyerEmail" class="w-full p-4 rounded-2xl bg-slate-900 border border-slate-800 text-white font-bold outline-none focus:border-yellow-400" placeholder="your@email.com">
+                    </div>
+                </div>
+
+                <button onclick="handlePayment()" class="w-full bg-yellow-400 text-black py-5 rounded-2xl font-black uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all mt-4">
+                    Confirm & Pay
+                </button>
+                <p class="text-[9px] text-center text-slate-600 font-bold uppercase mt-4">Secured by Paystack Transit Protocol</p>
+            </div>
+        </main>
+    </div>
+
     <div id="historyView" class="hidden-view">
         <header class="p-6 flex items-center gap-4 bg-black/40 backdrop-blur-md sticky top-0 z-50">
             <button onclick="showHome()" class="p-2 hover:bg-slate-800 rounded-xl transition-colors">
@@ -211,10 +249,9 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        let currentNet = "MTN"; let selG = ""; let selP = 0;
+        let currentNet = "MTN"; let selG = ""; let selP = 0; let activeRef = "";
         function refreshIcons() { lucide.createIcons(); }
 
-        // DYNAMIC GREETING LOGIC
         function getGreeting() {
             const hour = new Date().getHours();
             if (hour < 12) return "Good Morning";
@@ -248,6 +285,7 @@
             document.getElementById('ticketsView').classList.add('hidden-view');
             document.getElementById('bundlesView').classList.add('hidden-view');
             document.getElementById('historyView').classList.add('hidden-view');
+            document.getElementById('checkoutView').classList.add('hidden-view');
         }
 
         async function renderHistory() {
@@ -269,9 +307,29 @@
             document.getElementById('bundleTitle').innerText = set.title;
             const container = document.getElementById('bundleList'); container.innerHTML = ''; 
             set.prices.forEach(item => {
-                container.innerHTML += `<div class="bundle-card rounded-[2rem] overflow-hidden shadow-2xl"><div class="${set.headerClass} p-4 text-center"><div class="flex justify-center mb-1"><i data-lucide="wifi" class="w-5 h-5"></i></div><p class="text-[10px] font-black uppercase tracking-widest opacity-70">${network} Bundle</p><div class="bg-white/30 backdrop-blur-sm px-4 py-1 rounded-full inline-block mt-2 text-xs font-black">₵ ${item.price}</div></div><div class="p-6 text-center space-y-4"><h2 class="text-5xl font-black tracking-tighter text-white">${item.gb.split(' ')[0]} <span class="text-lg text-slate-500 uppercase">GB</span></h2><p class="text-dim text-[10px] font-bold uppercase tracking-widest">Valid Forever</p><button onclick="openOrder('${item.gb}', ${item.price})" class="w-full ${set.btnClass} py-4 rounded-2xl font-black uppercase transition-all active:scale-95">🛒 Buy Now</button></div></div>`;
+                container.innerHTML += `<div class="bundle-card rounded-[2rem] overflow-hidden shadow-2xl"><div class="${set.headerClass} p-4 text-center"><div class="flex justify-center mb-1"><i data-lucide="wifi" class="w-5 h-5"></i></div><p class="text-[10px] font-black uppercase tracking-widest opacity-70">${network} Bundle</p><div class="bg-white/30 backdrop-blur-sm px-4 py-1 rounded-full inline-block mt-2 text-xs font-black">₵ ${item.price}</div></div><div class="p-6 text-center space-y-4"><h2 class="text-5xl font-black tracking-tighter text-white">${item.gb.split(' ')[0]} <span class="text-lg text-slate-500 uppercase">GB</span></h2><p class="text-dim text-[10px] font-bold uppercase tracking-widest">Valid Forever</p><button onclick="openCheckout('${item.gb}', ${item.price})" class="w-full ${set.btnClass} py-4 rounded-2xl font-black uppercase transition-all active:scale-95">🛒 Buy Now</button></div></div>`;
             });
             document.getElementById('bundlesView').classList.remove('hidden-view'); refreshIcons(); window.scrollTo(0,0);
+        }
+
+        // NEW CHECKOUT OPENER
+        function openCheckout(gb, price) {
+            hideAll();
+            selG = gb; selP = parseFloat(price);
+            activeRef = "DB-" + Math.floor(100000 + Math.random() * 900000);
+            const fee = (selP < 30 ? 0.3 : 0.9);
+            const total = (selP + fee).toFixed(2);
+
+            document.getElementById('checkBundle').innerText = gb;
+            document.getElementById('checkNet').innerText = currentNet;
+            document.getElementById('checkRef').innerText = activeRef;
+            document.getElementById('checkPrice').innerText = `₵ ${selP.toFixed(2)}`;
+            document.getElementById('checkFee').innerText = `₵ ${fee.toFixed(2)}`;
+            document.getElementById('checkTotal').innerText = `₵ ${total}`;
+            
+            document.getElementById('checkoutView').classList.remove('hidden-view');
+            refreshIcons();
+            window.scrollTo(0,0);
         }
 
         auth.onAuthStateChanged(async (user) => {
@@ -293,15 +351,17 @@
         });
 
         function handleAuthClick() { if (auth.currentUser) { auth.signOut(); } else { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } }
-        function openOrder(gb, price) { selG = gb; selP = price; document.getElementById('orderLabel').innerText = `Confirm ${gb} ${currentNet}`; document.getElementById('orderOverlay').style.display = 'flex'; }
-        function closeOrder() { document.getElementById('orderOverlay').style.display = 'none'; }
 
         function handlePayment() {
             const phone = document.getElementById('recipientPhone').value;
             const email = document.getElementById('buyerEmail').value;
             if(phone.length < 10) return alert("Please enter a valid 10-digit phone number.");
+            if(!email.includes('@')) return alert("Please enter a valid email address.");
+
+            const fee = (selP < 30 ? 0.3 : 0.9);
             const handler = PaystackPop.setup({
-                key: 'pk_live_90305707d30b6282979eac837bbbc9509da579af', email: email, amount: Math.round((selP + (selP < 30 ? 0.3 : 0.9)) * 100), currency: 'GHS',
+                key: 'pk_live_90305707d30b6282979eac837bbbc9509da579af', email: email, amount: Math.round((selP + fee) * 100), currency: 'GHS',
+                ref: activeRef,
                 callback: (response) => {
                     const now = new Date();
                     if(auth.currentUser) {
