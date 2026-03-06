@@ -40,6 +40,10 @@
         
         /* History Layout */
         .history-card { background: #0f172a; border-left: 4px solid #facc15; padding: 20px; border-radius: 1.5rem; margin-bottom: 15px; border-top: 1px solid #1e293b; border-right: 1px solid #1e293b; border-bottom: 1px solid #1e293b; }
+        
+        /* Live Pulse Animation */
+        .pulse-green { animation: pulse-green 2s infinite; }
+        @keyframes pulse-green { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
     </style>
 </head>
 <body class="max-w-md mx-auto min-h-screen border-x border-slate-900 shadow-2xl relative">
@@ -96,7 +100,13 @@
                         <h1 id="totalSpent" class="text-5xl font-black tracking-tighter text-white">0.00</h1>
                     </div>
                     <div class="flex gap-3 mt-8">
-                        <button class="flex-1 bg-white text-black py-4 rounded-2xl text-[10px] font-black uppercase tracking-wider">Top-up Wallet</button>
+                        <button class="flex-1 bg-white text-black py-4 rounded-2xl text-[10px] font-black uppercase tracking-wider flex items-center justify-center gap-2">
+                            Top-up Wallet 
+                            <span class="flex items-center gap-1 bg-green-500/10 text-green-600 px-2 py-0.5 rounded-full border border-green-200">
+                                <span class="w-1.5 h-1.5 bg-green-500 rounded-full pulse-green"></span>
+                                <span class="text-[8px]">LIVE</span>
+                            </span>
+                        </button>
                         <button onclick="showHistory()" class="flex-1 bg-white/10 border border-white/20 py-4 rounded-2xl text-[10px] font-black uppercase tracking-wider">History</button>
                     </div>
                 </div>
@@ -199,61 +209,20 @@
     </div>
 
     <script>
-        // LOGIC INITIALIZATION
-        const firebaseConfig = {
-            apiKey: "AIzaSyCqg3E9tuKRcEnq2DdP6FjtG0LqnAjCHfM",
-            authDomain: "joeldata-25d06.firebaseapp.com",
-            projectId: "joeldata-25d06",
-            storageBucket: "joeldata-25d06.firebasestorage.app",
-            messagingSenderId: "555857869458",
-            appId: "1:555857869458:web:db96a97fca5983b142044b"
-        };
+        const firebaseConfig = { apiKey: "AIzaSyCqg3E9tuKRcEnq2DdP6FjtG0LqnAjCHfM", authDomain: "joeldata-25d06.firebaseapp.com", projectId: "joeldata-25d06", storageBucket: "joeldata-25d06.firebasestorage.app", messagingSenderId: "555857869458", appId: "1:555857869458:web:db96a97fca5983b142044b" };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 
         let currentNet = "MTN"; let selG = ""; let selP = 0;
-
         function refreshIcons() { lucide.createIcons(); }
 
         const dataSets = {
-            MTN: {
-                title: "MTN Bundles",
-                headerClass: "bundle-header-mtn",
-                btnClass: "bg-yellow-400 text-black",
-                prices: [
-                    {gb: "1 GB", price: "5"}, {gb: "2 GB", price: "10"}, {gb: "3 GB", price: "15"},
-                    {gb: "4 GB", price: "20"}, {gb: "5 GB", price: "25"}, {gb: "6 GB", price: "30"},
-                    {gb: "8 GB", price: "40"}, {gb: "10 GB", price: "50"}, {gb: "12 GB", price: "55"},
-                    {gb: "15 GB", price: "65"}, {gb: "20 GB", price: "85"}, {gb: "25 GB", price: "105"},
-                    {gb: "30 GB", price: "130"}, {gb: "40 GB", price: "165"}, {gb: "50 GB", price: "200"}
-                ]
-            },
-            AT: {
-                title: "AT Bundles",
-                headerClass: "bundle-header-at",
-                btnClass: "bg-blue-600 text-white",
-                prices: [
-                    {gb: "1 GB", price: "4.5"}, {gb: "2 GB", price: "9"}, {gb: "3 GB", price: "14"},
-                    {gb: "4 GB", price: "18"}, {gb: "5 GB", price: "20.5"}, {gb: "6 GB", price: "25"},
-                    {gb: "8 GB", price: "32"}, {gb: "10 GB", price: "40"}, {gb: "12 GB", price: "50"},
-                    {gb: "15 GB", price: "60"}, {gb: "25 GB", price: "100"}, {gb: "30 GB", price: "125"},
-                    {gb: "40 GB", price: "160"}, {gb: "50 GB", price: "205"}
-                ]
-            },
-            TELECEL: {
-                title: "Telecel Bundles",
-                headerClass: "bundle-header-telecel",
-                btnClass: "bg-red-600 text-white",
-                prices: [
-                    {gb: "10 GB", price: "40"}, {gb: "15 GB", price: "60"}, {gb: "20 GB", price: "80"},
-                    {gb: "25 GB", price: "100"}, {gb: "30 GB", price: "120"}, {gb: "35 GB", price: "140"},
-                    {gb: "40 GB", price: "160"}, {gb: "45 GB", price: "180"}, {gb: "50 GB", price: "200"}
-                ]
-            }
+            MTN: { title: "MTN Bundles", headerClass: "bundle-header-mtn", btnClass: "bg-yellow-400 text-black", prices: [{gb:"1 GB", price:"5"}, {gb:"2 GB", price:"10"}, {gb:"3 GB", price:"15"}, {gb:"4 GB", price:"20"}, {gb:"5 GB", price:"25"}, {gb:"6 GB", price:"30"}, {gb:"8 GB", price:"40"}, {gb:"10 GB", price:"50"}, {gb:"12 GB", price:"55"}, {gb:"15 GB", price:"65"}, {gb:"20 GB", price:"85"}, {gb:"25 GB", price:"105"}, {gb:"30 GB", price:"130"}, {gb:"40 GB", price:"165"}, {gb:"50 GB", price:"200"}] },
+            AT: { title: "AT Bundles", headerClass: "bundle-header-at", btnClass: "bg-blue-600 text-white", prices: [{gb:"1 GB", price:"4.5"}, {gb:"2 GB", price:"9"}, {gb:"3 GB", price:"14"}, {gb:"4 GB", price:"18"}, {gb:"5 GB", price:"20.5"}, {gb:"6 GB", price:"25"}, {gb:"8 GB", price:"32"}, {gb:"10 GB", price:"40"}, {gb:"12 GB", price:"50"}, {gb:"15 GB", price:"60"}, {gb:"25 GB", price:"100"}, {gb:"30 GB", price:"125"}, {gb:"40 GB", price:"160"}, {gb:"50 GB", price:"205"}] },
+            TELECEL: { title: "Telecel Bundles", headerClass: "bundle-header-telecel", btnClass: "bg-red-600 text-white", prices: [{gb:"10 GB", price:"40"}, {gb:"15 GB", price:"60"}, {gb:"20 GB", price:"80"}, {gb:"25 GB", price:"100"}, {gb:"30 GB", price:"120"}, {gb:"35 GB", price:"140"}, {gb:"40 GB", price:"160"}, {gb:"45 GB", price:"180"}, {gb:"50 GB", price:"200"}] }
         };
 
-        // NAVIGATION LOGIC
         function showTickets() { hideAll(); document.getElementById('ticketsView').classList.remove('hidden-view'); refreshIcons(); }
         function showHome() { hideAll(); document.getElementById('homeView').classList.remove('hidden-view'); refreshIcons(); }
         function showHistory() { hideAll(); document.getElementById('historyView').classList.remove('hidden-view'); renderHistory(); }
@@ -267,77 +236,28 @@
 
         async function renderHistory() {
             const list = document.getElementById('historyList');
-            if(!auth.currentUser) {
-                list.innerHTML = `<div class="text-center p-10 font-black text-slate-500 uppercase text-xs">Login to see your history</div>`;
-                return;
-            }
+            if(!auth.currentUser) { list.innerHTML = `<div class="text-center p-10 font-black text-slate-500 uppercase text-xs">Login to see your history</div>`; return; }
             list.innerHTML = `<div class="text-center p-10 animate-pulse text-yellow-400 font-black">LOADING HISTORY...</div>`;
-            
-            const snap = await db.collection('orders')
-                .where('email', '==', auth.currentUser.email)
-                .orderBy('timestamp', 'desc')
-                .get();
-                
+            const snap = await db.collection('orders').where('email', '==', auth.currentUser.email).orderBy('timestamp', 'desc').get();
             list.innerHTML = '';
-            if(snap.empty) {
-                list.innerHTML = `<div class="text-center p-10 font-black text-slate-500 uppercase text-xs">No transactions yet</div>`;
-                return;
-            }
-            
+            if(snap.empty) { list.innerHTML = `<div class="text-center p-10 font-black text-slate-500 uppercase text-xs">No transactions yet</div>`; return; }
             snap.forEach(doc => {
                 const d = doc.data();
-                list.innerHTML += `
-                <div class="history-card">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <span class="text-white font-black text-xl tracking-tight">${d.bundle}</span>
-                            <p class="text-slate-500 text-[10px] font-black uppercase mt-1 tracking-widest">${d.phone || 'Unknown Recipient'}</p>
-                        </div>
-                        <span class="bg-green-500/10 text-green-400 text-[10px] px-3 py-1 rounded-full border border-green-500/20 font-black uppercase">Success</span>
-                    </div>
-                    <div class="grid grid-cols-2 gap-y-3 text-[10px] font-bold uppercase tracking-wider">
-                        <div class="text-slate-500">Date: <span class="text-white">${d.date}</span></div>
-                        <div class="text-slate-500 text-right">Time: <span class="text-white">${d.time || 'N/A'}</span></div>
-                        <div class="text-slate-500">Total: <span class="text-yellow-400">₵ ${d.amount}</span></div>
-                        <div class="text-slate-500 text-right">Method: <span class="text-white">Paystack</span></div>
-                    </div>
-                    <div class="mt-4 pt-3 border-t border-white/5 flex items-center justify-between">
-                        <span class="text-[9px] text-slate-600 font-mono font-black uppercase">ID: ${d.ref}</span>
-                        <i data-lucide="check-circle-2" class="w-3 h-3 text-green-500"></i>
-                    </div>
-                </div>`;
+                list.innerHTML += `<div class="history-card"><div class="flex justify-between items-start mb-4"><div><span class="text-white font-black text-xl tracking-tight">${d.bundle}</span><p class="text-slate-500 text-[10px] font-black uppercase mt-1 tracking-widest">${d.phone || 'Unknown Recipient'}</p></div><span class="bg-green-500/10 text-green-400 text-[10px] px-3 py-1 rounded-full border border-green-500/20 font-black uppercase">Success</span></div><div class="grid grid-cols-2 gap-y-3 text-[10px] font-bold uppercase tracking-wider"><div class="text-slate-500">Date: <span class="text-white">${d.date}</span></div><div class="text-slate-500 text-right">Time: <span class="text-white">${d.time || 'N/A'}</span></div><div class="text-slate-500">Total: <span class="text-yellow-400">₵ ${d.amount}</span></div><div class="text-slate-500 text-right">Method: <span class="text-white">Paystack</span></div></div><div class="mt-4 pt-3 border-t border-white/5 flex items-center justify-between"><span class="text-[9px] text-slate-600 font-mono font-black uppercase">ID: ${d.ref}</span><i data-lucide="check-circle-2" class="w-3 h-3 text-green-500"></i></div></div>`;
             });
             refreshIcons();
         }
 
         function showBundles(network) {
-            hideAll();
-            currentNet = network;
-            const set = dataSets[network];
+            hideAll(); currentNet = network; const set = dataSets[network];
             document.getElementById('bundleTitle').innerText = set.title;
-            const container = document.getElementById('bundleList');
-            container.innerHTML = ''; 
+            const container = document.getElementById('bundleList'); container.innerHTML = ''; 
             set.prices.forEach(item => {
-                container.innerHTML += `
-                <div class="bundle-card rounded-[2rem] overflow-hidden shadow-2xl">
-                    <div class="${set.headerClass} p-4 text-center">
-                        <div class="flex justify-center mb-1"><i data-lucide="wifi" class="w-5 h-5"></i></div>
-                        <p class="text-[10px] font-black uppercase tracking-widest opacity-70">${network} Bundle</p>
-                        <div class="bg-white/30 backdrop-blur-sm px-4 py-1 rounded-full inline-block mt-2 text-xs font-black">₵ ${item.price}</div>
-                    </div>
-                    <div class="p-6 text-center space-y-4">
-                        <h2 class="text-5xl font-black tracking-tighter text-white">${item.gb.split(' ')[0]} <span class="text-lg text-slate-500 uppercase">GB</span></h2>
-                        <p class="text-dim text-[10px] font-bold uppercase tracking-widest">Valid Forever</p>
-                        <button onclick="openOrder('${item.gb}', ${item.price})" class="w-full ${set.btnClass} py-4 rounded-2xl font-black uppercase transition-all active:scale-95">🛒 Buy Now</button>
-                    </div>
-                </div>`;
+                container.innerHTML += `<div class="bundle-card rounded-[2rem] overflow-hidden shadow-2xl"><div class="${set.headerClass} p-4 text-center"><div class="flex justify-center mb-1"><i data-lucide="wifi" class="w-5 h-5"></i></div><p class="text-[10px] font-black uppercase tracking-widest opacity-70">${network} Bundle</p><div class="bg-white/30 backdrop-blur-sm px-4 py-1 rounded-full inline-block mt-2 text-xs font-black">₵ ${item.price}</div></div><div class="p-6 text-center space-y-4"><h2 class="text-5xl font-black tracking-tighter text-white">${item.gb.split(' ')[0]} <span class="text-lg text-slate-500 uppercase">GB</span></h2><p class="text-dim text-[10px] font-bold uppercase tracking-widest">Valid Forever</p><button onclick="openOrder('${item.gb}', ${item.price})" class="w-full ${set.btnClass} py-4 rounded-2xl font-black uppercase transition-all active:scale-95">🛒 Buy Now</button></div></div>`;
             });
-            document.getElementById('bundlesView').classList.remove('hidden-view');
-            refreshIcons();
-            window.scrollTo(0,0);
+            document.getElementById('bundlesView').classList.remove('hidden-view'); refreshIcons(); window.scrollTo(0,0);
         }
 
-        // AUTH LOGIC
         auth.onAuthStateChanged(async (user) => {
             const btn = document.getElementById('authBtn');
             if (user) {
@@ -345,8 +265,7 @@
                 document.getElementById('userName').innerText = `Welcome, ${user.displayName.split(' ')[0]}`;
                 document.getElementById('buyerEmail').value = user.email;
                 const snap = await db.collection('orders').where('email', '==', user.email).get();
-                let total = 0;
-                snap.forEach(doc => total += parseFloat(doc.data().amount));
+                let total = 0; snap.forEach(doc => total += parseFloat(doc.data().amount));
                 document.getElementById('totalSpent').innerText = total.toFixed(2);
             } else {
                 btn.innerHTML = `<i data-lucide="user" class="w-4 h-4"></i> LOGIN`;
@@ -356,41 +275,22 @@
             refreshIcons();
         });
 
-        function handleAuthClick() {
-            if (auth.currentUser) { auth.signOut(); } 
-            else { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); }
-        }
-
-        // PAYMENT FLOW
-        function openOrder(gb, price) {
-            selG = gb; selP = price;
-            document.getElementById('orderLabel').innerText = `Confirm ${gb} ${currentNet}`;
-            document.getElementById('orderOverlay').style.display = 'flex';
-        }
-
+        function handleAuthClick() { if (auth.currentUser) { auth.signOut(); } else { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } }
+        function openOrder(gb, price) { selG = gb; selP = price; document.getElementById('orderLabel').innerText = `Confirm ${gb} ${currentNet}`; document.getElementById('orderOverlay').style.display = 'flex'; }
         function closeOrder() { document.getElementById('orderOverlay').style.display = 'none'; }
 
         function handlePayment() {
             const phone = document.getElementById('recipientPhone').value;
             const email = document.getElementById('buyerEmail').value;
             if(phone.length < 10) return alert("Please enter a valid 10-digit phone number.");
-            
             const handler = PaystackPop.setup({
-                key: 'pk_live_90305707d30b6282979eac837bbbc9509da579af',
-                email: email,
-                amount: Math.round((selP + (selP < 30 ? 0.3 : 0.9)) * 100),
-                currency: 'GHS',
+                key: 'pk_live_90305707d30b6282979eac837bbbc9509da579af', email: email, amount: Math.round((selP + (selP < 30 ? 0.3 : 0.9)) * 100), currency: 'GHS',
                 callback: (response) => {
                     const now = new Date();
                     if(auth.currentUser) {
                         db.collection('orders').add({
-                            email: auth.currentUser.email,
-                            phone: phone,
-                            amount: selP,
-                            bundle: `${selG} ${currentNet}`,
-                            ref: response.reference,
-                            date: now.toLocaleDateString('en-GB'),
-                            time: now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                            email: auth.currentUser.email, phone: phone, amount: selP, bundle: `${selG} ${currentNet}`, ref: response.reference,
+                            date: now.toLocaleDateString('en-GB'), time: now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
                             timestamp: firebase.firestore.FieldValue.serverTimestamp()
                         });
                     }
@@ -399,7 +299,6 @@
             });
             handler.openIframe();
         }
-
         refreshIcons();
     </script>
 </body>
