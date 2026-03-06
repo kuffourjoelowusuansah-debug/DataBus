@@ -21,7 +21,7 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-deep); color: var(--pure-white); }
         
         .status-card { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .feature-card, .quick-action, .ticket-tab, .bundle-card { background: #0f172a; border: 1px solid #1e293b; transition: all 0.2s; }
+        .feature-card, .quick-action, .ticket-tab, .bundle-card, .inbox-card { background: #0f172a; border: 1px solid #1e293b; transition: all 0.2s; }
         .quick-action:active, .ticket-tab:active { transform: scale(0.96); border-color: var(--cyber-yellow); }
         
         .status-in { background: #064e3b; color: #34d399; border: 1px solid #059669; }
@@ -34,11 +34,9 @@
         .hidden-view { display: none !important; }
         .text-dim { color: #94a3b8; font-weight: 500; }
 
-        /* Checkout Layout */
         .checkout-receipt { background: #0f172a; border: 1px solid #1e293b; border-radius: 2.5rem; position: relative; overflow: hidden; }
         .checkout-receipt::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--cyber-yellow); }
 
-        /* Live Pulse Animation */
         .pulse-green { animation: pulse-green 2s infinite; }
         @keyframes pulse-green { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
     </style>
@@ -60,9 +58,9 @@
                 </svg>
                 <span class="text-xs font-black italic uppercase text-white">Data<span class="text-yellow-400">Bus</span></span>
             </div>
-            <button class="relative bg-slate-900 p-2 rounded-xl border border-slate-800">
+            <button onclick="showInbox()" class="relative bg-slate-900 p-2 rounded-xl border border-slate-800">
                 <i data-lucide="bell" class="w-5 h-5 text-white"></i>
-                <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-600 text-white text-[9px] flex items-center justify-center rounded-full font-black">8</span>
+                <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-600 text-white text-[9px] flex items-center justify-center rounded-full font-black">2</span>
             </button>
         </header>
 
@@ -134,6 +132,33 @@
                     <div><h4 class="text-white text-lg font-bold">Always Available</h4><p class="text-dim text-sm mt-1">Our system is online 24/7 to serve your data needs.</p></div>
                 </div>
             </section>
+        </main>
+    </div>
+
+    <div id="inboxView" class="hidden-view">
+        <header class="p-6 flex items-center gap-4 bg-black/40 backdrop-blur-md sticky top-0 z-50">
+            <button onclick="showHome()" class="p-2 hover:bg-slate-800 rounded-xl">
+                <i data-lucide="arrow-left" class="w-6 h-6 text-yellow-400"></i>
+            </button>
+            <h1 class="text-xl font-black tracking-tight uppercase">Transit Inbox</h1>
+        </header>
+        <main class="p-6 space-y-4">
+            <div class="inbox-card p-6 rounded-[2rem] border-l-4 border-yellow-400">
+                <div class="flex justify-between items-start mb-2">
+                    <span class="text-yellow-400 text-[9px] font-black uppercase tracking-widest">Announcement</span>
+                    <span class="text-slate-500 text-[9px]">Just Now</span>
+                </div>
+                <h4 class="text-white font-bold mb-1">Welcome to DataBus!</h4>
+                <p class="text-slate-400 text-xs leading-relaxed">Your high-speed data transit is now live. Enjoy instant deliveries and secure payments.</p>
+            </div>
+            <div class="inbox-card p-6 rounded-[2rem] border-l-4 border-blue-500 opacity-80">
+                <div class="flex justify-between items-start mb-2">
+                    <span class="text-blue-400 text-[9px] font-black uppercase tracking-widest">Network Update</span>
+                    <span class="text-slate-500 text-[9px]">2 hours ago</span>
+                </div>
+                <h4 class="text-white font-bold mb-1">MTN Speed Boost</h4>
+                <p class="text-slate-400 text-xs leading-relaxed">All MTN bundles are currently processing at 2x speed. Happy surfing!</p>
+            </div>
         </main>
     </div>
 
@@ -228,7 +253,6 @@
                 <button onclick="handlePayment()" class="w-full bg-yellow-400 text-black py-5 rounded-2xl font-black uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all mt-4">
                     Confirm & Pay
                 </button>
-                <p class="text-[9px] text-center text-slate-600 font-bold uppercase mt-4">Secured by Paystack Transit Protocol</p>
             </div>
         </main>
     </div>
@@ -279,6 +303,7 @@
         function showTickets() { hideAll(); document.getElementById('ticketsView').classList.remove('hidden-view'); refreshIcons(); }
         function showHome() { hideAll(); document.getElementById('homeView').classList.remove('hidden-view'); refreshIcons(); }
         function showHistory() { hideAll(); document.getElementById('historyView').classList.remove('hidden-view'); renderHistory(); }
+        function showInbox() { hideAll(); document.getElementById('inboxView').classList.remove('hidden-view'); refreshIcons(); }
         
         function hideAll() {
             document.getElementById('homeView').classList.add('hidden-view');
@@ -286,6 +311,7 @@
             document.getElementById('bundlesView').classList.add('hidden-view');
             document.getElementById('historyView').classList.add('hidden-view');
             document.getElementById('checkoutView').classList.add('hidden-view');
+            document.getElementById('inboxView').classList.add('hidden-view');
         }
 
         async function renderHistory() {
@@ -312,24 +338,20 @@
             document.getElementById('bundlesView').classList.remove('hidden-view'); refreshIcons(); window.scrollTo(0,0);
         }
 
-        // NEW CHECKOUT OPENER
         function openCheckout(gb, price) {
             hideAll();
             selG = gb; selP = parseFloat(price);
             activeRef = "DB-" + Math.floor(100000 + Math.random() * 900000);
             const fee = (selP < 30 ? 0.3 : 0.9);
             const total = (selP + fee).toFixed(2);
-
             document.getElementById('checkBundle').innerText = gb;
             document.getElementById('checkNet').innerText = currentNet;
             document.getElementById('checkRef').innerText = activeRef;
             document.getElementById('checkPrice').innerText = `₵ ${selP.toFixed(2)}`;
             document.getElementById('checkFee').innerText = `₵ ${fee.toFixed(2)}`;
             document.getElementById('checkTotal').innerText = `₵ ${total}`;
-            
             document.getElementById('checkoutView').classList.remove('hidden-view');
             refreshIcons();
-            window.scrollTo(0,0);
         }
 
         auth.onAuthStateChanged(async (user) => {
@@ -356,8 +378,6 @@
             const phone = document.getElementById('recipientPhone').value;
             const email = document.getElementById('buyerEmail').value;
             if(phone.length < 10) return alert("Please enter a valid 10-digit phone number.");
-            if(!email.includes('@')) return alert("Please enter a valid email address.");
-
             const fee = (selP < 30 ? 0.3 : 0.9);
             const handler = PaystackPop.setup({
                 key: 'pk_live_90305707d30b6282979eac837bbbc9509da579af', email: email, amount: Math.round((selP + fee) * 100), currency: 'GHS',
