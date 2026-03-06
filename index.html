@@ -60,7 +60,7 @@
             </div>
             <button onclick="showInbox()" class="relative bg-slate-900 p-2 rounded-xl border border-slate-800">
                 <i data-lucide="bell" class="w-5 h-5 text-white"></i>
-                <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-600 text-white text-[9px] flex items-center justify-center rounded-full font-black">2</span>
+                <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-600 text-white text-[9px] flex items-center justify-center rounded-full font-black">!</span>
             </button>
         </header>
 
@@ -113,25 +113,6 @@
                     </button>
                 </div>
             </section>
-
-            <section class="mt-16 space-y-6 pb-20">
-                <div class="text-center mb-10">
-                    <h2 class="text-3xl font-black text-white">Why Choose <span class="text-yellow-400">DataBus?</span></h2>
-                    <p class="text-dim text-[10px] uppercase tracking-widest mt-2">Ghana's Reliable Transit for Data</p>
-                </div>
-                <div class="feature-card p-6 rounded-[2.5rem] flex items-start gap-5">
-                    <div class="bg-yellow-400 text-black p-4 rounded-2xl"><i data-lucide="zap" class="stroke-[3]"></i></div>
-                    <div><h4 class="text-white text-lg font-bold">Fast Processing</h4><p class="text-dim text-sm mt-1">Quick order delivery directly to your phone without delays.</p></div>
-                </div>
-                <div class="feature-card p-6 rounded-[2.5rem] flex items-start gap-5">
-                    <div class="bg-slate-800 text-blue-400 p-4 rounded-2xl border border-blue-500/30"><i data-lucide="shield-check"></i></div>
-                    <div><h4 class="text-white text-lg font-bold">Secure Platform</h4><p class="text-dim text-sm mt-1">Safe and encrypted transactions for your wallet security.</p></div>
-                </div>
-                <div class="feature-card p-6 rounded-[2.5rem] flex items-start gap-5">
-                    <div class="bg-slate-800 text-purple-400 p-4 rounded-2xl border border-purple-500/30"><i data-lucide="clock"></i></div>
-                    <div><h4 class="text-white text-lg font-bold">Always Available</h4><p class="text-dim text-sm mt-1">Our system is online 24/7 to serve your data needs.</p></div>
-                </div>
-            </section>
         </main>
     </div>
 
@@ -142,23 +123,8 @@
             </button>
             <h1 class="text-xl font-black tracking-tight uppercase">Transit Inbox</h1>
         </header>
-        <main class="p-6 space-y-4">
-            <div class="inbox-card p-6 rounded-[2rem] border-l-4 border-yellow-400">
-                <div class="flex justify-between items-start mb-2">
-                    <span class="text-yellow-400 text-[9px] font-black uppercase tracking-widest">Announcement</span>
-                    <span class="text-slate-500 text-[9px]">Just Now</span>
-                </div>
-                <h4 class="text-white font-bold mb-1">Welcome to DataBus!</h4>
-                <p class="text-slate-400 text-xs leading-relaxed">Your high-speed data transit is now live. Enjoy instant deliveries and secure payments.</p>
-            </div>
-            <div class="inbox-card p-6 rounded-[2rem] border-l-4 border-blue-500 opacity-80">
-                <div class="flex justify-between items-start mb-2">
-                    <span class="text-blue-400 text-[9px] font-black uppercase tracking-widest">Network Update</span>
-                    <span class="text-slate-500 text-[9px]">2 hours ago</span>
-                </div>
-                <h4 class="text-white font-bold mb-1">MTN Speed Boost</h4>
-                <p class="text-slate-400 text-xs leading-relaxed">All MTN bundles are currently processing at 2x speed. Happy surfing!</p>
-            </div>
+        <main class="p-6 space-y-4" id="inboxList">
+            <div class="text-center p-10 animate-pulse text-yellow-400 font-black text-xs uppercase">Connecting to Dispatch...</div>
         </main>
     </div>
 
@@ -240,14 +206,8 @@
                 </div>
 
                 <div class="space-y-4 pt-6">
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black uppercase text-slate-500 tracking-widest">Recipient Number</label>
-                        <input type="tel" id="recipientPhone" class="w-full p-4 rounded-2xl bg-slate-900 border border-slate-800 text-white font-bold outline-none focus:border-yellow-400" placeholder="02XXXXXXXX" maxlength="10">
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black uppercase text-slate-500 tracking-widest">Billing Email</label>
-                        <input type="email" id="buyerEmail" class="w-full p-4 rounded-2xl bg-slate-900 border border-slate-800 text-white font-bold outline-none focus:border-yellow-400" placeholder="your@email.com">
-                    </div>
+                    <input type="tel" id="recipientPhone" class="w-full p-4 rounded-2xl bg-slate-900 border border-slate-800 text-white font-bold outline-none focus:border-yellow-400" placeholder="Recipient Number (02XXXXXXXX)" maxlength="10">
+                    <input type="email" id="buyerEmail" class="w-full p-4 rounded-2xl bg-slate-900 border border-slate-800 text-white font-bold outline-none focus:border-yellow-400" placeholder="Billing Email Address">
                 </div>
 
                 <button onclick="handlePayment()" class="w-full bg-yellow-400 text-black py-5 rounded-2xl font-black uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all mt-4">
@@ -283,21 +243,10 @@
             return "Good Evening";
         }
 
-        function updateCounter() {
-            const el = document.getElementById('passengerCount');
-            const current = parseInt(el.innerText);
-            const change = Math.floor(Math.random() * 5) - 2;
-            let newVal = current + change;
-            if(newVal < 30) newVal = 35;
-            if(newVal > 99) newVal = 90;
-            el.innerText = newVal;
-        }
-        setInterval(updateCounter, 3000);
-
         const dataSets = {
             MTN: { title: "MTN Bundles", headerClass: "bundle-header-mtn", btnClass: "bg-yellow-400 text-black", prices: [{gb:"1 GB", price:"5"}, {gb:"2 GB", price:"10"}, {gb:"3 GB", price:"15"}, {gb:"4 GB", price:"20"}, {gb:"5 GB", price:"25"}, {gb:"6 GB", price:"30"}, {gb:"8 GB", price:"40"}, {gb:"10 GB", price:"50"}, {gb:"12 GB", price:"55"}, {gb:"15 GB", price:"65"}, {gb:"20 GB", price:"85"}, {gb:"25 GB", price:"105"}, {gb:"30 GB", price:"130"}, {gb:"40 GB", price:"165"}, {gb:"50 GB", price:"200"}] },
             AT: { title: "AT Bundles", headerClass: "bundle-header-at", btnClass: "bg-blue-600 text-white", prices: [{gb:"1 GB", price:"4.5"}, {gb:"2 GB", price:"9"}, {gb:"3 GB", price:"14"}, {gb:"4 GB", price:"18"}, {gb:"5 GB", price:"20.5"}, {gb:"6 GB", price:"25"}, {gb:"8 GB", price:"32"}, {gb:"10 GB", price:"40"}, {gb:"12 GB", price:"50"}, {gb:"15 GB", price:"60"}, {gb:"25 GB", price:"100"}, {gb:"30 GB", price:"125"}, {gb:"40 GB", price:"160"}, {gb:"50 GB", price:"205"}] },
-            TELECEL: { title: "Telecel Bundles", headerClass: "bundle-header-telecel", btnClass: "bg-red-600 text-white", prices: [{gb:"10 GB", price:"40"}, {gb:"15 GB", price:"60"}, {gb:"20 GB", price:"80"}, {gb:"25 GB", price:"100"}, {gb:"30 GB", price:"120"}, {gb:"35 GB", price:"140"}, {gb:"40 GB", price:"160"}, {gb:"45 GB", price:"180"}, {gb:"50 GB", price:"200"}] }
+            TELECEL: { title: "Telecel Bundles", headerClass: "bundle-header-telecel", btnClass: "bg-red-600 text-white", prices: [{gb:"10 GB", price:"40"}, {gb:"15 GB", price:"60"}, {gb:"20 GB", price:"80"}, {gb:"25 GB", price:"100"}, {gb:"30 GB", price:"120"}, {gb:"35 GB", price:"140"}, {gb:"40 GB", price:"160"}, {gb:"50 GB", price:"200"}, {gb:"100 GB", price:"400"}] }
         };
 
         function showTickets() { hideAll(); document.getElementById('ticketsView').classList.remove('hidden-view'); refreshIcons(); }
@@ -314,16 +263,31 @@
             document.getElementById('inboxView').classList.add('hidden-view');
         }
 
+        function listenToAnnouncements() {
+            const inboxList = document.getElementById('inboxList');
+            db.collection('announcements').orderBy('timestamp', 'desc').onSnapshot((snapshot) => {
+                if (snapshot.empty) { inboxList.innerHTML = `<div class="text-center p-10 font-black text-slate-500 uppercase text-xs">No new announcements</div>`; return; }
+                inboxList.innerHTML = '';
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const timeStr = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'Just now';
+                    inboxList.innerHTML += `<div class="inbox-card p-6 rounded-[2rem] border-l-4 border-yellow-400"><div class="flex justify-between items-start mb-2"><span class="text-yellow-400 text-[9px] font-black uppercase tracking-widest">Update</span><span class="text-slate-500 text-[9px]">${timeStr}</span></div><h4 class="text-white font-bold mb-1">${data.title}</h4><p class="text-slate-400 text-xs leading-relaxed">${data.body}</p></div>`;
+                });
+                refreshIcons();
+            });
+        }
+        listenToAnnouncements();
+
         async function renderHistory() {
             const list = document.getElementById('historyList');
             if(!auth.currentUser) { list.innerHTML = `<div class="text-center p-10 font-black text-slate-500 uppercase text-xs">Login to see your history</div>`; return; }
-            list.innerHTML = `<div class="text-center p-10 animate-pulse text-yellow-400 font-black">LOADING HISTORY...</div>`;
+            list.innerHTML = `<div class="text-center p-10 animate-pulse text-yellow-400 font-black">LOADING...</div>`;
             const snap = await db.collection('orders').where('email', '==', auth.currentUser.email).orderBy('timestamp', 'desc').get();
             list.innerHTML = '';
             if(snap.empty) { list.innerHTML = `<div class="text-center p-10 font-black text-slate-500 uppercase text-xs">No transactions yet</div>`; return; }
             snap.forEach(doc => {
                 const d = doc.data();
-                list.innerHTML += `<div class="history-card"><div class="flex justify-between items-start mb-4"><div><span class="text-white font-black text-xl tracking-tight">${d.bundle}</span><p class="text-slate-500 text-[10px] font-black uppercase mt-1 tracking-widest">${d.phone || 'Unknown Recipient'}</p></div><span class="bg-green-500/10 text-green-400 text-[10px] px-3 py-1 rounded-full border border-green-500/20 font-black uppercase">Success</span></div><div class="grid grid-cols-2 gap-y-3 text-[10px] font-bold uppercase tracking-wider"><div class="text-slate-500">Date: <span class="text-white">${d.date}</span></div><div class="text-slate-500 text-right">Time: <span class="text-white">${d.time || 'N/A'}</span></div><div class="text-slate-500">Total: <span class="text-yellow-400">₵ ${d.amount}</span></div><div class="text-slate-500 text-right">Method: <span class="text-white">Paystack</span></div></div><div class="mt-4 pt-3 border-t border-white/5 flex items-center justify-between"><span class="text-[9px] text-slate-600 font-mono font-black uppercase">ID: ${d.ref}</span><i data-lucide="check-circle-2" class="w-3 h-3 text-green-500"></i></div></div>`;
+                list.innerHTML += `<div class="history-card"><div class="flex justify-between items-start mb-4"><div><span class="text-white font-black text-xl tracking-tight">${d.bundle}</span><p class="text-slate-500 text-[10px] font-black uppercase mt-1 tracking-widest">${d.phone || 'N/A'}</p></div><span class="bg-green-500/10 text-green-400 text-[10px] px-3 py-1 rounded-full border border-green-500/20 font-black uppercase">Success</span></div><div class="grid grid-cols-2 gap-y-3 text-[10px] font-bold uppercase tracking-wider"><div class="text-slate-500">Date: <span class="text-white">${d.date}</span></div><div class="text-slate-500 text-right">Time: <span class="text-white">${d.time || 'N/A'}</span></div><div class="text-slate-500">Total: <span class="text-yellow-400">₵ ${d.amount}</span></div><div class="text-slate-500 text-right">Method: <span class="text-white">Paystack</span></div></div><div class="mt-4 pt-3 border-t border-white/5 flex items-center justify-between"><span class="text-[9px] text-slate-600 font-mono font-black uppercase">ID: ${d.ref}</span><i data-lucide="check-circle-2" class="w-3 h-3 text-green-500"></i></div></div>`;
             });
             refreshIcons();
         }
@@ -339,8 +303,7 @@
         }
 
         function openCheckout(gb, price) {
-            hideAll();
-            selG = gb; selP = parseFloat(price);
+            hideAll(); selG = gb; selP = parseFloat(price);
             activeRef = "DB-" + Math.floor(100000 + Math.random() * 900000);
             const fee = (selP < 30 ? 0.3 : 0.9);
             const total = (selP + fee).toFixed(2);
