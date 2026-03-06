@@ -3,106 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DataBus | Ghana's Fast Data Transit</title>
+    <title>DataBus | Home</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f172a; color: #f8fafc; }
-        .bus-gradient { background: linear-gradient(135deg, #facc15 0%, #eab308 100%); }
-        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .network-btn.active { border-color: #facc15; background: rgba(250, 204, 21, 0.1); }
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; color: #1e293b; }
+        .data-card { background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%); }
+        .agent-card { background: linear-gradient(135deg, #ca8a04 0%, #facc15 100%); }
+        .glass-overlay { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(4px); }
+        .quick-action-card { background: white; transition: all 0.2s; }
+        .quick-action-card:active { transform: scale(0.95); background: #f8fafc; }
     </style>
 </head>
-<body class="min-h-screen pb-10">
+<body class="max-w-md mx-auto min-h-screen border-x border-gray-200 shadow-xl">
 
-    <nav class="p-6 flex justify-between items-center max-w-4xl mx-auto">
-        <div class="flex items-center gap-2">
-            <div class="bus-gradient p-2 rounded-lg text-slate-900">
-                <i data-lucide="bus"></i>
-            </div>
-            <span class="text-2xl font-800 tracking-tighter italic uppercase">Data<span class="text-yellow-400">Bus</span></span>
-        </div>
-        <button class="bg-slate-800 p-2 rounded-full border border-slate-700">
-            <i data-lucide="user" class="w-5 h-5 text-yellow-400"></i>
+    <header class="bg-white p-4 flex justify-between items-center sticky top-0 z-50 border-b shadow-sm">
+        <button class="flex items-center gap-2 text-slate-800 font-bold text-sm">
+            <i data-lucide="menu" class="w-5 h-5"></i> Dashboard
         </button>
-    </nav>
 
-    <header class="text-center py-8 px-4">
-        <h1 class="text-4xl font-extrabold mb-2">Where's the destination?</h1>
-        <p class="text-slate-400">High-speed data delivery across all networks.</p>
+        <div class="flex flex-col items-center">
+            <svg width="45" height="25" viewBox="0 0 120 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 50 H110 V30 C110 20 100 15 90 15 H75 M45 15 H15 C10 15 5 20 5 30 V45" stroke="#1e4ed8" stroke-width="4" stroke-linecap="round"/>
+                <path d="M50 20 C55 12 65 12 70 20" stroke="#facc15" stroke-width="3" stroke-linecap="round"/>
+                <path d="M54 25 C57 20 63 20 66 25" stroke="#facc15" stroke-width="3" stroke-linecap="round"/>
+                <circle cx="60" cy="30" r="2" fill="#facc15"/>
+                <circle cx="25" cy="50" r="6" fill="#1e293b"/>
+                <circle cx="95" cy="50" r="6" fill="#1e293b"/>
+            </svg>
+            <span class="text-[10px] font-black uppercase tracking-tighter text-blue-800 mt-[-4px]">Data<span class="text-yellow-500">Bus</span></span>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <button class="relative bg-slate-100 p-2 rounded-full">
+                <i data-lucide="bell" class="w-5 h-5 text-slate-600"></i>
+                <span class="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white text-[9px] flex items-center justify-center rounded-full font-bold">8</span>
+            </button>
+            <div class="flex items-center gap-1 bg-slate-100 px-2 py-1 rounded-lg">
+                <i data-lucide="user" class="w-4 h-4 text-blue-600"></i>
+                <i data-lucide="chevron-down" class="w-3 h-3 text-slate-400"></i>
+            </div>
+        </div>
     </header>
 
-    <main class="max-w-md mx-auto px-4 space-y-6">
-        
-        <section class="glass-card p-5 rounded-3xl">
-            <div class="flex items-center gap-2 mb-4 text-sm font-bold text-yellow-400 uppercase tracking-widest">
-                <span class="bg-yellow-400 text-slate-900 w-5 h-5 flex items-center justify-center rounded-full text-[10px]">1</span>
-                Select Route
-            </div>
-            <div class="grid grid-cols-3 gap-3">
-                <button onclick="selectNetwork('MTN')" class="network-btn active flex flex-col items-center gap-2 p-4 border-2 border-transparent rounded-2xl transition-all">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/af/MTN_Logo.svg" class="w-10 h-10 rounded-lg">
-                    <span class="text-xs font-bold">MTN</span>
-                </button>
-                <button onclick="selectNetwork('Telecel')" class="network-btn flex flex-col items-center gap-2 p-4 border-2 border-transparent rounded-2xl transition-all">
-                    <div class="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center font-bold italic text-white text-xs">T</div>
-                    <span class="text-xs font-bold">Telecel</span>
-                </button>
-                <button onclick="selectNetwork('AT')" class="network-btn flex flex-col items-center gap-2 p-4 border-2 border-transparent rounded-2xl transition-all">
-                    <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-white text-xs">AT</div>
-                    <span class="text-xs font-bold">AT</span>
-                </button>
-            </div>
-        </section>
+    <div class="bg-blue-600 text-white text-[11px] py-2 px-4 flex justify-between items-center font-bold tracking-wide">
+        <span class="flex items-center gap-2 uppercase italic">
+            <i data-lucide="megaphone" class="w-3 h-3"></i> Keep your orders coming!!
+        </span>
+        <i data-lucide="x" class="w-3 h-3 opacity-70"></i>
+    </div>
 
-        <section class="glass-card p-5 rounded-3xl">
-            <div class="flex items-center gap-2 mb-4 text-sm font-bold text-yellow-400 uppercase tracking-widest">
-                <span class="bg-yellow-400 text-slate-900 w-5 h-5 flex items-center justify-center rounded-full text-[10px]">2</span>
-                Passenger Details
-            </div>
-            <div class="space-y-3">
-                <div class="relative">
-                    <i data-lucide="phone" class="absolute left-4 top-4 w-5 h-5 text-slate-500"></i>
-                    <input type="tel" placeholder="Recipient Phone Number" class="w-full bg-slate-900/50 border border-slate-700 p-4 pl-12 rounded-2xl focus:outline-none focus:border-yellow-400 transition-all">
+    <main class="p-4 space-y-6">
+
+        <div id="roleCard" class="data-card rounded-[2rem] p-6 text-white shadow-lg relative overflow-hidden">
+            <div class="flex justify-between items-start relative z-10">
+                <div>
+                    <p id="greeting" class="text-blue-100 text-sm font-medium">Good Morning, Passenger 👋</p>
+                    <p class="text-[10px] uppercase font-bold tracking-widest opacity-80 mt-4">Total Balance</p>
+                    <h1 class="text-3xl font-black mt-1">GH₵ <span id="balance">0.00</span></h1>
                 </div>
+                <i data-lucide="wifi" class="text-blue-200 opacity-40 w-8 h-8"></i>
             </div>
-        </section>
+
+            <div class="flex gap-3 mt-6 relative z-10">
+                <button class="glass-overlay flex-1 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i> Top-up Wallet
+                </button>
+                <button class="glass-overlay flex-1 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2">
+                    <i data-lucide="rotate-ccw" class="w-4 h-4"></i> History
+                </button>
+            </div>
+
+            <p class="mt-4 text-[11px] font-bold opacity-90 flex items-center gap-2">
+                Role: <span id="roleLabel" class="uppercase">Passenger</span>
+            </p>
+            
+            <button onclick="toggleUserRole()" class="absolute bottom-4 right-6 text-[9px] underline opacity-50">Toggle Agent/Passenger</button>
+        </div>
 
         <section>
-            <div class="flex items-center gap-2 mb-4 text-sm font-bold text-yellow-400 uppercase tracking-widest">
-                <span class="bg-yellow-400 text-slate-900 w-5 h-5 flex items-center justify-center rounded-full text-[10px]">3</span>
-                Select Package
-            </div>
-            <div class="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
-                <div class="min-w-[160px] glass-card p-4 rounded-2xl border-b-4 border-b-yellow-400">
-                    <span class="text-slate-400 text-[10px] font-bold uppercase">SME Data</span>
-                    <h3 class="text-2xl font-black mt-1">5GB</h3>
-                    <div class="text-yellow-400 font-bold mt-2">GH₵ 23.00</div>
-                    <button class="w-full mt-4 bg-slate-100 text-slate-900 text-xs font-800 py-2 rounded-lg">SELECT</button>
+            <h3 class="font-800 text-slate-800 mb-4 px-2">Quick Actions</h3>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="quick-action-card p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center gap-3">
+                    <div class="bg-blue-50 p-3 rounded-xl text-blue-600">
+                        <i data-lucide="wifi"></i>
+                    </div>
+                    <span class="text-xs font-bold text-slate-700">Buy Data</span>
                 </div>
-                <div class="min-w-[160px] glass-card p-4 rounded-2xl">
-                    <span class="text-slate-400 text-[10px] font-bold uppercase">SME Data</span>
-                    <h3 class="text-2xl font-black mt-1">10GB</h3>
-                    <div class="text-yellow-400 font-bold mt-2">GH₵ 45.00</div>
-                    <button class="w-full mt-4 bg-slate-700 text-white text-xs font-800 py-2 rounded-lg">SELECT</button>
+                <div class="quick-action-card p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center gap-3">
+                    <div class="bg-blue-50 p-3 rounded-xl text-blue-600">
+                        <i data-lucide="book-open"></i>
+                    </div>
+                    <span class="text-xs font-bold text-slate-700">AFA Registration</span>
+                </div>
+                <div class="quick-action-card p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center gap-3">
+                    <div class="bg-blue-50 p-3 rounded-xl text-blue-600">
+                        <i data-lucide="history"></i>
+                    </div>
+                    <span class="text-xs font-bold text-slate-700">Order History</span>
+                </div>
+                <div class="quick-action-card p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center gap-3">
+                    <div class="bg-blue-50 p-3 rounded-xl text-blue-600">
+                        <i data-lucide="repeat"></i>
+                    </div>
+                    <span class="text-xs font-bold text-slate-700">Transactions</span>
                 </div>
             </div>
         </section>
-
-        <button class="w-full bus-gradient text-slate-900 font-900 py-5 rounded-2xl shadow-xl shadow-yellow-500/20 flex items-center justify-center gap-2 hover:scale-[1.02] transition-transform">
-            PROCEED TO CHECKOUT <i data-lucide="arrow-right" class="w-5 h-5"></i>
-        </button>
 
     </main>
 
     <script>
         lucide.createIcons();
-        
-        function selectNetwork(net) {
-            // Add logic to highlight selected network
-            console.log("Network changed to: " + net);
+
+        // LOGIC TO REMEMBER
+        let isAgent = false; // Logic: User has signed in AND registered as Agent
+        let userName = "Passenger"; 
+
+        function updateStatus() {
+            const card = document.getElementById('roleCard');
+            const greeting = document.getElementById('greeting');
+            const roleLabel = document.getElementById('roleLabel');
+            const balance = document.getElementById('balance');
+
+            if (isAgent) {
+                card.className = "agent-card rounded-[2rem] p-6 text-white shadow-lg relative overflow-hidden";
+                greeting.innerText = "Good Morning, Agent 👋";
+                roleLabel.innerText = "Agent";
+                // For Agent, balance could represent wallet. For Passenger, total spent history.
+            } else {
+                card.className = "data-card rounded-[2rem] p-6 text-white shadow-lg relative overflow-hidden";
+                greeting.innerText = "Good Morning, Passenger 👋";
+                roleLabel.innerText = "Passenger";
+            }
         }
+
+        function toggleUserRole() {
+            isAgent = !isAgent;
+            updateStatus();
+        }
+        
+        // Initial setup
+        updateStatus();
     </script>
 </body>
 </html>
