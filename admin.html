@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataBus | Admin Control Tower</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        .glass-card { background: white; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .login-screen { background: #0f172a; display: flex; align-items: center; justify-content: center; position: fixed; inset: 0; z-index: 1000; }
+        .hidden-panel { display: none !important; }
+        .toggle-active { background: #22c55e; color: white; }
+        .toggle-inactive { background: #ef4444; color: white; }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <div id="loginScreen" class="login-screen">
+        <div class="bg-white p-10 rounded-3xl shadow-2xl w-full max-w-sm text-center">
+            <div class="mb-6 flex justify-center">
+                <div class="bg-yellow-400 p-4 rounded-2xl"><i data-lucide="shield-check" class="w-8 h-8 text-black"></i></div>
+            </div>
+            <h1 class="text-2xl font-black mb-2">Control Tower</h1>
+            <p class="text-slate-500 text-sm mb-6">Enter Admin PIN to Board</p>
+            <input type="password" id="pinInput" maxlength="4" class="w-full text-center text-3xl tracking-[1em] p-4 bg-slate-100 rounded-2xl border-2 border-transparent focus:border-yellow-400 outline-none mb-6" placeholder="****">
+            <button onclick="checkPin()" class="w-full bg-black text-white py-4 rounded-2xl font-black uppercase tracking-widest hover:bg-slate-800 transition-all">Authorize</button>
+        </div>
+    </div>
+
+    <div id="adminDash" class="hidden-panel">
+        <header class="bg-white border-b border-slate-200 p-6 sticky top-0 z-50">
+            <div class="max-w-6xl mx-auto flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="bg-black p-2 rounded-lg text-yellow-400"><i data-lucide="layout-dashboard"></i></div>
+                    <h2 class="text-xl font-black uppercase tracking-tight">DataBus Admin</h2>
+                </div>
+                <button onclick="location.reload()" class="text-red-500 font-bold text-sm">EXIT SESSION</button>
+            </div>
+        </header>
+
+        <main class="max-w-6xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <section class="lg:col-span-1 space-y-6">
+                <div class="glass-card p-6 rounded-[2rem]">
+                    <h3 class="font-black uppercase text-xs text-slate-400 tracking-widest mb-6">Network Fleet Status</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                            <span class="font-bold">MTN Ghana</span>
+                            <button id="btnMTN" onclick="toggleNetwork('MTN')" class="px-6 py-2 rounded-xl font-black text-[10px] uppercase transition-all">Loading...</button>
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                            <span class="font-bold">Telecel</span>
+                            <button id="btnTELECEL" onclick="toggleNetwork('TELECEL')" class="px-6 py-2 rounded-xl font-black text-[10px] uppercase transition-all">Loading...</button>
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                            <span class="font-bold">AT Ghana</span>
+                            <button id="btnAT" onclick="toggleNetwork('AT')" class="px-6 py-2 rounded-xl font-black text-[10px] uppercase transition-all">Loading...</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-6 rounded-[2rem]">
+                    <h3 class="font-black uppercase text-xs text-slate-400 tracking-widest mb-4">Platform Stats</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-4 bg-blue-50 rounded-2xl text-blue-600"><p class="text-[10px] font-bold">LIVE USERS</p><p class="text-2xl font-black" id="liveUsers">0</p></div>
+                        <div class="p-4 bg-green-50 rounded-2xl text-green-600"><p class="text-[10px] font-bold">TODAY'S GHS</p><p class="text-2xl font-black">₵ 0.00</p></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="lg:col-span-1 space-y-6">
+                <div class="glass-card p-8 rounded-[2rem] border-t-4 border-yellow-400">
+                    <h3 class="font-black uppercase text-xs text-slate-400 tracking-widest mb-6">Broadcast Center</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-500 uppercase">Message Type</label>
+                            <select id="msgType" class="w-full mt-2 p-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold outline-none">
+                                <option value="general">General Announcement</option>
+                                <option value="network">Network Announcement</option>
+                                <option value="maintenance">Maintenance Update</option>
+                                <option value="holiday">Holiday Update</option>
+                                <option value="system">System Update</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-500 uppercase">Broadcast Message</label>
+                            <textarea id="msgContent" rows="3" class="w-full mt-2 p-4 bg-slate-50 border border-slate-200 rounded-2xl font-semibold outline-none focus:ring-2 ring-yellow-400" placeholder="What's happening?"></textarea>
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-bold text-slate-500 uppercase">Timer (Expires In)</label>
+                            <select id="msgTimer" class="w-full mt-2 p-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold outline-none">
+                                <option value="1">1 Hour</option>
+                                <option value="6">6 Hours</option>
+                                <option value="12">12 Hours</option>
+                                <option value="24">24 Hours</option>
+                                <option value="168">7 Days</option>
+                            </select>
+                        </div>
+                        <button onclick="pushAnnouncement()" class="w-full bg-black text-white py-5 rounded-2xl font-black uppercase tracking-widest flex items-center justify-center gap-3">
+                            <i data-lucide="send" class="w-4 h-4"></i> PUSH LIVE
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="lg:col-span-1 space-y-6">
+                <div class="glass-card p-6 rounded-[2rem]">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-black uppercase text-xs text-slate-400 tracking-widest">Active Bundles</h3>
+                        <button onclick="addNewBundle()" class="text-blue-500 font-bold text-xs">+ ADD NEW</button>
+                    </div>
+                    <div id="bundleEditor" class="space-y-4 max-h-[600px] overflow-y-auto pr-2">
+                        </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Use your EXACT Firebase Config from the main app
+        const firebaseConfig = { 
+            apiKey: "AIzaSyCqg3E9tuKRcEnq2DdP6FjtG0LqnAjCHfM", 
+            authDomain: "joeldata-25d06.firebaseapp.com", 
+            projectId: "joeldata-25d06", 
+            storageBucket: "joeldata-25d06.firebasestorage.app", 
+            messagingSenderId: "555857869458", 
+            appId: "1:555857869458:web:db96a97fca5983b142044b" 
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        function checkPin() {
+            const pin = document.getElementById('pinInput').value;
+            if(pin === "1884") {
+                document.getElementById('loginScreen').classList.add('hidden-panel');
+                document.getElementById('adminDash').classList.remove('hidden-panel');
+                initAdmin();
+            } else {
+                alert("ACCESS DENIED: PIN INCORRECT");
+                document.getElementById('pinInput').value = '';
+            }
+        }
+
+        // Initialize Real-time Listeners
+        function initAdmin() {
+            lucide.createIcons();
+            
+            // Listen for Network Status
+            db.collection("system").doc("networks").onSnapshot((doc) => {
+                if(doc.exists) {
+                    const data = doc.data();
+                    updateBtn('MTN', data.MTN);
+                    updateBtn('TELECEL', data.TELECEL);
+                    updateBtn('AT', data.AT);
+                }
+            });
+
+            // Load Bundles
+            loadBundles();
+        }
+
+        function updateBtn(net, status) {
+            const btn = document.getElementById(`btn${net}`);
+            btn.innerText = status ? "LIVE" : "MAINTENANCE";
+            btn.className = `px-6 py-2 rounded-xl font-black text-[10px] uppercase transition-all ${status ? 'toggle-active' : 'toggle-inactive'}`;
+        }
+
+        async function toggleNetwork(net) {
+            const docRef = db.collection("system").doc("networks");
+            const snap = await docRef.get();
+            const current = snap.data()[net];
+            await docRef.update({ [net]: !current });
+        }
+
+        async function pushAnnouncement() {
+            const content = document.getElementById('msgContent').value;
+            const type = document.getElementById('msgType').value;
+            const hours = parseInt(document.getElementById('msgTimer').value);
+            
+            if(!content) return alert("Type a message first!");
+
+            const expiry = new Date();
+            expiry.setHours(expiry.getHours() + hours);
+
+            await db.collection("system").doc("announcement").set({
+                text: content,
+                type: type,
+                expires: expiry.getTime(),
+                active: true
+            });
+
+            alert("Announcement Pushed Successfully!");
+            document.getElementById('msgContent').value = '';
+        }
+
+        async function loadBundles() {
+            const container = document.getElementById('bundleEditor');
+            db.collection("bundles").orderBy("network").onSnapshot(snap => {
+                container.innerHTML = '';
+                snap.forEach(doc => {
+                    const b = doc.data();
+                    container.innerHTML += `
+                        <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl">
+                            <div class="flex justify-between mb-3">
+                                <span class="text-[10px] font-black uppercase text-slate-400">${b.network}</span>
+                                <button onclick="deleteBundle('${doc.id}')" class="text-red-400"><i data-lucide="trash-2" class="w-3 h-3"></i></button>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input onchange="updateBundle('${doc.id}', 'gb', this.value)" type="text" value="${b.gb}" class="p-2 bg-white border border-slate-200 rounded-lg text-xs font-bold">
+                                <input onchange="updateBundle('${doc.id}', 'price', this.value)" type="text" value="${b.price}" class="p-2 bg-white border border-slate-200 rounded-lg text-xs font-bold">
+                            </div>
+                        </div>
+                    `;
+                });
+                lucide.createIcons();
+            });
+        }
+
+        async function updateBundle(id, field, value) {
+            await db.collection("bundles").doc(id).update({ [field]: value });
+        }
+
+        async function deleteBundle(id) {
+            if(confirm("Delete this bundle?")) await db.collection("bundles").doc(id).delete();
+        }
+
+        async function addNewBundle() {
+            const net = prompt("Network? (MTN, TELECEL, or AT)");
+            if(net) {
+                await db.collection("bundles").add({
+                    network: net.toUpperCase(),
+                    gb: "1 GB",
+                    price: "5.00"
+                });
+            }
+        }
+    </script>
+</body>
+</html>
