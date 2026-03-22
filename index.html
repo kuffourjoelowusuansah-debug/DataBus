@@ -6,6 +6,7 @@
     <title>DataBus | High-Speed Data Transit</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://js.paystack.co/v2/inline.js"></script>
     
@@ -45,53 +46,23 @@
 
     <div id="homeView">
         <header class="p-5 flex justify-between items-center bg-black/50 backdrop-blur-xl sticky top-0 z-50">
-            <div class="flex items-center">
-                <svg viewBox="0 0 1000 700" width="160" height="112" style="margin-left: -20px;">
-                    <path d="M485 240 Q495 245 490 260 Q480 270 482 280 Q485 295 470 300 Q450 305 440 300 M430 300 Q420 305 400 300 Q380 295 385 280 Q388 270 378 260 Q370 245 380 240" fill="#E8831B"/>
-                    <path d="M495 260 L495 360 L440 370 L435 320 Q435 260 495 260 M370 260 L370 360 L430 370 L435 320 Q435 260 370 260" fill="#0D2C54"/>
-                    <rect x="390" y="275" width="20" height="20" rx="3" fill="#E8831B"/>
-                    <rect x="420" y="275" width="20" height="20" rx="3" fill="#E8831B"/>
-                    <path d="M455 260 C485 240 540 240 570 260 L570 310 Q570 330 550 330 L480 330 Q460 330 460 310 Z" fill="#E8831B"/>
-                    <rect x="480" y="255" width="70" height="4" rx="2" fill="white"/>
-                    <rect x="480" y="270" width="70" height="40" rx="3" fill="#E8831B"/>
-                    <rect x="485" y="275" width="60" height="30" rx="2" fill="#0D2C54"/>
-                    <circle cx="488" cy="315" r="5" fill="#E8831B"/>
-                    <circle cx="542" cy="315" r="5" fill="#E8831B"/>
-                    <rect x="495" y="312" width="40" height="6" rx="3" fill="#E8831B"/>
-                    <circle cx="400" cy="360" r="22" fill="#0D2C54"/>
-                    <circle cx="400" cy="360" r="9" fill="#0D2C54" stroke="white" stroke-width="4"/>
-                    <circle cx="530" cy="360" r="22" fill="#E8831B"/>
-                    <circle cx="530" cy="360" r="9" fill="#E8831B" stroke="white" stroke-width="4"/>
-                    <path d="M190 280 H360" stroke="#0D2C54" stroke-width="12" stroke-linecap="round"/>
-                    <path d="M190 320 H340" stroke="#0D2C54" stroke-width="12" stroke-linecap="round"/>
-                    <path d="M190 360 H320" stroke="#0D2C54" stroke-width="12" stroke-linecap="round"/>
-                    <path d="M190 400 H300" stroke="#0D2C54" stroke-width="12" stroke-linecap="round"/>
-                    <rect x="230" y="295" width="12" height="12" rx="2" fill="#0D2C54"/>
-                    <rect x="250" y="340" width="12" height="12" rx="2" fill="#0D2C54"/>
-                    <rect x="230" y="380" width="12" height="12" rx="2" fill="#0D2C54"/>
-                    <rect x="270" y="420" width="12" height="12" rx="2" fill="#0D2C54"/>
-                    <path d="M590 320 L620 320 Q660 320 660 360 L660 380 Q660 420 620 420 L590 420" fill="#E8831B"/>
-                    <rect x="615" y="315" width="10" height="10" rx="2" fill="#E8831B"/>
-                    <rect x="615" y="415" width="10" height="10" rx="2" fill="#E8831B"/>
-                    <path d="M680 320 C730 280 810 280 860 320" fill="#E8831B"/>
-                    <path d="M710 350 C750 320 800 320 840 350" fill="#E8831B"/>
-                    <path d="M740 380 C760 360 790 360 810 380" fill="#E8831B"/>
-                    <path d="M760 410 C770 400 780 400 790 410" fill="#E8831B"/>
-                    
-                    <text x="130" y="600" font-family="'Plus Jakarta Sans', sans-serif" font-size="120" font-weight="800" fill="#0D2C54">Data</text>
-                    <text x="410" y="600" font-family="'Plus Jakarta Sans', sans-serif" font-size="120" font-weight="800" fill="#E8831B">BusGH</text>
+            <button onclick="handleAuthClick()" id="authBtn" class="bg-slate-900 text-[10px] font-black px-4 py-2 rounded-xl border border-slate-800 flex items-center gap-2 tracking-widest text-yellow-400">
+                <i data-lucide="user" class="w-4 h-4"></i> LOGIN
+            </button>
+            <div class="flex flex-col items-center">
+                <svg width="40" height="25" viewBox="0 0 120 60" fill="none">
+                    <path d="M10 50 H110 V30 C110 20 100 15 90 15 H75 M45 15 H15 C10 15 5 20 5 30 V45" stroke="#facc15" stroke-width="6" stroke-linecap="round"/>
+                    <path d="M50 20 C55 12 65 12 70 20" stroke="#facc15" stroke-width="4" stroke-linecap="round"/>
+                    <circle cx="60" cy="30" r="3" fill="#facc15"/>
+                    <circle cx="25" cy="50" r="7" fill="#facc15"/>
+                    <circle cx="95" cy="50" r="7" fill="#facc15"/>
                 </svg>
+                <span class="text-xs font-black italic uppercase text-white">Data<span class="text-yellow-400">Bus</span></span>
             </div>
-
-            <div class="flex items-center gap-3">
-                <button onclick="showInbox()" class="relative bg-slate-900 p-2 rounded-xl border border-slate-800 flex items-center justify-center">
-                    <i data-lucide="bell" class="w-5 h-5 text-white"></i>
-                    <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-600 text-white text-[9px] flex items-center justify-center rounded-full font-black">2</span>
-                </button>
-                <button onclick="handleAuthClick()" id="authBtn" class="bg-slate-900 text-[10px] font-black px-4 py-2 rounded-xl border border-slate-800 flex items-center gap-2 tracking-widest text-yellow-400">
-                    <i data-lucide="circle-user-round" class="w-4 h-4"></i> LOGIN
-                </button>
-            </div>
+            <button onclick="showInbox()" class="relative bg-slate-900 p-2 rounded-xl border border-slate-800">
+                <i data-lucide="bell" class="w-5 h-5 text-white"></i>
+                <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-600 text-white text-[9px] flex items-center justify-center rounded-full font-black">2</span>
+            </button>
         </header>
 
         <div class="bg-blue-600 text-white text-[10px] py-2 px-5 flex justify-between items-center font-black uppercase tracking-widest">
