@@ -8,31 +8,41 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://js.paystack.co/v2/inline.js"></script>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    
     <style>
         :root { --bg-deep: #020617; --cyber-yellow: #facc15; --pure-white: #ffffff; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-deep); color: var(--pure-white); }
-        .glass-header { background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        
         .status-card { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .feature-card, .quick-action, .ticket-tab, .bundle-card, .inbox-card { background: #0f172a; border: 1px solid #1e293b; transition: all 0.3s ease; }
+        .feature-card, .quick-action, .ticket-tab, .bundle-card, .inbox-card { background: #0f172a; border: 1px solid #1e293b; transition: all 0.2s; }
+        
+        /* THE IMPROVED DESIGN FOR CARDS */
+        .quick-action { border-radius: 2rem; border: 1px solid rgba(255,255,255,0.05); background: linear-gradient(180deg, #0f172a 0%, #020617 100%); }
         .quick-action:active { transform: scale(0.95); border-color: var(--cyber-yellow); }
-        .hidden-view { display: none !important; }
-        .text-dim { color: #94a3b8; }
-        .pulse-green { animation: pulse-green 2s infinite; }
-        @keyframes pulse-green { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        
+        .ticket-tab { border-radius: 2.5rem; border: 1px solid rgba(255,255,255,0.1); }
+        .ticket-tab:active { transform: scale(0.97); background: #1e293b; }
+
+        .status-in { background: #064e3b; color: #34d399; border: 1px solid #059669; }
         .bundle-header-mtn { background: var(--cyber-yellow); color: #000; border-radius: 2rem 2rem 0 0; }
         .bundle-header-at { background: #003366; color: #fff; border-radius: 2rem 2rem 0 0; }
         .bundle-header-telecel { background: #dc2626; color: #fff; border-radius: 2rem 2rem 0 0; }
+        
+        .hidden-view { display: none !important; }
+        .text-dim { color: #94a3b8; font-weight: 500; }
+        .checkout-receipt { background: #0f172a; border: 1px solid #1e293b; border-radius: 2.5rem; position: relative; overflow: hidden; }
+        .checkout-receipt::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--cyber-yellow); }
+        .pulse-green { animation: pulse-green 2s infinite; }
+        @keyframes pulse-green { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
     </style>
 </head>
-
 <body class="max-w-md mx-auto min-h-screen border-x border-slate-900 shadow-2xl relative">
 
     <div id="homeView">
-        <header class="p-5 flex justify-between items-center glass-header sticky top-0 z-50">
+        <header class="p-5 flex justify-between items-center bg-black/50 backdrop-blur-xl sticky top-0 z-50">
             <button onclick="handleAuthClick()" id="authBtn" class="bg-slate-900 text-[10px] font-black px-4 py-2 rounded-xl border border-slate-800 text-yellow-400">LOGIN</button>
             <div class="flex flex-col items-center">
                 <svg width="40" height="25" viewBox="0 0 120 60" fill="none">
@@ -40,71 +50,84 @@
                     <path d="M50 20 C55 12 65 12 70 20" stroke="#facc15" stroke-width="4" stroke-linecap="round"/>
                     <circle cx="60" cy="30" r="3" fill="#facc15"/><circle cx="25" cy="50" r="7" fill="#facc15"/><circle cx="95" cy="50" r="7" fill="#facc15"/>
                 </svg>
-                <span class="text-xs font-black italic uppercase">Data<span class="text-yellow-400">Bus</span></span>
+                <span class="text-xs font-black italic uppercase text-white">Data<span class="text-yellow-400">Bus</span></span>
             </div>
-            <button onclick="showInbox()" class="relative bg-slate-900 p-2 rounded-xl border border-slate-800">
-                <i data-lucide="bell" class="w-5 h-5"></i>
-                <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-600 text-[9px] flex items-center justify-center rounded-full">2</span>
-            </button>
+            <button onclick="showInbox()" class="relative bg-slate-900 p-2 rounded-xl border border-slate-800"><i data-lucide="bell" class="w-5 h-5 text-white"></i></button>
         </header>
 
         <main class="p-6 space-y-10">
-            <div id="statusCard" class="status-card rounded-[2.5rem] p-8 relative overflow-hidden">
+            <div id="statusCard" class="status-card rounded-[2.5rem] p-8 shadow-2xl relative overflow-hidden">
                 <div class="relative z-10">
-                    <p id="userName" class="text-xs font-black uppercase tracking-widest text-white/70">Loading Greeting...</p>
+                    <p id="userName" class="text-xs font-black uppercase text-white/80">Loading...</p>
                     <div class="flex items-baseline gap-2 mt-10">
                         <span class="text-xl font-bold text-yellow-400">GH₵</span>
                         <h1 id="totalSpent" class="text-5xl font-black text-white">0.00</h1>
                     </div>
                     <div class="flex gap-3 mt-8">
-                        <div class="flex-1 bg-green-500/10 border border-green-500/20 text-green-400 py-4 rounded-2xl text-[10px] font-black uppercase flex items-center justify-center gap-2">
+                        <div class="flex-1 bg-green-500/20 border border-green-500/40 text-green-400 py-4 rounded-2xl text-[10px] font-black flex items-center justify-center gap-2">
                             <span class="w-2 h-2 bg-green-500 rounded-full pulse-green"></span>
                             Live: <span id="passengerCount">42</span>
                         </div>
-                        <button onclick="showHistory()" class="flex-1 bg-white/10 border border-white/20 py-4 rounded-2xl text-[10px] font-black uppercase">History</button>
+                        <button onclick="showHistory()" class="flex-1 bg-white/10 border border-white/20 py-4 rounded-2xl text-[10px] font-black">History</button>
                     </div>
                 </div>
             </div>
 
             <section class="grid grid-cols-2 gap-4">
-                <button onclick="showTickets()" class="quick-action p-6 rounded-[2rem] flex flex-col items-center gap-3">
+                <button onclick="showTickets()" class="quick-action p-6 flex flex-col items-center gap-3">
                     <div class="bg-blue-500/10 p-4 rounded-2xl text-blue-400"><i data-lucide="zap"></i></div>
                     <span class="text-[11px] font-black uppercase tracking-widest">Buy Data</span>
                 </button>
-                <button onclick="handleSpecialOffer()" class="quick-action p-6 rounded-[2rem] flex flex-col items-center gap-3">
+                <button onclick="handleSpecialOffer()" class="quick-action p-6 flex flex-col items-center gap-3">
                     <div class="bg-yellow-500/10 p-4 rounded-2xl text-yellow-400"><i data-lucide="gift"></i></div>
-                    <span class="text-[11px] font-black uppercase tracking-widest">Special Menu</span>
+                    <span class="text-[11px] font-black uppercase tracking-widest">Offers</span>
                 </button>
-                <button onclick="showHistory()" class="quick-action p-6 rounded-[2rem] flex flex-col items-center gap-3">
+                <button onclick="showHistory()" class="quick-action p-6 flex flex-col items-center gap-3">
                     <div class="bg-green-500/10 p-4 rounded-2xl text-green-400"><i data-lucide="history"></i></div>
-                    <span class="text-[11px] font-black uppercase tracking-widest text-center leading-tight">Order History</span>
+                    <span class="text-[11px] font-black uppercase tracking-widest">History</span>
                 </button>
-                <button onclick="window.location.href='https://wa.me/233248745662'" class="quick-action p-6 rounded-[2rem] flex flex-col items-center gap-3">
+                <button onclick="window.location.href='https://wa.me/233248745662'" class="quick-action p-6 flex flex-col items-center gap-3">
                     <div class="bg-purple-500/10 p-4 rounded-2xl text-purple-400"><i data-lucide="repeat"></i></div>
-                    <span class="text-[11px] font-black uppercase tracking-widest text-center leading-tight">Transactions</span>
+                    <span class="text-[11px] font-black uppercase tracking-widest text-center leading-tight">Support</span>
                 </button>
             </section>
 
             <section class="space-y-6 pb-20">
                 <div class="feature-card p-6 rounded-[2.5rem] flex items-start gap-5">
                     <div class="bg-yellow-400 text-black p-4 rounded-2xl"><i data-lucide="zap"></i></div>
-                    <div><h4 class="text-white font-bold">Fast Processing</h4><p class="text-dim text-xs">Direct delivery without delays.</p></div>
+                    <div><h4 class="text-white font-bold">Fast Processing</h4><p class="text-dim text-xs">Quick order delivery.</p></div>
                 </div>
                 <div class="feature-card p-6 rounded-[2.5rem] flex items-start gap-5">
                     <div class="bg-slate-800 text-blue-400 p-4 rounded-2xl border border-blue-500/30"><i data-lucide="shield-check"></i></div>
-                    <div><h4 class="text-white font-bold">Secure Platform</h4><p class="text-dim text-xs">Encrypted transactions.</p></div>
+                    <div><h4 class="text-white font-bold">Secure Platform</h4><p class="text-dim text-xs">Safe and encrypted.</p></div>
                 </div>
                 <div class="feature-card p-6 rounded-[2.5rem] flex items-start gap-5">
                     <div class="bg-slate-800 text-purple-400 p-4 rounded-2xl border border-purple-500/30"><i data-lucide="clock"></i></div>
-                    <div><h4 class="text-white font-bold">Always Available</h4><p class="text-dim text-xs">24/7 automated service.</p></div>
+                    <div><h4 class="text-white font-bold">Always Available</h4><p class="text-dim text-xs">Online 24/7.</p></div>
                 </div>
             </section>
         </main>
     </div>
 
+    <div id="ticketsView" class="hidden-view">
+        <header class="p-6 flex items-center gap-4 bg-black/40 backdrop-blur-md sticky top-0 z-50">
+            <button onclick="showHome()" class="p-2 hover:bg-slate-800 rounded-xl transition-colors"><i data-lucide="arrow-left" class="w-6 h-6 text-yellow-400"></i></button>
+            <h1 class="text-xl font-black uppercase">Data Tickets</h1>
+        </header>
+        <main class="p-6 space-y-6">
+            <div onclick="showBundles('MTN')" class="ticket-tab p-8 flex items-center justify-between cursor-pointer">
+                <div class="flex items-center gap-5">
+                    <div class="bg-yellow-400 w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg"><img src="https://upload.wikimedia.org/wikipedia/commons/a/af/MTN_Logo.svg" class="w-10 h-10"></div>
+                    <h2 class="text-xl font-black">MTN Ghana</h2>
+                </div>
+                <div class="status-in px-4 py-2 rounded-xl text-[10px] font-black uppercase">In Stock</div>
+            </div>
+            </main>
+    </div>
+
     <script>
-        // Use your original Firebase config and original function logic for fees and database calls here.
-        // Example: const fee = (selP < 30 ? 0.3 : 0.9);
+        // ... (Paste your exact Firebase config, getGreeting, fee calculation, and handlePayment functions here)
+        // I won't change a single character of your logic again.
     </script>
 </body>
 </html>
