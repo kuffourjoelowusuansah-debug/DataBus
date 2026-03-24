@@ -3,38 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DataBus | High-Speed Data Transit</title>
+    <title>UniLink GH | High-Speed Data Transit</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://js.paystack.co/v2/inline.js"></script>
     
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: { sans: ['Poppins', 'sans-serif'] },
+            colors: {
+              slate: { 
+                400: '#D8C9D9', /* Soft muted plum for readable text */
+                500: '#A38FA6', 
+                600: '#A15142', /* Burnt Sienna */
+                800: '#6A4374', /* Plum Amethyst for cards/borders */
+                900: '#3D2542'  /* Deep Plum for backgrounds */
+              },
+              yellow: { 400: '#FF9900', 500: '#FF9900' }, /* Light Tangerine */
+              green: { 400: '#94CF76', 500: '#94CF76' },  /* Lime Green */
+              blue: { 400: '#FFE181', 500: '#6A4374', 600: '#6A4374' }, /* Sun Gold & Plum */
+              purple: { 400: '#FFE181', 500: '#FFE181' }, /* Sun Gold */
+              red: { 600: '#A15142' } /* Burnt Sienna */
+            }
+          }
+        }
+      }
+    </script>
+    
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --bg-deep: #020617; --cyber-yellow: #facc15; --pure-white: #ffffff; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-deep); color: var(--pure-white); }
+        :root {
+            --bg-deep: #221326; /* Very dark plum background */
+            --cyber-yellow: #FF9900; /* Light Tangerine mapped */
+            --pure-white: #ffffff;
+        }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--bg-deep); background-image: radial-gradient(circle at top, #3D2542 0%, #221326 100%); color: var(--pure-white); min-height: 100vh;}
         
-        .status-card { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .feature-card, .quick-action, .ticket-tab, .bundle-card, .inbox-card { background: #0f172a; border: 1px solid #1e293b; transition: all 0.2s; }
+        /* Updated Cards to use Plum Amethyst with a Glassmorphism feel */
+        .status-card { background: linear-gradient(135deg, #6A4374 0%, #3D2542 100%); border: 1px solid rgba(255, 225, 129, 0.2); }
+        .feature-card, .quick-action, .ticket-tab, .bundle-card, .inbox-card { background: rgba(106, 67, 116, 0.25); backdrop-filter: blur(12px); border: 1px solid rgba(106, 67, 116, 0.8); transition: all 0.2s; }
+        .quick-action:active, .ticket-tab:active { transform: scale(0.96); border-color: var(--cyber-yellow); }
         
-        /* THE IMPROVED DESIGN FOR CARDS */
-        .quick-action { border-radius: 2rem; border: 1px solid rgba(255,255,255,0.05); background: linear-gradient(180deg, #0f172a 0%, #020617 100%); }
-        .quick-action:active { transform: scale(0.95); border-color: var(--cyber-yellow); }
+        /* Status Badges */
+        .status-in { background: rgba(148, 207, 118, 0.15); color: #94CF76; border: 1px solid #94CF76; }
+        .status-out { background: rgba(161, 81, 66, 0.15); color: #A15142; border: 1px solid #A15142; }
         
-        .ticket-tab { border-radius: 2.5rem; border: 1px solid rgba(255,255,255,0.1); }
-        .ticket-tab:active { transform: scale(0.97); background: #1e293b; }
-
-        .status-in { background: #064e3b; color: #34d399; border: 1px solid #059669; }
-        .bundle-header-mtn { background: var(--cyber-yellow); color: #000; border-radius: 2rem 2rem 0 0; }
-        .bundle-header-at { background: #003366; color: #fff; border-radius: 2rem 2rem 0 0; }
-        .bundle-header-telecel { background: #dc2626; color: #fff; border-radius: 2rem 2rem 0 0; }
+        /* Bundle Headers mapped to Triadic */
+        .bundle-header-mtn { background: #FF9900; color: #000; border-radius: 2rem 2rem 0 0; }
+        .bundle-header-at { background: #6A4374; color: #fff; border-radius: 2rem 2rem 0 0; }
+        .bundle-header-telecel { background: #A15142; color: #fff; border-radius: 2rem 2rem 0 0; }
         
         .hidden-view { display: none !important; }
-        .text-dim { color: #94a3b8; font-weight: 500; }
-        .checkout-receipt { background: #0f172a; border: 1px solid #1e293b; border-radius: 2.5rem; position: relative; overflow: hidden; }
+        .text-dim { color: #A38FA6; font-weight: 500; }
+
+        .checkout-receipt { background: rgba(106, 67, 116, 0.25); backdrop-filter: blur(12px); border: 1px solid #6A4374; border-radius: 2.5rem; position: relative; overflow: hidden; }
         .checkout-receipt::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--cyber-yellow); }
+
         .pulse-green { animation: pulse-green 2s infinite; }
         @keyframes pulse-green { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
     </style>
@@ -42,92 +71,446 @@
 <body class="max-w-md mx-auto min-h-screen border-x border-slate-900 shadow-2xl relative">
 
     <div id="homeView">
-        <header class="p-5 flex justify-between items-center bg-black/50 backdrop-blur-xl sticky top-0 z-50">
-            <button onclick="handleAuthClick()" id="authBtn" class="bg-slate-900 text-[10px] font-black px-4 py-2 rounded-xl border border-slate-800 text-yellow-400">LOGIN</button>
+        <header class="p-5 flex justify-between items-center bg-black/30 backdrop-blur-xl sticky top-0 z-50">
+            <button onclick="handleAuthClick()" id="authBtn" class="bg-slate-900 text-[10px] font-black px-4 py-2 rounded-xl border border-slate-800 flex items-center gap-2 tracking-widest text-yellow-400">
+                <i data-lucide="user" class="w-4 h-4"></i> LOGIN
+            </button>
             <div class="flex flex-col items-center">
                 <svg width="40" height="25" viewBox="0 0 120 60" fill="none">
-                    <path d="M10 50 H110 V30 C110 20 100 15 90 15 H75 M45 15 H15 C10 15 5 20 5 30 V45" stroke="#facc15" stroke-width="6" stroke-linecap="round"/>
-                    <path d="M50 20 C55 12 65 12 70 20" stroke="#facc15" stroke-width="4" stroke-linecap="round"/>
-                    <circle cx="60" cy="30" r="3" fill="#facc15"/><circle cx="25" cy="50" r="7" fill="#facc15"/><circle cx="95" cy="50" r="7" fill="#facc15"/>
+                    <path d="M10 50 H110 V30 C110 20 100 15 90 15 H75 M45 15 H15 C10 15 5 20 5 30 V45" stroke="#FF9900" stroke-width="6" stroke-linecap="round"/>
+                    <path d="M50 20 C55 12 65 12 70 20" stroke="#FF9900" stroke-width="4" stroke-linecap="round"/>
+                    <circle cx="60" cy="30" r="3" fill="#FF9900"/>
+                    <circle cx="25" cy="50" r="7" fill="#FF9900"/>
+                    <circle cx="95" cy="50" r="7" fill="#FF9900"/>
                 </svg>
-                <span class="text-xs font-black italic uppercase text-white">Data<span class="text-yellow-400">Bus</span></span>
+                <span class="text-xs font-black italic uppercase text-white">Uni<span class="text-yellow-400">Link</span></span>
             </div>
-            <button onclick="showInbox()" class="relative bg-slate-900 p-2 rounded-xl border border-slate-800"><i data-lucide="bell" class="w-5 h-5 text-white"></i></button>
+            <button onclick="showInbox()" class="relative bg-slate-900 p-2 rounded-xl border border-slate-800">
+                <i data-lucide="bell" class="w-5 h-5 text-white"></i>
+                <span class="absolute -top-1 -right-1 w-4 h-4 bg-red-600 text-white text-[9px] flex items-center justify-center rounded-full font-black">2</span>
+            </button>
         </header>
+
+        <div class="bg-blue-600 text-white text-[10px] py-2 px-5 flex justify-between items-center font-black uppercase tracking-widest">
+            <span><i data-lucide="megaphone" class="w-3 h-3 inline mr-2"></i> Keep your orders coming!!</span>
+            <i data-lucide="x" class="w-3 h-3 opacity-50 cursor-pointer"></i>
+        </div>
 
         <main class="p-6 space-y-10">
             <div id="statusCard" class="status-card rounded-[2.5rem] p-8 shadow-2xl relative overflow-hidden">
                 <div class="relative z-10">
-                    <p id="userName" class="text-xs font-black uppercase text-white/80">Loading...</p>
-                    <div class="flex items-baseline gap-2 mt-10">
+                    <div class="flex justify-between items-center">
+                        <p id="userName" class="text-xs font-black uppercase tracking-[0.2em] text-white opacity-80">Loading Greeting...</p>
+                        <span class="text-[9px] font-black px-3 py-1 bg-white/10 rounded-full border border-white/20">STUDENT</span>
+                    </div>
+                    <p class="mt-10 text-[10px] font-black text-white/50 uppercase tracking-widest">Total Spent</p>
+                    <div class="flex items-baseline gap-2 mt-1">
                         <span class="text-xl font-bold text-yellow-400">GH₵</span>
-                        <h1 id="totalSpent" class="text-5xl font-black text-white">0.00</h1>
+                        <h1 id="totalSpent" class="text-5xl font-black tracking-tighter text-white">0.00</h1>
                     </div>
                     <div class="flex gap-3 mt-8">
-                        <div class="flex-1 bg-green-500/20 border border-green-500/40 text-green-400 py-4 rounded-2xl text-[10px] font-black flex items-center justify-center gap-2">
+                        <button class="flex-1 bg-green-500/20 border border-green-500/40 text-green-400 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2">
                             <span class="w-2 h-2 bg-green-500 rounded-full pulse-green"></span>
-                            Live: <span id="passengerCount">42</span>
-                        </div>
-                        <button onclick="showHistory()" class="flex-1 bg-white/10 border border-white/20 py-4 rounded-2xl text-[10px] font-black">History</button>
+                            Live: <span id="passengerCount">42</span> <span class="text-[8px] opacity-60">Students</span>
+                        </button>
+                        <button onclick="showHistory()" class="flex-1 bg-white/10 border border-white/20 py-4 rounded-2xl text-[10px] font-black uppercase tracking-wider">History</button>
                     </div>
                 </div>
+                <i data-lucide="wifi" class="absolute -right-10 -bottom-10 w-40 h-40 opacity-5 rotate-12 text-white"></i>
             </div>
 
-            <section class="grid grid-cols-2 gap-4">
-                <button onclick="showTickets()" class="quick-action p-6 flex flex-col items-center gap-3">
-                    <div class="bg-blue-500/10 p-4 rounded-2xl text-blue-400"><i data-lucide="zap"></i></div>
-                    <span class="text-[11px] font-black uppercase tracking-widest">Buy Data</span>
-                </button>
-                <button onclick="handleSpecialOffer()" class="quick-action p-6 flex flex-col items-center gap-3">
-                    <div class="bg-yellow-500/10 p-4 rounded-2xl text-yellow-400"><i data-lucide="gift"></i></div>
-                    <span class="text-[11px] font-black uppercase tracking-widest">Offers</span>
-                </button>
-                <button onclick="showHistory()" class="quick-action p-6 flex flex-col items-center gap-3">
-                    <div class="bg-green-500/10 p-4 rounded-2xl text-green-400"><i data-lucide="history"></i></div>
-                    <span class="text-[11px] font-black uppercase tracking-widest">History</span>
-                </button>
-                <button onclick="window.location.href='https://wa.me/233248745662'" class="quick-action p-6 flex flex-col items-center gap-3">
-                    <div class="bg-purple-500/10 p-4 rounded-2xl text-purple-400"><i data-lucide="repeat"></i></div>
-                    <span class="text-[11px] font-black uppercase tracking-widest text-center leading-tight">Support</span>
-                </button>
+            <section>
+                <h3 class="text-xs font-black text-white uppercase tracking-[0.3em] mb-6 flex items-center gap-4">Quick Actions <span class="h-px flex-1 bg-slate-800"></span></h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="showTickets()" class="quick-action p-6 rounded-[2rem] flex flex-col items-center gap-3">
+                        <div class="bg-blue-500/10 p-4 rounded-2xl text-blue-400"><i data-lucide="zap"></i></div>
+                        <span class="text-[11px] font-black uppercase tracking-widest">Buy Data</span>
+                    </button>
+                    <button onclick="handleSpecialOffer()" class="quick-action p-6 rounded-[2rem] flex flex-col items-center gap-3">
+                        <div class="bg-yellow-500/10 p-4 rounded-2xl text-yellow-400"><i data-lucide="gift"></i></div>
+                        <span class="text-[11px] font-black uppercase tracking-widest text-center leading-tight">Special offer menu</span>
+                    </button>
+                    <button onclick="showHistory()" class="quick-action p-6 rounded-[2rem] flex flex-col items-center gap-3">
+                        <div class="bg-green-500/10 p-4 rounded-2xl text-green-400"><i data-lucide="history"></i></div>
+                        <span class="text-[11px] font-black uppercase tracking-widest text-center leading-tight">Order History</span>
+                    </button>
+                    <button onclick="window.location.href='https://wa.me/233248745662'" class="quick-action p-6 rounded-[2rem] flex flex-col items-center gap-3">
+                        <div class="bg-purple-500/10 p-4 rounded-2xl text-purple-400"><i data-lucide="repeat"></i></div>
+                        <span class="text-[11px] font-black uppercase tracking-widest text-center leading-tight">Transactions</span>
+                    </button>
+                </div>
             </section>
 
-            <section class="space-y-6 pb-20">
+            <section class="mt-16 space-y-6 pb-20">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-black text-white">Why Choose <span class="text-yellow-400">UniLink?</span></h2>
+                    <p class="text-dim text-[10px] uppercase tracking-widest mt-2">Ghana's Student Connection</p>
+                </div>
                 <div class="feature-card p-6 rounded-[2.5rem] flex items-start gap-5">
-                    <div class="bg-yellow-400 text-black p-4 rounded-2xl"><i data-lucide="zap"></i></div>
-                    <div><h4 class="text-white font-bold">Fast Processing</h4><p class="text-dim text-xs">Quick order delivery.</p></div>
+                    <div class="bg-yellow-400 text-black p-4 rounded-2xl"><i data-lucide="zap" class="stroke-[3]"></i></div>
+                    <div><h4 class="text-white text-lg font-bold">Fast Processing</h4><p class="text-dim text-sm mt-1">Quick order delivery directly to your phone without delays.</p></div>
                 </div>
                 <div class="feature-card p-6 rounded-[2.5rem] flex items-start gap-5">
                     <div class="bg-slate-800 text-blue-400 p-4 rounded-2xl border border-blue-500/30"><i data-lucide="shield-check"></i></div>
-                    <div><h4 class="text-white font-bold">Secure Platform</h4><p class="text-dim text-xs">Safe and encrypted.</p></div>
+                    <div><h4 class="text-white text-lg font-bold">Secure Platform</h4><p class="text-dim text-sm mt-1">Safe and encrypted transactions for your wallet security.</p></div>
                 </div>
                 <div class="feature-card p-6 rounded-[2.5rem] flex items-start gap-5">
                     <div class="bg-slate-800 text-purple-400 p-4 rounded-2xl border border-purple-500/30"><i data-lucide="clock"></i></div>
-                    <div><h4 class="text-white font-bold">Always Available</h4><p class="text-dim text-xs">Online 24/7.</p></div>
+                    <div><h4 class="text-white text-lg font-bold">Always Available</h4><p class="text-dim text-sm mt-1">Our system is online 24/7 to serve your data needs.</p></div>
                 </div>
             </section>
         </main>
     </div>
 
+    <div id="specialOfferView" class="hidden-view">
+        <header class="p-6 flex items-center gap-4 bg-black/40 backdrop-blur-md sticky top-0 z-50">
+            <button onclick="showHome()" class="p-2 hover:bg-slate-800 rounded-xl">
+                <i data-lucide="arrow-left" class="w-6 h-6 text-yellow-400"></i>
+            </button>
+            <h1 class="text-xl font-black tracking-tight uppercase">Special Offer</h1>
+        </header>
+        <main class="p-6">
+            <div id="offerForm" class="checkout-receipt p-8 space-y-6">
+                <div class="flex justify-between items-center">
+                    <p class="text-[10px] font-bold text-yellow-400 uppercase tracking-widest">Ends In:</p>
+                    <p id="offerTimer" class="text-white font-black font-mono text-lg">00:00:00</p>
+                </div>
+                <div class="space-y-4 pt-4 border-t border-slate-800">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black uppercase text-slate-500 tracking-widest">Account Number</label>
+                        <input type="tel" id="offerNum" class="w-full p-4 rounded-2xl bg-slate-900 border border-slate-800 text-white font-bold outline-none focus:border-yellow-400" placeholder="02XXXXXXXX">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black uppercase text-slate-500 tracking-widest">Promo Code</label>
+                        <input type="text" id="offerCode" class="w-full p-4 rounded-2xl bg-slate-900 border border-slate-800 text-white font-bold outline-none focus:border-yellow-400" placeholder="Enter Code">
+                    </div>
+                </div>
+                <button onclick="submitSpecialOffer()" class="w-full bg-yellow-400 text-black py-5 rounded-2xl font-black uppercase tracking-widest active:scale-95 transition-all">Submit Details</button>
+            </div>
+            <div id="offerSuccess" class="hidden-view checkout-receipt p-8 space-y-6 text-center">
+                <div class="flex justify-center"><i data-lucide="check-circle" class="w-16 h-16 text-green-500"></i></div>
+                <h2 class="text-2xl font-black">Credentials received.</h2>
+                <p class="text-dim text-sm">You have a one to ten chance to win!</p>
+                <button onclick="sendToWhatsApp()" class="w-full bg-green-500 text-white py-5 rounded-2xl font-black uppercase tracking-widest flex items-center justify-center gap-2">
+                    <i data-lucide="message-circle"></i> Send to WhatsApp
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <div id="inboxView" class="hidden-view">
+        <header class="p-6 flex items-center gap-4 bg-black/40 backdrop-blur-md sticky top-0 z-50">
+            <button onclick="showHome()" class="p-2 hover:bg-slate-800 rounded-xl">
+                <i data-lucide="arrow-left" class="w-6 h-6 text-yellow-400"></i>
+            </button>
+            <h1 class="text-xl font-black tracking-tight uppercase">Inbox</h1>
+        </header>
+        <main class="p-6 space-y-4">
+            <div class="inbox-card p-6 rounded-[2rem] border-l-4 border-yellow-400">
+                <div class="flex justify-between items-start mb-2">
+                    <span class="text-yellow-400 text-[9px] font-black uppercase tracking-widest">Announcement</span>
+                    <span class="text-slate-500 text-[9px]">Just Now</span>
+                </div>
+                <h4 class="text-white font-bold mb-1">Welcome to UniLink GH!</h4>
+                <p class="text-slate-400 text-xs leading-relaxed">Your high-speed data transit is now live. Enjoy instant deliveries and secure payments.</p>
+            </div>
+            <div class="inbox-card p-6 rounded-[2rem] border-l-4 border-blue-500 opacity-80">
+                <div class="flex justify-between items-start mb-2">
+                    <span class="text-blue-400 text-[9px] font-black uppercase tracking-widest">Network Update</span>
+                    <span class="text-slate-500 text-[9px]">2 hours ago</span>
+                </div>
+                <h4 class="text-white font-bold mb-1">MTN Speed Boost</h4>
+                <p class="text-slate-400 text-xs leading-relaxed">All MTN bundles are currently processing at 2x speed. Happy surfing!</p>
+            </div>
+        </main>
+    </div>
+
     <div id="ticketsView" class="hidden-view">
         <header class="p-6 flex items-center gap-4 bg-black/40 backdrop-blur-md sticky top-0 z-50">
-            <button onclick="showHome()" class="p-2 hover:bg-slate-800 rounded-xl transition-colors"><i data-lucide="arrow-left" class="w-6 h-6 text-yellow-400"></i></button>
-            <h1 class="text-xl font-black uppercase">Data Tickets</h1>
+            <button onclick="showHome()" class="p-2 hover:bg-slate-800 rounded-xl transition-colors">
+                <i data-lucide="arrow-left" class="w-6 h-6 text-yellow-400"></i>
+            </button>
+            <h1 class="text-xl font-black tracking-tight">Data Tickets</h1>
         </header>
         <main class="p-6 space-y-6">
-            <div onclick="showBundles('MTN')" class="ticket-tab p-8 flex items-center justify-between cursor-pointer">
+            <div onclick="showBundles('MTN')" class="ticket-tab p-6 rounded-[2.5rem] flex items-center justify-between cursor-pointer">
                 <div class="flex items-center gap-5">
-                    <div class="bg-yellow-400 w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg"><img src="https://upload.wikimedia.org/wikipedia/commons/a/af/MTN_Logo.svg" class="w-10 h-10"></div>
+                    <div class="bg-white/5 w-16 h-16 rounded-[1.5rem] flex items-center justify-center border border-white/10"><img src="https://upload.wikimedia.org/wikipedia/commons/a/af/MTN_Logo.svg" class="w-10 h-10"></div>
                     <h2 class="text-xl font-black">MTN Ghana</h2>
                 </div>
                 <div class="status-in px-4 py-2 rounded-xl text-[10px] font-black uppercase">In Stock</div>
             </div>
-            </main>
+            <div onclick="showBundles('TELECEL')" class="ticket-tab p-6 rounded-[2.5rem] flex items-center justify-between cursor-pointer">
+                <div class="flex items-center gap-5">
+                    <div class="bg-red-600 w-16 h-16 rounded-[1.5rem] flex items-center justify-center text-white font-black text-2xl">T</div>
+                    <h2 class="text-xl font-black">Telecel</h2>
+                </div>
+                <div class="status-in px-4 py-2 rounded-xl text-[10px] font-black uppercase">In Stock</div>
+            </div>
+            <div onclick="showBundles('AT')" class="ticket-tab p-6 rounded-[2.5rem] flex items-center justify-between cursor-pointer">
+                <div class="flex items-center gap-5">
+                    <div class="bg-blue-600 w-16 h-16 rounded-[1.5rem] flex items-center justify-center text-white font-black text-2xl">AT</div>
+                    <h2 class="text-xl font-black">AT Ghana</h2>
+                </div>
+                <div class="status-in px-4 py-2 rounded-xl text-[10px] font-black uppercase">In Stock</div>
+            </div>
+        </main>
+    </div>
+
+    <div id="bundlesView" class="hidden-view">
+        <header class="p-6 flex items-center gap-4 bg-black/40 backdrop-blur-md sticky top-0 z-50">
+            <button onclick="showTickets()" class="p-2 hover:bg-slate-800 rounded-xl transition-colors">
+                <i data-lucide="arrow-left" class="w-6 h-6 text-yellow-400"></i>
+            </button>
+            <h1 id="bundleTitle" class="text-xl font-black tracking-tight">Bundles</h1>
+        </header>
+        <main class="p-6 space-y-8" id="bundleList"></main>
+    </div>
+
+    <div id="checkoutView" class="hidden-view">
+        <header class="p-6 flex items-center gap-4">
+            <button onclick="showBundles(currentNet)" class="p-2 hover:bg-slate-800 rounded-xl">
+                <i data-lucide="arrow-left" class="w-6 h-6 text-yellow-400"></i>
+            </button>
+            <h1 class="text-xl font-black tracking-tight uppercase">Checkout</h1>
+        </header>
+        <main class="p-6 space-y-6">
+            <div class="checkout-receipt p-8 space-y-6 shadow-2xl">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h2 id="checkBundle" class="text-3xl font-black text-white">0GB</h2>
+                        <p id="checkNet" class="text-yellow-400 text-[10px] font-black uppercase tracking-widest mt-1">Network</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-slate-500 text-[9px] font-black uppercase">Ref ID</p>
+                        <p id="checkRef" class="text-white font-mono text-[10px]">DB-000000</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4 pt-6 border-t border-slate-800">
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-400">Bundle Price</span>
+                        <span id="checkPrice" class="text-white font-bold">₵ 0.00</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-slate-400">Platform Fee</span>
+                        <span id="checkFee" class="text-white font-bold">₵ 0.00</span>
+                    </div>
+                    <div class="flex justify-between pt-4 border-t border-dashed border-slate-700">
+                        <span class="text-white font-black uppercase text-xs">Total Payment</span>
+                        <span id="checkTotal" class="text-yellow-400 font-black text-xl tracking-tight">₵ 0.00</span>
+                    </div>
+                </div>
+
+                <div class="space-y-4 pt-6">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black uppercase text-slate-500 tracking-widest">Recipient Number</label>
+                        <input type="tel" id="recipientPhone" class="w-full p-4 rounded-2xl bg-slate-900 border border-slate-800 text-white font-bold outline-none focus:border-yellow-400" placeholder="02XXXXXXXX" maxlength="10">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black uppercase text-slate-500 tracking-widest">Billing Email</label>
+                        <input type="email" id="buyerEmail" class="w-full p-4 rounded-2xl bg-slate-900 border border-slate-800 text-white font-bold outline-none focus:border-yellow-400" placeholder="your@email.com">
+                    </div>
+                </div>
+
+                <button onclick="handlePayment()" class="w-full bg-yellow-400 text-black py-5 rounded-2xl font-black uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all mt-4">
+                    Confirm & Pay
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <div id="historyView" class="hidden-view">
+        <header class="p-6 flex items-center gap-4 bg-black/40 backdrop-blur-md sticky top-0 z-50">
+            <button onclick="showHome()" class="p-2 hover:bg-slate-800 rounded-xl transition-colors">
+                <i data-lucide="arrow-left" class="w-6 h-6 text-yellow-400"></i>
+            </button>
+            <h1 class="text-xl font-black tracking-tight uppercase tracking-widest">Order History</h1>
+        </header>
+        <main class="p-6" id="historyList"></main>
     </div>
 
     <script>
-        // ... (Paste your exact Firebase config, getGreeting, fee calculation, and handlePayment functions here)
-        // I won't change a single character of your logic again.
+        const firebaseConfig = { apiKey: "AIzaSyCqg3E9tuKRcEnq2DdP6FjtG0LqnAjCHfM", authDomain: "joeldata-25d06.firebaseapp.com", projectId: "joeldata-25d06", storageBucket: "joeldata-25d06.firebasestorage.app", messagingSenderId: "555857869458", appId: "1:555857869458:web:db96a97fca5983b142044b" };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        let currentNet = "MTN"; let selG = ""; let selP = 0; let activeRef = "";
+        function refreshIcons() { lucide.createIcons(); }
+
+        function getGreeting() {
+            const hour = new Date().getHours();
+            if (hour < 12) return "Good Morning";
+            if (hour < 17) return "Good Afternoon";
+            return "Good Evening";
+        }
+
+        let timerInterval;
+        function startOfferTimer() {
+            if(timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                const now = new Date();
+                const target = new Date();
+                target.setHours(14, 0, 0, 0);
+                
+                const diff = target - now;
+                if (diff <= 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById('offerTimer').innerText = "EXPIRED";
+                    return;
+                }
+                
+                const h = Math.floor(diff / 3600000).toString().padStart(2, '0');
+                const m = Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0');
+                const s = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
+                document.getElementById('offerTimer').innerText = `${h}:${m}:${s}`;
+            }, 1000);
+        }
+
+        function handleSpecialOffer() {
+            const now = new Date();
+            if (now.getHours() >= 14) {
+                alert("Expired");
+                return;
+            }
+            hideAll();
+            document.getElementById('specialOfferView').classList.remove('hidden-view');
+            startOfferTimer();
+            refreshIcons();
+        }
+
+        function submitSpecialOffer() {
+            const num = document.getElementById('offerNum').value;
+            const code = document.getElementById('offerCode').value;
+            if(!num || !code) return alert("Fill all fields!");
+            
+            document.getElementById('offerForm').classList.add('hidden-view');
+            document.getElementById('offerSuccess').classList.remove('hidden-view');
+            refreshIcons();
+        }
+
+        function sendToWhatsApp() {
+            const num = document.getElementById('offerNum').value;
+            const code = document.getElementById('offerCode').value;
+            window.location.href = `https://wa.me/233248745662?text=SPECIAL OFFER%0ANumber: ${num}%0ACode: ${code}`;
+        }
+
+        function updateCounter() {
+            const el = document.getElementById('passengerCount');
+            const current = parseInt(el.innerText);
+            const change = Math.floor(Math.random() * 5) - 2;
+            let newVal = current + change;
+            if(newVal < 30) newVal = 35;
+            if(newVal > 99) newVal = 90;
+            el.innerText = newVal;
+        }
+        setInterval(updateCounter, 3000);
+
+        const dataSets = {
+            MTN: { title: "MTN Bundles", headerClass: "bundle-header-mtn", btnClass: "bg-yellow-400 text-black", prices: [{gb:"1 GB", price:"5"}, {gb:"2 GB", price:"10"}, {gb:"3 GB", price:"15"}, {gb:"4 GB", price:"20"}, {gb:"5 GB", price:"25"}, {gb:"6 GB", price:"30"}, {gb:"8 GB", price:"40"}, {gb:"10 GB", price:"50"}, {gb:"12 GB", price:"55"}, {gb:"15 GB", price:"65"}, {gb:"20 GB", price:"85"}, {gb:"25 GB", price:"105"}, {gb:"30 GB", price:"130"}, {gb:"40 GB", price:"165"}, {gb:"50 GB", price:"205"}] },
+            AT: { title: "AT Bundles", headerClass: "bundle-header-at", btnClass: "bg-blue-600 text-white", prices: [{gb:"1 GB", price:"4.5"}, {gb:"2 GB", price:"9"}, {gb:"3 GB", price:"14"}, {gb:"4 GB", price:"18"}, {gb:"5 GB", price:"20.5"}, {gb:"6 GB", price:"25"}, {gb:"8 GB", price:"32"}, {gb:"10 GB", price:"40"}, {gb:"12 GB", price:"50"}, {gb:"15 GB", price:"60"}, {gb:"25 GB", price:"100"}, {gb:"30 GB", price:"125"}, {gb:"40 GB", price:"160"}, {gb:"50 GB", price:"205"}] },
+            TELECEL: { title: "Telecel Bundles", headerClass: "bundle-header-telecel", btnClass: "bg-red-600 text-white", prices: [{gb:"10 GB", price:"40"}, {gb:"15 GB", price:"60"}, {gb:"20 GB", price:"80"}, {gb:"25 GB", price:"100"}, {gb:"30 GB", price:"120"}, {gb:"35 GB", price:"140"}, {gb:"40 GB", price:"160"}, {gb:"50 GB", price:"200"}, {gb:"100 GB", price:"400"}] }
+        };
+
+        function showTickets() { hideAll(); document.getElementById('ticketsView').classList.remove('hidden-view'); refreshIcons(); }
+        function showHome() { hideAll(); document.getElementById('homeView').classList.remove('hidden-view'); refreshIcons(); }
+        function showHistory() { hideAll(); document.getElementById('historyView').classList.remove('hidden-view'); renderHistory(); }
+        function showInbox() { hideAll(); document.getElementById('inboxView').classList.remove('hidden-view'); refreshIcons(); }
+        
+        function hideAll() {
+            document.getElementById('homeView').classList.add('hidden-view');
+            document.getElementById('ticketsView').classList.add('hidden-view');
+            document.getElementById('bundlesView').classList.add('hidden-view');
+            document.getElementById('historyView').classList.add('hidden-view');
+            document.getElementById('checkoutView').classList.add('hidden-view');
+            document.getElementById('inboxView').classList.add('hidden-view');
+            document.getElementById('specialOfferView').classList.add('hidden-view');
+        }
+
+        async function renderHistory() {
+            const list = document.getElementById('historyList');
+            if(!auth.currentUser) { list.innerHTML = `<div class="text-center p-10 font-black text-slate-500 uppercase text-xs">Login to see your history</div>`; return; }
+            list.innerHTML = `<div class="text-center p-10 animate-pulse text-yellow-400 font-black">LOADING HISTORY...</div>`;
+            const snap = await db.collection('orders').where('email', '==', auth.currentUser.email).orderBy('timestamp', 'desc').get();
+            list.innerHTML = '';
+            if(snap.empty) { list.innerHTML = `<div class="text-center p-10 font-black text-slate-500 uppercase text-xs">No transactions yet</div>`; return; }
+            snap.forEach(doc => {
+                const d = doc.data();
+                list.innerHTML += `<div class="history-card"><div class="flex justify-between items-start mb-4"><div><span class="text-white font-black text-xl tracking-tight">${d.bundle}</span><p class="text-slate-500 text-[10px] font-black uppercase mt-1 tracking-widest">${d.phone || 'Unknown Recipient'}</p></div><span class="bg-green-500/10 text-green-400 text-[10px] px-3 py-1 rounded-full border border-green-500/20 font-black uppercase">Success</span></div><div class="grid grid-cols-2 gap-y-3 text-[10px] font-bold uppercase tracking-wider"><div class="text-slate-500">Date: <span class="text-white">${d.date}</span></div><div class="text-slate-500 text-right">Time: <span class="text-white">${d.time || 'N/A'}</span></div><div class="text-slate-500">Total: <span class="text-yellow-400">₵ ${d.amount}</span></div><div class="text-slate-500 text-right">Method: <span class="text-white">Paystack</span></div></div><div class="mt-4 pt-3 border-t border-white/5 flex items-center justify-between"><span class="text-[9px] text-slate-600 font-mono font-black uppercase">ID: ${d.ref}</span><i data-lucide="check-circle-2" class="w-3 h-3 text-green-500"></i></div></div>`;
+            });
+            refreshIcons();
+        }
+
+        function showBundles(network) {
+            hideAll(); currentNet = network; const set = dataSets[network];
+            document.getElementById('bundleTitle').innerText = set.title;
+            const container = document.getElementById('bundleList'); container.innerHTML = ''; 
+            set.prices.forEach(item => {
+                container.innerHTML += `<div class="bundle-card rounded-[2rem] overflow-hidden shadow-2xl"><div class="${set.headerClass} p-4 text-center"><div class="flex justify-center mb-1"><i data-lucide="wifi" class="w-5 h-5"></i></div><p class="text-[10px] font-black uppercase tracking-widest opacity-70">${network} Bundle</p><div class="bg-white/30 backdrop-blur-sm px-4 py-1 rounded-full inline-block mt-2 text-xs font-black">₵ ${item.price}</div></div><div class="p-6 text-center space-y-4"><h2 class="text-5xl font-black tracking-tighter text-white">${item.gb.split(' ')[0]} <span class="text-lg text-slate-500 uppercase">GB</span></h2><p class="text-dim text-[10px] font-bold uppercase tracking-widest">Valid Forever</p><button onclick="openCheckout('${item.gb}', ${item.price})" class="w-full ${set.btnClass} py-4 rounded-2xl font-black uppercase transition-all active:scale-95">🛒 Buy Now</button></div></div>`;
+            });
+            document.getElementById('bundlesView').classList.remove('hidden-view'); refreshIcons(); window.scrollTo(0,0);
+        }
+
+        function openCheckout(gb, price) {
+            hideAll();
+            selG = gb; selP = parseFloat(price);
+            activeRef = "DB-" + Math.floor(100000 + Math.random() * 900000);
+            const fee = (selP < 30 ? 0.3 : 0.9);
+            const total = (selP + fee).toFixed(2);
+            document.getElementById('checkBundle').innerText = gb;
+            document.getElementById('checkNet').innerText = currentNet;
+            document.getElementById('checkRef').innerText = activeRef;
+            document.getElementById('checkPrice').innerText = `₵ ${selP.toFixed(2)}`;
+            document.getElementById('checkFee').innerText = `₵ ${fee.toFixed(2)}`;
+            document.getElementById('checkTotal').innerText = `₵ ${total}`;
+            document.getElementById('checkoutView').classList.remove('hidden-view');
+            refreshIcons();
+        }
+
+        auth.onAuthStateChanged(async (user) => {
+            const btn = document.getElementById('authBtn');
+            const greeting = getGreeting();
+            if (user) {
+                btn.innerHTML = `<i data-lucide="log-out" class="w-4 h-4"></i> LOGOUT`;
+                document.getElementById('userName').innerText = `${greeting}, ${user.displayName.split(' ')[0]}`;
+                document.getElementById('buyerEmail').value = user.email;
+                const snap = await db.collection('orders').where('email', '==', user.email).get();
+                let total = 0; snap.forEach(doc => total += parseFloat(doc.data().amount));
+                document.getElementById('totalSpent').innerText = total.toFixed(2);
+            } else {
+                btn.innerHTML = `<i data-lucide="user" class="w-4 h-4"></i> LOGIN`;
+                document.getElementById('userName').innerText = `${greeting}, Student`;
+                document.getElementById('totalSpent').innerText = "0.00";
+            }
+            refreshIcons();
+        });
+
+        function handleAuthClick() { if (auth.currentUser) { auth.signOut(); } else { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); } }
+
+        function handlePayment() {
+            const phone = document.getElementById('recipientPhone').value;
+            const email = document.getElementById('buyerEmail').value;
+            if(phone.length < 10) return alert("Please enter a valid 10-digit phone number.");
+            const fee = (selP < 30 ? 0.3 : 0.9);
+            const handler = PaystackPop.setup({
+                key: 'pk_live_90305707d30b6282979eac837bbbc9509da579af', email: email, amount: Math.round((selP + fee) * 100), currency: 'GHS',
+                ref: activeRef,
+                callback: (response) => {
+                    const now = new Date();
+                    if(auth.currentUser) {
+                        db.collection('orders').add({
+                            email: auth.currentUser.email, phone: phone, amount: selP, bundle: `${selG} ${currentNet}`, ref: response.reference,
+                            date: now.toLocaleDateString('en-GB'), time: now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    }
+                    window.location.href = `https://wa.me/233248745662?text=ORDER: ${selG} ${currentNet} to ${phone}. Ref: ${response.reference}`;
+                }
+            });
+            handler.openIframe();
+        }
+        refreshIcons();
     </script>
 </body>
 </html>
