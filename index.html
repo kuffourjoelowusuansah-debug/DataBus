@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UniLink GH | High-Speed Data Transit</title>
+    <title>Data Bus | High-Speed Data Transit</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -16,17 +16,17 @@
           extend: {
             fontFamily: { sans: ['Poppins', 'sans-serif'] },
             colors: {
-              slate: { 
-                50: '#FAFAFA',  /* Main App Background (Clean Off-White) */
-                100: '#F3EEF4', /* Light Card Backgrounds */
-                200: '#EAE0EB', /* Borders */
-                500: '#A38FA6', /* Muted text */
-                800: '#6A4374', /* Plum Amethyst for Accents */
-                900: '#3D2542'  /* Deep Plum for Main Text */
-              },
-              yellow: { 400: '#FF9900', 500: '#FFE181' }, /* Tangerine & Sun Gold */
-              green: { 400: '#94CF76', 500: '#94CF76' },  /* Lime Green */
-              red: { 600: '#A15142' } /* Burnt Sienna */
+              brand: {
+                bg: '#F7F4F8',        /* Very pale, light plum for the main background */
+                card: '#FFFFFF',      /* Crisp white for cards to ensure they pop */
+                plum: '#6A4374',      /* Primary Accent */
+                plumDark: '#3D2542',  /* Main Text */
+                tangerine: '#FF9900', /* Action Buttons / Highlights */
+                gold: '#FFE181',      /* Soft highlights */
+                green: '#94CF76',     /* Success states */
+                sienna: '#A15142',    /* Telecel / Warnings */
+                muted: '#A38FA6'      /* Dimmed text */
+              }
             }
           }
         }
@@ -36,49 +36,42 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-light: #FAFAFA;
-            --brand-plum: #6A4374;
-            --brand-tangerine: #FF9900;
-            --brand-sienna: #A15142;
-        }
-        body { font-family: 'Poppins', sans-serif; background-color: var(--bg-light); color: #3D2542; min-height: 100vh;}
+        body { font-family: 'Poppins', sans-serif; background-color: #F7F4F8; color: #3D2542; min-height: 100vh;}
         
-        /* The Hero Card remains dark Plum so it pops beautifully against the light background */
+        /* The Hero Card stays deep for strong visual hierarchy */
         .status-card { background: linear-gradient(135deg, #6A4374 0%, #3D2542 100%); color: white; border: none; box-shadow: 0 10px 25px -5px rgba(106, 67, 116, 0.3); }
         
-        /* All other cards are bright, clean, and modern */
-        .feature-card, .quick-action, .ticket-tab, .bundle-card, .inbox-card, .history-card { 
+        /* High contrast cards - clearly separated from the background */
+        .surface-card { 
             background: #FFFFFF; 
-            border: 1px solid #EAE0EB; 
-            box-shadow: 0 4px 6px -1px rgba(106, 67, 116, 0.05); 
+            border: 1px solid rgba(106, 67, 116, 0.08); 
+            box-shadow: 0 4px 15px -3px rgba(106, 67, 116, 0.05); 
             transition: all 0.2s; 
         }
-        .quick-action:active, .ticket-tab:active { transform: scale(0.96); border-color: var(--brand-tangerine); }
+        .clickable-card:active { transform: scale(0.96); border-color: #FF9900; }
         
         .status-in { background: rgba(148, 207, 118, 0.15); color: #76B059; border: 1px solid #94CF76; }
         
-        /* Bundle Headers */
+        /* Bundle Headers using the vibrant palette colors */
         .bundle-header-mtn { background: #FF9900; color: #fff; border-radius: 2rem 2rem 0 0; }
         .bundle-header-at { background: #6A4374; color: #fff; border-radius: 2rem 2rem 0 0; }
         .bundle-header-telecel { background: #A15142; color: #fff; border-radius: 2rem 2rem 0 0; }
         
         .hidden-view { display: none !important; }
-        .text-dim { color: #A38FA6; font-weight: 500; }
 
-        .checkout-receipt { background: #FFFFFF; border: 1px solid #EAE0EB; border-radius: 2.5rem; position: relative; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(106, 67, 116, 0.1); }
-        .checkout-receipt::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--brand-tangerine); }
+        .checkout-receipt { background: #FFFFFF; border: 1px solid rgba(106, 67, 116, 0.08); border-radius: 2.5rem; position: relative; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(106, 67, 116, 0.08); }
+        .checkout-receipt::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: #FF9900; }
 
         .pulse-green { animation: pulse-green 2s infinite; }
         @keyframes pulse-green { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
     </style>
 </head>
-<body class="max-w-md mx-auto min-h-screen border-x border-slate-200 bg-slate-50 relative">
+<body class="max-w-md mx-auto min-h-screen border-x border-brand-plum/10 relative">
 
     <div id="homeView">
-        <header class="p-5 flex justify-between items-center bg-white/80 backdrop-blur-xl sticky top-0 z-50 border-b border-slate-200">
-            <button onclick="handleAuthClick()" id="authBtn" class="bg-white text-[10px] font-black px-4 py-2 rounded-xl border border-slate-200 flex items-center gap-2 tracking-widest text-slate-900 shadow-sm">
-                <i data-lucide="user" class="w-4 h-4 text-slate-800"></i> LOGIN
+        <header class="p-5 flex justify-between items-center bg-brand-card/90 backdrop-blur-xl sticky top-0 z-50 border-b border-brand-plum/10">
+            <button onclick="handleAuthClick()" id="authBtn" class="bg-brand-card text-[10px] font-black px-4 py-2 rounded-xl border border-brand-plum/20 flex items-center gap-2 tracking-widest text-brand-plumDark shadow-sm hover:border-brand-tangerine transition-colors">
+                <i data-lucide="user" class="w-4 h-4 text-brand-plum"></i> LOGIN
             </button>
             <div class="flex flex-col items-center">
                 <svg width="40" height="25" viewBox="0 0 120 60" fill="none">
@@ -88,16 +81,16 @@
                     <circle cx="25" cy="50" r="7" fill="#FF9900"/>
                     <circle cx="95" cy="50" r="7" fill="#FF9900"/>
                 </svg>
-                <span class="text-xs font-black italic uppercase text-slate-900">Uni<span class="text-yellow-400">Link</span></span>
+                <span class="text-xs font-black italic uppercase text-brand-plumDark">Data<span class="text-brand-tangerine"> Bus</span></span>
             </div>
-            <button onclick="showInbox()" class="relative bg-white p-2 rounded-xl border border-slate-200 shadow-sm">
-                <i data-lucide="bell" class="w-5 h-5 text-slate-800"></i>
-                <span class="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 text-white text-[9px] flex items-center justify-center rounded-full font-black shadow-sm">2</span>
+            <button onclick="showInbox()" class="relative bg-brand-card p-2 rounded-xl border border-brand-plum/20 shadow-sm hover:border-brand-tangerine transition-colors">
+                <i data-lucide="bell" class="w-5 h-5 text-brand-plum"></i>
+                <span class="absolute -top-1 -right-1 w-4 h-4 bg-brand-tangerine text-white text-[9px] flex items-center justify-center rounded-full font-black shadow-sm">2</span>
             </button>
         </header>
 
-        <div class="bg-slate-800 text-white text-[10px] py-2 px-5 flex justify-between items-center font-black uppercase tracking-widest shadow-md">
-            <span><i data-lucide="megaphone" class="w-3 h-3 inline mr-2 text-yellow-400"></i> Keep your orders coming!!</span>
+        <div class="bg-brand-plumDark text-white text-[10px] py-2 px-5 flex justify-between items-center font-black uppercase tracking-widest shadow-md">
+            <span><i data-lucide="megaphone" class="w-3 h-3 inline mr-2 text-brand-tangerine"></i> Keep your orders coming!!</span>
             <i data-lucide="x" class="w-3 h-3 opacity-80 cursor-pointer hover:opacity-100"></i>
         </div>
 
@@ -110,11 +103,11 @@
                     </div>
                     <p class="mt-10 text-[10px] font-black text-white/70 uppercase tracking-widest">Total Spent</p>
                     <div class="flex items-baseline gap-2 mt-1">
-                        <span class="text-xl font-bold text-yellow-500">GH₵</span>
+                        <span class="text-xl font-bold text-brand-tangerine">GH₵</span>
                         <h1 id="totalSpent" class="text-5xl font-black tracking-tighter text-white">0.00</h1>
                     </div>
                     <div class="flex gap-3 mt-8">
-                        <button class="flex-1 bg-green-400 text-slate-900 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2 shadow-lg">
+                        <button class="flex-1 bg-brand-green text-brand-plumDark py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2 shadow-lg hover:brightness-105 transition-all">
                             <span class="w-2 h-2 bg-white rounded-full pulse-green"></span>
                             Live: <span id="passengerCount">42</span> <span class="text-[8px] opacity-80">Students</span>
                         </button>
@@ -125,137 +118,74 @@
             </div>
 
             <section>
-                <h3 class="text-xs font-black text-slate-900 uppercase tracking-[0.3em] mb-6 flex items-center gap-4">Quick Actions <span class="h-px flex-1 bg-slate-200"></span></h3>
+                <h3 class="text-xs font-black text-brand-plumDark uppercase tracking-[0.3em] mb-6 flex items-center gap-4">Quick Actions <span class="h-px flex-1 bg-brand-plum/20"></span></h3>
                 <div class="grid grid-cols-2 gap-4">
-                    <button onclick="showTickets()" class="quick-action p-6 rounded-[2rem] flex flex-col items-center gap-3">
-                        <div class="bg-green-400/20 p-4 rounded-2xl text-green-500"><i data-lucide="zap"></i></div>
-                        <span class="text-[11px] font-black uppercase tracking-widest text-slate-900">Buy Data</span>
+                    <button onclick="showTickets()" class="surface-card clickable-card p-6 rounded-[2rem] flex flex-col items-center gap-3">
+                        <div class="bg-brand-green/20 p-4 rounded-2xl text-brand-green"><i data-lucide="zap"></i></div>
+                        <span class="text-[11px] font-black uppercase tracking-widest text-brand-plumDark">Buy Data</span>
                     </button>
-                    <button onclick="handleSpecialOffer()" class="quick-action p-6 rounded-[2rem] flex flex-col items-center gap-3">
-                        <div class="bg-yellow-400/20 p-4 rounded-2xl text-yellow-500"><i data-lucide="gift"></i></div>
-                        <span class="text-[11px] font-black uppercase tracking-widest text-center leading-tight text-slate-900">Special offer</span>
+                    <button onclick="handleSpecialOffer()" class="surface-card clickable-card p-6 rounded-[2rem] flex flex-col items-center gap-3">
+                        <div class="bg-brand-tangerine/20 p-4 rounded-2xl text-brand-tangerine"><i data-lucide="gift"></i></div>
+                        <span class="text-[11px] font-black uppercase tracking-widest text-center leading-tight text-brand-plumDark">Special offer</span>
                     </button>
-                    <button onclick="showHistory()" class="quick-action p-6 rounded-[2rem] flex flex-col items-center gap-3">
-                        <div class="bg-slate-800/10 p-4 rounded-2xl text-slate-800"><i data-lucide="history"></i></div>
-                        <span class="text-[11px] font-black uppercase tracking-widest text-center leading-tight text-slate-900">Order History</span>
+                    <button onclick="showHistory()" class="surface-card clickable-card p-6 rounded-[2rem] flex flex-col items-center gap-3">
+                        <div class="bg-brand-plum/10 p-4 rounded-2xl text-brand-plum"><i data-lucide="history"></i></div>
+                        <span class="text-[11px] font-black uppercase tracking-widest text-center leading-tight text-brand-plumDark">Order History</span>
                     </button>
-                    <button onclick="window.location.href='https://wa.me/233248745662'" class="quick-action p-6 rounded-[2rem] flex flex-col items-center gap-3">
-                        <div class="bg-red-600/10 p-4 rounded-2xl text-red-600"><i data-lucide="message-circle"></i></div>
-                        <span class="text-[11px] font-black uppercase tracking-widest text-center leading-tight text-slate-900">Support</span>
+                    <button onclick="window.location.href='https://wa.me/233248745662'" class="surface-card clickable-card p-6 rounded-[2rem] flex flex-col items-center gap-3">
+                        <div class="bg-brand-sienna/10 p-4 rounded-2xl text-brand-sienna"><i data-lucide="message-circle"></i></div>
+                        <span class="text-[11px] font-black uppercase tracking-widest text-center leading-tight text-brand-plumDark">Support</span>
                     </button>
                 </div>
             </section>
 
             <section class="mt-16 space-y-6 pb-20">
                 <div class="text-center mb-10">
-                    <h2 class="text-3xl font-black text-slate-900">Why Choose <span class="text-yellow-400">UniLink?</span></h2>
-                    <p class="text-dim text-[10px] uppercase tracking-widest mt-2">Ghana's Student Connection</p>
+                    <h2 class="text-3xl font-black text-brand-plumDark">Why Choose <span class="text-brand-tangerine">Data Bus?</span></h2>
+                    <p class="text-brand-muted text-[10px] uppercase tracking-widest mt-2">Ghana's High-Speed Transit</p>
                 </div>
-                <div class="feature-card p-6 rounded-[2.5rem] flex items-start gap-5">
-                    <div class="bg-yellow-400 text-white p-4 rounded-2xl shadow-sm"><i data-lucide="zap" class="stroke-[3]"></i></div>
-                    <div><h4 class="text-slate-900 text-lg font-bold">Fast Processing</h4><p class="text-dim text-sm mt-1">Quick order delivery directly to your phone without delays.</p></div>
+                <div class="surface-card p-6 rounded-[2.5rem] flex items-start gap-5">
+                    <div class="bg-brand-tangerine text-white p-4 rounded-2xl shadow-sm"><i data-lucide="zap" class="stroke-[3]"></i></div>
+                    <div><h4 class="text-brand-plumDark text-lg font-bold">Fast Processing</h4><p class="text-brand-muted text-sm mt-1">Quick order delivery directly to your phone without delays.</p></div>
                 </div>
-                <div class="feature-card p-6 rounded-[2.5rem] flex items-start gap-5">
-                    <div class="bg-slate-100 text-slate-800 p-4 rounded-2xl border border-slate-200"><i data-lucide="shield-check"></i></div>
-                    <div><h4 class="text-slate-900 text-lg font-bold">Secure Platform</h4><p class="text-dim text-sm mt-1">Safe and encrypted transactions for your wallet security.</p></div>
+                <div class="surface-card p-6 rounded-[2.5rem] flex items-start gap-5">
+                    <div class="bg-brand-bg text-brand-plum p-4 rounded-2xl border border-brand-plum/10"><i data-lucide="shield-check"></i></div>
+                    <div><h4 class="text-brand-plumDark text-lg font-bold">Secure Platform</h4><p class="text-brand-muted text-sm mt-1">Safe and encrypted transactions for your wallet security.</p></div>
                 </div>
-                <div class="feature-card p-6 rounded-[2.5rem] flex items-start gap-5">
-                    <div class="bg-slate-100 text-red-600 p-4 rounded-2xl border border-slate-200"><i data-lucide="clock"></i></div>
-                    <div><h4 class="text-slate-900 text-lg font-bold">Always Available</h4><p class="text-dim text-sm mt-1">Our system is online 24/7 to serve your data needs.</p></div>
+                <div class="surface-card p-6 rounded-[2.5rem] flex items-start gap-5">
+                    <div class="bg-brand-bg text-brand-sienna p-4 rounded-2xl border border-brand-plum/10"><i data-lucide="clock"></i></div>
+                    <div><h4 class="text-brand-plumDark text-lg font-bold">Always Available</h4><p class="text-brand-muted text-sm mt-1">Our system is online 24/7 to serve your data needs.</p></div>
                 </div>
             </section>
         </main>
     </div>
 
-    <div id="specialOfferView" class="hidden-view">
-        <header class="p-6 flex items-center gap-4 bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200">
-            <button onclick="showHome()" class="p-2 hover:bg-slate-100 rounded-xl">
-                <i data-lucide="arrow-left" class="w-6 h-6 text-slate-800"></i>
-            </button>
-            <h1 class="text-xl font-black tracking-tight uppercase text-slate-900">Special Offer</h1>
-        </header>
-        <main class="p-6">
-            <div id="offerForm" class="checkout-receipt p-8 space-y-6">
-                <div class="flex justify-between items-center">
-                    <p class="text-[10px] font-bold text-yellow-400 uppercase tracking-widest">Ends In:</p>
-                    <p id="offerTimer" class="text-slate-900 font-black font-mono text-lg">00:00:00</p>
-                </div>
-                <div class="space-y-4 pt-4 border-t border-slate-200">
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black uppercase text-slate-500 tracking-widest">Account Number</label>
-                        <input type="tel" id="offerNum" class="w-full p-4 rounded-2xl bg-slate-50 border border-slate-200 text-slate-900 font-bold outline-none focus:border-yellow-400" placeholder="02XXXXXXXX">
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black uppercase text-slate-500 tracking-widest">Promo Code</label>
-                        <input type="text" id="offerCode" class="w-full p-4 rounded-2xl bg-slate-50 border border-slate-200 text-slate-900 font-bold outline-none focus:border-yellow-400" placeholder="Enter Code">
-                    </div>
-                </div>
-                <button onclick="submitSpecialOffer()" class="w-full bg-yellow-400 text-white py-5 rounded-2xl font-black uppercase tracking-widest active:scale-95 transition-all shadow-md">Submit Details</button>
-            </div>
-            <div id="offerSuccess" class="hidden-view checkout-receipt p-8 space-y-6 text-center">
-                <div class="flex justify-center"><i data-lucide="check-circle" class="w-16 h-16 text-green-500"></i></div>
-                <h2 class="text-2xl font-black text-slate-900">Credentials received.</h2>
-                <p class="text-dim text-sm">You have a one to ten chance to win!</p>
-                <button onclick="sendToWhatsApp()" class="w-full bg-green-400 text-white py-5 rounded-2xl font-black uppercase tracking-widest flex items-center justify-center gap-2 shadow-md">
-                    <i data-lucide="message-circle"></i> Send to WhatsApp
-                </button>
-            </div>
-        </main>
-    </div>
-
-    <div id="inboxView" class="hidden-view">
-        <header class="p-6 flex items-center gap-4 bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200">
-            <button onclick="showHome()" class="p-2 hover:bg-slate-100 rounded-xl">
-                <i data-lucide="arrow-left" class="w-6 h-6 text-slate-800"></i>
-            </button>
-            <h1 class="text-xl font-black tracking-tight uppercase text-slate-900">Inbox</h1>
-        </header>
-        <main class="p-6 space-y-4">
-            <div class="inbox-card p-6 rounded-[2rem] border-l-4 border-l-yellow-400">
-                <div class="flex justify-between items-start mb-2">
-                    <span class="text-yellow-500 text-[9px] font-black uppercase tracking-widest">Announcement</span>
-                    <span class="text-slate-400 text-[9px]">Just Now</span>
-                </div>
-                <h4 class="text-slate-900 font-bold mb-1">Welcome to UniLink GH!</h4>
-                <p class="text-slate-500 text-xs leading-relaxed">Your high-speed data transit is now live. Enjoy instant deliveries and secure payments.</p>
-            </div>
-            <div class="inbox-card p-6 rounded-[2rem] border-l-4 border-l-slate-800">
-                <div class="flex justify-between items-start mb-2">
-                    <span class="text-slate-800 text-[9px] font-black uppercase tracking-widest">Network Update</span>
-                    <span class="text-slate-400 text-[9px]">2 hours ago</span>
-                </div>
-                <h4 class="text-slate-900 font-bold mb-1">MTN Speed Boost</h4>
-                <p class="text-slate-500 text-xs leading-relaxed">All MTN bundles are currently processing at 2x speed. Happy surfing!</p>
-            </div>
-        </main>
-    </div>
-
     <div id="ticketsView" class="hidden-view">
-        <header class="p-6 flex items-center gap-4 bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200">
-            <button onclick="showHome()" class="p-2 hover:bg-slate-100 rounded-xl transition-colors">
-                <i data-lucide="arrow-left" class="w-6 h-6 text-slate-800"></i>
+        <header class="p-6 flex items-center gap-4 bg-brand-card/90 backdrop-blur-md sticky top-0 z-50 border-b border-brand-plum/10">
+            <button onclick="showHome()" class="p-2 hover:bg-brand-bg rounded-xl transition-colors">
+                <i data-lucide="arrow-left" class="w-6 h-6 text-brand-plumDark"></i>
             </button>
-            <h1 class="text-xl font-black tracking-tight text-slate-900">Data Tickets</h1>
+            <h1 class="text-xl font-black tracking-tight text-brand-plumDark">Data Tickets</h1>
         </header>
         <main class="p-6 space-y-6">
-            <div onclick="showBundles('MTN')" class="ticket-tab p-6 rounded-[2.5rem] flex items-center justify-between cursor-pointer">
+            <div onclick="showBundles('MTN')" class="surface-card clickable-card p-6 rounded-[2.5rem] flex items-center justify-between cursor-pointer">
                 <div class="flex items-center gap-5">
-                    <div class="bg-slate-50 w-16 h-16 rounded-[1.5rem] flex items-center justify-center border border-slate-200"><img src="https://upload.wikimedia.org/wikipedia/commons/a/af/MTN_Logo.svg" class="w-10 h-10"></div>
-                    <h2 class="text-xl font-black text-slate-900">MTN Ghana</h2>
+                    <div class="bg-brand-bg w-16 h-16 rounded-[1.5rem] flex items-center justify-center border border-brand-plum/10"><img src="https://upload.wikimedia.org/wikipedia/commons/a/af/MTN_Logo.svg" class="w-10 h-10"></div>
+                    <h2 class="text-xl font-black text-brand-plumDark">MTN Ghana</h2>
                 </div>
                 <div class="status-in px-4 py-2 rounded-xl text-[10px] font-black uppercase">In Stock</div>
             </div>
-            <div onclick="showBundles('TELECEL')" class="ticket-tab p-6 rounded-[2.5rem] flex items-center justify-between cursor-pointer">
+            <div onclick="showBundles('TELECEL')" class="surface-card clickable-card p-6 rounded-[2.5rem] flex items-center justify-between cursor-pointer">
                 <div class="flex items-center gap-5">
-                    <div class="bg-red-600 w-16 h-16 rounded-[1.5rem] flex items-center justify-center text-white font-black text-2xl shadow-sm">T</div>
-                    <h2 class="text-xl font-black text-slate-900">Telecel</h2>
+                    <div class="bg-brand-sienna w-16 h-16 rounded-[1.5rem] flex items-center justify-center text-white font-black text-2xl shadow-sm">T</div>
+                    <h2 class="text-xl font-black text-brand-plumDark">Telecel</h2>
                 </div>
                 <div class="status-in px-4 py-2 rounded-xl text-[10px] font-black uppercase">In Stock</div>
             </div>
-            <div onclick="showBundles('AT')" class="ticket-tab p-6 rounded-[2.5rem] flex items-center justify-between cursor-pointer">
+            <div onclick="showBundles('AT')" class="surface-card clickable-card p-6 rounded-[2.5rem] flex items-center justify-between cursor-pointer">
                 <div class="flex items-center gap-5">
-                    <div class="bg-slate-800 w-16 h-16 rounded-[1.5rem] flex items-center justify-center text-white font-black text-2xl shadow-sm">AT</div>
-                    <h2 class="text-xl font-black text-slate-900">AT Ghana</h2>
+                    <div class="bg-brand-plumDark w-16 h-16 rounded-[1.5rem] flex items-center justify-center text-white font-black text-2xl shadow-sm">AT</div>
+                    <h2 class="text-xl font-black text-brand-plumDark">AT Ghana</h2>
                 </div>
                 <div class="status-in px-4 py-2 rounded-xl text-[10px] font-black uppercase">In Stock</div>
             </div>
@@ -263,62 +193,62 @@
     </div>
 
     <div id="bundlesView" class="hidden-view">
-        <header class="p-6 flex items-center gap-4 bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200">
-            <button onclick="showTickets()" class="p-2 hover:bg-slate-100 rounded-xl transition-colors">
-                <i data-lucide="arrow-left" class="w-6 h-6 text-slate-800"></i>
+        <header class="p-6 flex items-center gap-4 bg-brand-card/90 backdrop-blur-md sticky top-0 z-50 border-b border-brand-plum/10">
+            <button onclick="showTickets()" class="p-2 hover:bg-brand-bg rounded-xl transition-colors">
+                <i data-lucide="arrow-left" class="w-6 h-6 text-brand-plumDark"></i>
             </button>
-            <h1 id="bundleTitle" class="text-xl font-black tracking-tight text-slate-900">Bundles</h1>
+            <h1 id="bundleTitle" class="text-xl font-black tracking-tight text-brand-plumDark">Bundles</h1>
         </header>
         <main class="p-6 space-y-8" id="bundleList"></main>
     </div>
 
     <div id="checkoutView" class="hidden-view">
-        <header class="p-6 flex items-center gap-4 bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200">
-            <button onclick="showBundles(currentNet)" class="p-2 hover:bg-slate-100 rounded-xl">
-                <i data-lucide="arrow-left" class="w-6 h-6 text-slate-800"></i>
+        <header class="p-6 flex items-center gap-4 bg-brand-card/90 backdrop-blur-md sticky top-0 z-50 border-b border-brand-plum/10">
+            <button onclick="showBundles(currentNet)" class="p-2 hover:bg-brand-bg rounded-xl">
+                <i data-lucide="arrow-left" class="w-6 h-6 text-brand-plumDark"></i>
             </button>
-            <h1 class="text-xl font-black tracking-tight uppercase text-slate-900">Checkout</h1>
+            <h1 class="text-xl font-black tracking-tight uppercase text-brand-plumDark">Checkout</h1>
         </header>
         <main class="p-6 space-y-6">
             <div class="checkout-receipt p-8 space-y-6">
                 <div class="flex justify-between items-start">
                     <div>
-                        <h2 id="checkBundle" class="text-3xl font-black text-slate-900">0GB</h2>
-                        <p id="checkNet" class="text-yellow-500 text-[10px] font-black uppercase tracking-widest mt-1">Network</p>
+                        <h2 id="checkBundle" class="text-3xl font-black text-brand-plumDark">0GB</h2>
+                        <p id="checkNet" class="text-brand-tangerine text-[10px] font-black uppercase tracking-widest mt-1">Network</p>
                     </div>
                     <div class="text-right">
-                        <p class="text-slate-400 text-[9px] font-black uppercase">Ref ID</p>
-                        <p id="checkRef" class="text-slate-800 font-mono text-[10px] font-bold">DB-000000</p>
+                        <p class="text-brand-muted text-[9px] font-black uppercase">Ref ID</p>
+                        <p id="checkRef" class="text-brand-plum font-mono text-[10px] font-bold">DB-000000</p>
                     </div>
                 </div>
 
-                <div class="space-y-4 pt-6 border-t border-slate-200">
+                <div class="space-y-4 pt-6 border-t border-brand-plum/10">
                     <div class="flex justify-between text-sm">
-                        <span class="text-slate-500">Bundle Price</span>
-                        <span id="checkPrice" class="text-slate-900 font-bold">₵ 0.00</span>
+                        <span class="text-brand-muted">Bundle Price</span>
+                        <span id="checkPrice" class="text-brand-plumDark font-bold">₵ 0.00</span>
                     </div>
                     <div class="flex justify-between text-sm">
-                        <span class="text-slate-500">Platform Fee</span>
-                        <span id="checkFee" class="text-slate-900 font-bold">₵ 0.00</span>
+                        <span class="text-brand-muted">Platform Fee</span>
+                        <span id="checkFee" class="text-brand-plumDark font-bold">₵ 0.00</span>
                     </div>
-                    <div class="flex justify-between pt-4 border-t border-dashed border-slate-200">
-                        <span class="text-slate-900 font-black uppercase text-xs">Total Payment</span>
-                        <span id="checkTotal" class="text-yellow-500 font-black text-xl tracking-tight">₵ 0.00</span>
+                    <div class="flex justify-between pt-4 border-t border-dashed border-brand-plum/20">
+                        <span class="text-brand-plumDark font-black uppercase text-xs">Total Payment</span>
+                        <span id="checkTotal" class="text-brand-tangerine font-black text-xl tracking-tight">₵ 0.00</span>
                     </div>
                 </div>
 
                 <div class="space-y-4 pt-6">
                     <div class="space-y-2">
-                        <label class="text-[10px] font-black uppercase text-slate-500 tracking-widest">Recipient Number</label>
-                        <input type="tel" id="recipientPhone" class="w-full p-4 rounded-2xl bg-slate-50 border border-slate-200 text-slate-900 font-bold outline-none focus:border-yellow-400" placeholder="02XXXXXXXX" maxlength="10">
+                        <label class="text-[10px] font-black uppercase text-brand-muted tracking-widest">Recipient Number</label>
+                        <input type="tel" id="recipientPhone" class="w-full p-4 rounded-2xl bg-brand-bg border border-brand-plum/20 text-brand-plumDark font-bold outline-none focus:border-brand-tangerine transition-colors" placeholder="02XXXXXXXX" maxlength="10">
                     </div>
                     <div class="space-y-2">
-                        <label class="text-[10px] font-black uppercase text-slate-500 tracking-widest">Billing Email</label>
-                        <input type="email" id="buyerEmail" class="w-full p-4 rounded-2xl bg-slate-50 border border-slate-200 text-slate-900 font-bold outline-none focus:border-yellow-400" placeholder="your@email.com">
+                        <label class="text-[10px] font-black uppercase text-brand-muted tracking-widest">Billing Email</label>
+                        <input type="email" id="buyerEmail" class="w-full p-4 rounded-2xl bg-brand-bg border border-brand-plum/20 text-brand-plumDark font-bold outline-none focus:border-brand-tangerine transition-colors" placeholder="your@email.com">
                     </div>
                 </div>
 
-                <button onclick="handlePayment()" class="w-full bg-yellow-400 text-white py-5 rounded-2xl font-black uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all mt-4 shadow-md">
+                <button onclick="handlePayment()" class="w-full bg-brand-tangerine text-white py-5 rounded-2xl font-black uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all mt-4 shadow-md">
                     Confirm & Pay
                 </button>
             </div>
@@ -326,11 +256,11 @@
     </div>
 
     <div id="historyView" class="hidden-view">
-        <header class="p-6 flex items-center gap-4 bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200">
-            <button onclick="showHome()" class="p-2 hover:bg-slate-100 rounded-xl transition-colors">
-                <i data-lucide="arrow-left" class="w-6 h-6 text-slate-800"></i>
+        <header class="p-6 flex items-center gap-4 bg-brand-card/90 backdrop-blur-md sticky top-0 z-50 border-b border-brand-plum/10">
+            <button onclick="showHome()" class="p-2 hover:bg-brand-bg rounded-xl transition-colors">
+                <i data-lucide="arrow-left" class="w-6 h-6 text-brand-plumDark"></i>
             </button>
-            <h1 class="text-xl font-black tracking-tight uppercase tracking-widest text-slate-900">Order History</h1>
+            <h1 class="text-xl font-black tracking-tight uppercase tracking-widest text-brand-plumDark">Order History</h1>
         </header>
         <main class="p-6" id="historyList"></main>
     </div>
@@ -351,56 +281,6 @@
             return "Good Evening";
         }
 
-        let timerInterval;
-        function startOfferTimer() {
-            if(timerInterval) clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                const now = new Date();
-                const target = new Date();
-                target.setHours(14, 0, 0, 0);
-                
-                const diff = target - now;
-                if (diff <= 0) {
-                    clearInterval(timerInterval);
-                    document.getElementById('offerTimer').innerText = "EXPIRED";
-                    return;
-                }
-                
-                const h = Math.floor(diff / 3600000).toString().padStart(2, '0');
-                const m = Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0');
-                const s = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
-                document.getElementById('offerTimer').innerText = `${h}:${m}:${s}`;
-            }, 1000);
-        }
-
-        function handleSpecialOffer() {
-            const now = new Date();
-            if (now.getHours() >= 14) {
-                alert("Expired");
-                return;
-            }
-            hideAll();
-            document.getElementById('specialOfferView').classList.remove('hidden-view');
-            startOfferTimer();
-            refreshIcons();
-        }
-
-        function submitSpecialOffer() {
-            const num = document.getElementById('offerNum').value;
-            const code = document.getElementById('offerCode').value;
-            if(!num || !code) return alert("Fill all fields!");
-            
-            document.getElementById('offerForm').classList.add('hidden-view');
-            document.getElementById('offerSuccess').classList.remove('hidden-view');
-            refreshIcons();
-        }
-
-        function sendToWhatsApp() {
-            const num = document.getElementById('offerNum').value;
-            const code = document.getElementById('offerCode').value;
-            window.location.href = `https://wa.me/233248745662?text=SPECIAL OFFER%0ANumber: ${num}%0ACode: ${code}`;
-        }
-
         function updateCounter() {
             const el = document.getElementById('passengerCount');
             const current = parseInt(el.innerText);
@@ -413,15 +293,14 @@
         setInterval(updateCounter, 3000);
 
         const dataSets = {
-            MTN: { title: "MTN Bundles", headerClass: "bundle-header-mtn", btnClass: "bg-yellow-400 text-white", prices: [{gb:"1 GB", price:"5"}, {gb:"2 GB", price:"10"}, {gb:"3 GB", price:"15"}, {gb:"4 GB", price:"20"}, {gb:"5 GB", price:"25"}, {gb:"6 GB", price:"30"}, {gb:"8 GB", price:"40"}, {gb:"10 GB", price:"50"}, {gb:"12 GB", price:"55"}, {gb:"15 GB", price:"65"}, {gb:"20 GB", price:"85"}, {gb:"25 GB", price:"105"}, {gb:"30 GB", price:"130"}, {gb:"40 GB", price:"165"}, {gb:"50 GB", price:"205"}] },
-            AT: { title: "AT Bundles", headerClass: "bundle-header-at", btnClass: "bg-slate-800 text-white", prices: [{gb:"1 GB", price:"4.5"}, {gb:"2 GB", price:"9"}, {gb:"3 GB", price:"14"}, {gb:"4 GB", price:"18"}, {gb:"5 GB", price:"20.5"}, {gb:"6 GB", price:"25"}, {gb:"8 GB", price:"32"}, {gb:"10 GB", price:"40"}, {gb:"12 GB", price:"50"}, {gb:"15 GB", price:"60"}, {gb:"25 GB", price:"100"}, {gb:"30 GB", price:"125"}, {gb:"40 GB", price:"160"}, {gb:"50 GB", price:"205"}] },
-            TELECEL: { title: "Telecel Bundles", headerClass: "bundle-header-telecel", btnClass: "bg-red-600 text-white", prices: [{gb:"10 GB", price:"40"}, {gb:"15 GB", price:"60"}, {gb:"20 GB", price:"80"}, {gb:"25 GB", price:"100"}, {gb:"30 GB", price:"120"}, {gb:"35 GB", price:"140"}, {gb:"40 GB", price:"160"}, {gb:"50 GB", price:"200"}, {gb:"100 GB", price:"400"}] }
+            MTN: { title: "MTN Bundles", headerClass: "bundle-header-mtn", btnClass: "bg-brand-tangerine text-white", prices: [{gb:"1 GB", price:"5"}, {gb:"2 GB", price:"10"}, {gb:"3 GB", price:"15"}, {gb:"4 GB", price:"20"}, {gb:"5 GB", price:"25"}, {gb:"6 GB", price:"30"}, {gb:"8 GB", price:"40"}, {gb:"10 GB", price:"50"}, {gb:"12 GB", price:"55"}, {gb:"15 GB", price:"65"}, {gb:"20 GB", price:"85"}, {gb:"25 GB", price:"105"}, {gb:"30 GB", price:"130"}, {gb:"40 GB", price:"165"}, {gb:"50 GB", price:"205"}] },
+            AT: { title: "AT Bundles", headerClass: "bundle-header-at", btnClass: "bg-brand-plum text-white", prices: [{gb:"1 GB", price:"4.5"}, {gb:"2 GB", price:"9"}, {gb:"3 GB", price:"14"}, {gb:"4 GB", price:"18"}, {gb:"5 GB", price:"20.5"}, {gb:"6 GB", price:"25"}, {gb:"8 GB", price:"32"}, {gb:"10 GB", price:"40"}, {gb:"12 GB", price:"50"}, {gb:"15 GB", price:"60"}, {gb:"25 GB", price:"100"}, {gb:"30 GB", price:"125"}, {gb:"40 GB", price:"160"}, {gb:"50 GB", price:"205"}] },
+            TELECEL: { title: "Telecel Bundles", headerClass: "bundle-header-telecel", btnClass: "bg-brand-sienna text-white", prices: [{gb:"10 GB", price:"40"}, {gb:"15 GB", price:"60"}, {gb:"20 GB", price:"80"}, {gb:"25 GB", price:"100"}, {gb:"30 GB", price:"120"}, {gb:"35 GB", price:"140"}, {gb:"40 GB", price:"160"}, {gb:"50 GB", price:"200"}, {gb:"100 GB", price:"400"}] }
         };
 
         function showTickets() { hideAll(); document.getElementById('ticketsView').classList.remove('hidden-view'); refreshIcons(); }
         function showHome() { hideAll(); document.getElementById('homeView').classList.remove('hidden-view'); refreshIcons(); }
         function showHistory() { hideAll(); document.getElementById('historyView').classList.remove('hidden-view'); renderHistory(); }
-        function showInbox() { hideAll(); document.getElementById('inboxView').classList.remove('hidden-view'); refreshIcons(); }
         
         function hideAll() {
             document.getElementById('homeView').classList.add('hidden-view');
@@ -429,21 +308,19 @@
             document.getElementById('bundlesView').classList.add('hidden-view');
             document.getElementById('historyView').classList.add('hidden-view');
             document.getElementById('checkoutView').classList.add('hidden-view');
-            document.getElementById('inboxView').classList.add('hidden-view');
-            document.getElementById('specialOfferView').classList.add('hidden-view');
         }
 
         async function renderHistory() {
             const list = document.getElementById('historyList');
-            if(!auth.currentUser) { list.innerHTML = `<div class="text-center p-10 font-black text-slate-400 uppercase text-xs">Login to see your history</div>`; return; }
-            list.innerHTML = `<div class="text-center p-10 animate-pulse text-yellow-500 font-black">LOADING HISTORY...</div>`;
+            if(!auth.currentUser) { list.innerHTML = `<div class="text-center p-10 font-black text-brand-muted uppercase text-xs">Login to see your history</div>`; return; }
+            list.innerHTML = `<div class="text-center p-10 animate-pulse text-brand-tangerine font-black">LOADING HISTORY...</div>`;
             const snap = await db.collection('orders').where('email', '==', auth.currentUser.email).orderBy('timestamp', 'desc').get();
             list.innerHTML = '';
-            if(snap.empty) { list.innerHTML = `<div class="text-center p-10 font-black text-slate-400 uppercase text-xs">No transactions yet</div>`; return; }
+            if(snap.empty) { list.innerHTML = `<div class="text-center p-10 font-black text-brand-muted uppercase text-xs">No transactions yet</div>`; return; }
             snap.forEach(doc => {
                 const d = doc.data();
-                // Updated history cards to use light theme classes
-                list.innerHTML += `<div class="history-card p-6 rounded-[2rem] mb-4"><div class="flex justify-between items-start mb-4"><div><span class="text-slate-900 font-black text-xl tracking-tight">${d.bundle}</span><p class="text-slate-500 text-[10px] font-black uppercase mt-1 tracking-widest">${d.phone || 'Unknown Recipient'}</p></div><span class="bg-green-100 text-green-600 text-[10px] px-3 py-1 rounded-full border border-green-200 font-black uppercase">Success</span></div><div class="grid grid-cols-2 gap-y-3 text-[10px] font-bold uppercase tracking-wider"><div class="text-slate-400">Date: <span class="text-slate-800">${d.date}</span></div><div class="text-slate-400 text-right">Time: <span class="text-slate-800">${d.time || 'N/A'}</span></div><div class="text-slate-400">Total: <span class="text-yellow-500">₵ ${d.amount}</span></div><div class="text-slate-400 text-right">Method: <span class="text-slate-800">Paystack</span></div></div><div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between"><span class="text-[9px] text-slate-400 font-mono font-black uppercase">ID: ${d.ref}</span><i data-lucide="check-circle-2" class="w-4 h-4 text-green-500"></i></div></div>`;
+                // Dynamically injecting high-contrast light theme classes
+                list.innerHTML += `<div class="surface-card p-6 rounded-[2rem] mb-4"><div class="flex justify-between items-start mb-4"><div><span class="text-brand-plumDark font-black text-xl tracking-tight">${d.bundle}</span><p class="text-brand-muted text-[10px] font-black uppercase mt-1 tracking-widest">${d.phone || 'Unknown Recipient'}</p></div><span class="bg-brand-green/10 text-brand-green text-[10px] px-3 py-1 rounded-full border border-brand-green/30 font-black uppercase">Success</span></div><div class="grid grid-cols-2 gap-y-3 text-[10px] font-bold uppercase tracking-wider"><div class="text-brand-muted">Date: <span class="text-brand-plum">${d.date}</span></div><div class="text-brand-muted text-right">Time: <span class="text-brand-plum">${d.time || 'N/A'}</span></div><div class="text-brand-muted">Total: <span class="text-brand-tangerine">₵ ${d.amount}</span></div><div class="text-brand-muted text-right">Method: <span class="text-brand-plum">Paystack</span></div></div><div class="mt-4 pt-3 border-t border-brand-plum/10 flex items-center justify-between"><span class="text-[9px] text-brand-muted font-mono font-black uppercase">ID: ${d.ref}</span><i data-lucide="check-circle-2" class="w-4 h-4 text-brand-green"></i></div></div>`;
             });
             refreshIcons();
         }
@@ -453,8 +330,8 @@
             document.getElementById('bundleTitle').innerText = set.title;
             const container = document.getElementById('bundleList'); container.innerHTML = ''; 
             set.prices.forEach(item => {
-                // Updated bundle cards to use light theme classes
-                container.innerHTML += `<div class="bundle-card rounded-[2rem] overflow-hidden shadow-sm"><div class="${set.headerClass} p-4 text-center"><div class="flex justify-center mb-1"><i data-lucide="wifi" class="w-5 h-5"></i></div><p class="text-[10px] font-black uppercase tracking-widest opacity-90">${network} Bundle</p><div class="bg-white/20 backdrop-blur-sm px-4 py-1 rounded-full inline-block mt-2 text-xs font-black shadow-inner">₵ ${item.price}</div></div><div class="p-6 text-center space-y-4"><h2 class="text-5xl font-black tracking-tighter text-slate-900">${item.gb.split(' ')[0]} <span class="text-lg text-slate-400 uppercase">GB</span></h2><p class="text-dim text-[10px] font-bold uppercase tracking-widest">Valid Forever</p><button onclick="openCheckout('${item.gb}', ${item.price})" class="w-full ${set.btnClass} py-4 rounded-2xl font-black uppercase transition-all active:scale-95 shadow-md hover:shadow-lg">🛒 Buy Now</button></div></div>`;
+                // Dynamically injecting high-contrast light theme classes
+                container.innerHTML += `<div class="surface-card rounded-[2rem] overflow-hidden shadow-sm"><div class="${set.headerClass} p-4 text-center"><div class="flex justify-center mb-1"><i data-lucide="wifi" class="w-5 h-5"></i></div><p class="text-[10px] font-black uppercase tracking-widest opacity-90">${network} Bundle</p><div class="bg-white/20 backdrop-blur-sm px-4 py-1 rounded-full inline-block mt-2 text-xs font-black shadow-inner">₵ ${item.price}</div></div><div class="p-6 text-center space-y-4"><h2 class="text-5xl font-black tracking-tighter text-brand-plumDark">${item.gb.split(' ')[0]} <span class="text-lg text-brand-muted uppercase">GB</span></h2><p class="text-brand-muted text-[10px] font-bold uppercase tracking-widest">Valid Forever</p><button onclick="openCheckout('${item.gb}', ${item.price})" class="w-full ${set.btnClass} py-4 rounded-2xl font-black uppercase transition-all active:scale-95 shadow-md hover:shadow-lg">🛒 Buy Now</button></div></div>`;
             });
             document.getElementById('bundlesView').classList.remove('hidden-view'); refreshIcons(); window.scrollTo(0,0);
         }
@@ -479,14 +356,14 @@
             const btn = document.getElementById('authBtn');
             const greeting = getGreeting();
             if (user) {
-                btn.innerHTML = `<i data-lucide="log-out" class="w-4 h-4 text-slate-800"></i> LOGOUT`;
+                btn.innerHTML = `<i data-lucide="log-out" class="w-4 h-4 text-brand-plum"></i> LOGOUT`;
                 document.getElementById('userName').innerText = `${greeting}, ${user.displayName.split(' ')[0]}`;
                 document.getElementById('buyerEmail').value = user.email;
                 const snap = await db.collection('orders').where('email', '==', user.email).get();
                 let total = 0; snap.forEach(doc => total += parseFloat(doc.data().amount));
                 document.getElementById('totalSpent').innerText = total.toFixed(2);
             } else {
-                btn.innerHTML = `<i data-lucide="user" class="w-4 h-4 text-slate-800"></i> LOGIN`;
+                btn.innerHTML = `<i data-lucide="user" class="w-4 h-4 text-brand-plum"></i> LOGIN`;
                 document.getElementById('userName').innerText = `${greeting}, Student`;
                 document.getElementById('totalSpent').innerText = "0.00";
             }
