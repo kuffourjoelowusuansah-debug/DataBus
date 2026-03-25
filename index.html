@@ -3,291 +3,328 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UniLink Dashboard</title>
+<title>UniLink UI</title>
 <style>
-    /* Base Reset and Variables */
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap');
+
     * {
         box-sizing: border-box;
         margin: 0;
         padding: 0;
-        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    }
-
-    :root {
-        --bg-main: #1C334A; /* Exact deep blue background */
-        --card-yellow: #FCE863; /* High-contrast yellow */
-        --card-dark: #2A435B; /* Darker blue for shortcuts */
-        --text-light: #FFFFFF;
-        --text-dark: #1A212A;
-        --btn-black: #1A1A1A;
+        font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
     body {
-        background-color: #000;
+        background-color: #111;
         display: flex;
         justify-content: center;
         align-items: center;
         min-height: 100vh;
     }
 
-    /* Mobile Container */
-    .mobile-app {
-        background-color: var(--bg-main);
+    /* Main App Background matching the image */
+    .app-container {
+        background-color: #2b526e; /* Exact deep teal/blue */
         width: 100%;
-        max-width: 400px;
-        height: 850px;
+        max-width: 390px;
+        height: 844px; /* Standard mobile height */
         border-radius: 40px;
         padding: 30px 20px;
         overflow-y: auto;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        box-shadow: 0 0 20px rgba(0,0,0,0.8);
+        position: relative;
     }
 
-    /* Header Section */
+    /* --- Header Area --- */
     .header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 20px;
+        margin-bottom: 24px;
+        margin-top: 20px;
     }
 
-    .greeting h1 {
-        color: var(--text-light);
-        font-size: 24px;
-        font-weight: 700;
+    .greeting {
+        color: #ffffff;
+        font-size: 22px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
     }
 
     .header-icons {
         display: flex;
-        gap: 10px;
+        gap: 12px;
     }
 
-    .icon-btn {
-        width: 40px;
-        height: 40px;
+    .icon-circle {
+        width: 42px;
+        height: 42px;
         border-radius: 50%;
-        border: none;
         display: flex;
         justify-content: center;
         align-items: center;
-        cursor: pointer;
         font-size: 18px;
+        border: none;
     }
 
-    .btn-notification { background-color: var(--card-yellow); color: var(--text-dark); }
-    .btn-menu { background-color: #4CB1D6; color: var(--text-light); }
+    .bell-btn {
+        background-color: #fce863; /* Yellow */
+        color: #000;
+    }
 
-    /* Search Bar */
-    .search-container {
+    .menu-btn {
+        background-color: #4eb1d9; /* Light Blue */
+        color: #fff;
+    }
+
+    /* --- Search Area --- */
+    .search-row {
         display: flex;
-        gap: 10px;
-        margin-bottom: 25px;
+        gap: 12px;
+        margin-bottom: 30px;
     }
 
-    .search-box {
+    .search-bar {
         flex: 1;
-        background-color: var(--card-dark);
-        border-radius: 20px;
+        background-color: #386282; /* Lighter blue/teal */
+        border-radius: 24px;
         display: flex;
         align-items: center;
-        padding: 0 15px;
+        padding: 0 16px;
     }
 
-    .search-box input {
+    .search-bar span {
+        color: #8dafc8;
+        font-size: 16px;
+        margin-right: 10px;
+    }
+
+    .search-bar input {
         background: transparent;
         border: none;
-        color: var(--text-light);
+        color: #ffffff;
         width: 100%;
-        padding: 12px 10px;
-        outline: none;
+        padding: 14px 0;
         font-size: 14px;
+        outline: none;
+        font-weight: 500;
     }
 
-    .search-box input::placeholder { color: #8FA6BE; }
-    
+    .search-bar input::placeholder {
+        color: #8dafc8;
+    }
+
     .filter-btn {
-        width: 45px;
-        height: 45px;
-        background-color: var(--card-yellow);
+        width: 48px;
+        height: 48px;
+        background-color: #fce863;
         border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         border: none;
-        cursor: pointer;
+        font-weight: 800;
     }
 
-    /* Main Yellow Card */
+    /* --- Main Yellow Card --- */
     .main-card {
-        background-color: var(--card-yellow);
-        border-radius: 24px;
-        padding: 20px;
+        background-color: #fce863;
+        border-radius: 28px;
+        padding: 24px;
         margin-bottom: 30px;
-        color: var(--text-dark);
     }
 
+    /* Top pill inside card */
     .card-top {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 15px;
-    }
-
-    .status-badge {
-        background-color: rgba(0,0,0,0.05);
-        padding: 6px 12px;
-        border-radius: 12px;
-        font-weight: 600;
-        font-size: 14px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .amount-display h2 {
-        font-size: 14px;
-        font-weight: 600;
-        margin-bottom: 5px;
-        color: #555;
-    }
-
-    .amount-display .amount {
-        font-size: 32px;
-        font-weight: 800;
-        letter-spacing: -1px;
         margin-bottom: 20px;
     }
 
+    .status-pill {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 700;
+        font-size: 13px;
+        color: #1a1a1a;
+    }
+
+    .status-pill .icon-box {
+        background-color: #1a1a1a;
+        color: #fce863;
+        width: 20px;
+        height: 28px;
+        border-radius: 6px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 10px;
+    }
+
+    .dropdown-arrow {
+        background-color: rgba(0,0,0,0.05);
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: 800;
+    }
+
+    /* Middle Big Text */
+    .main-amount {
+        font-size: 34px;
+        font-weight: 800;
+        color: #1a1a1a;
+        letter-spacing: -1px;
+        margin-bottom: 4px;
+    }
+
+    .sub-amount {
+        font-size: 13px;
+        font-weight: 700;
+        color: #666;
+        margin-bottom: 20px;
+    }
+
+    /* Bottom of Card */
     .card-bottom {
         display: flex;
         justify-content: space-between;
         align-items: flex-end;
     }
 
-    .live-status {
+    .live-text {
         font-size: 12px;
-        font-weight: 600;
-        color: #4A5568;
+        font-weight: 700;
+        color: #666;
+        line-height: 1.4;
     }
 
-    .live-badge {
-        display: inline-block;
-        background-color: #2F4F4F;
-        color: #4ADE80;
-        padding: 4px 10px;
-        border-radius: 20px;
-        margin-bottom: 5px;
+    .live-text strong {
+        color: #1a1a1a;
+        font-size: 13px;
     }
 
-    .btn-details {
-        background-color: var(--btn-black);
-        color: var(--text-light);
-        padding: 10px 20px;
-        border-radius: 20px;
+    .details-btn {
+        background-color: #1a1a1a;
+        color: #ffffff;
+        padding: 12px 20px;
+        border-radius: 24px;
+        font-size: 13px;
+        font-weight: 700;
         text-decoration: none;
-        font-weight: 600;
-        font-size: 14px;
     }
 
-    /* Shortcuts Section */
+    /* --- Shortcuts Section --- */
     .shortcuts-header {
         display: flex;
         justify-content: space-between;
-        color: var(--text-light);
-        margin-bottom: 15px;
-        font-weight: 600;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+
+    .shortcuts-header h3 {
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .shortcuts-header span {
+        color: #ffffff;
+        font-size: 20px;
     }
 
     .shortcuts-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 15px;
+        gap: 12px;
     }
 
-    .shortcut-card {
-        background-color: var(--card-dark);
+    .shortcut-btn {
+        background-color: #386282;
         border-radius: 16px;
-        padding: 15px;
+        padding: 20px 16px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        color: var(--text-light);
-        font-weight: 500;
-        font-size: 14px;
-        cursor: pointer;
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 13px;
     }
 
-    .shortcut-icon {
-        color: var(--card-yellow);
-        font-size: 18px;
+    .shortcut-btn .icon {
+        color: #fce863;
+        font-size: 16px;
     }
 </style>
 </head>
 <body>
 
-<div class="mobile-app">
+<div class="app-container">
     <!-- Header -->
     <div class="header">
-        <div class="greeting">
-            <!-- Personalized Greeting -->
-            <h1>Hi, Joel!</h1> 
-        </div>
+        <div class="greeting">Hi, Joel!</div>
         <div class="header-icons">
-            <button class="icon-btn btn-notification">🔔</button>
-            <button class="icon-btn btn-menu">☰</button>
+            <button class="icon-circle bell-btn">🔔</button>
+            <button class="icon-circle menu-btn">☰</button>
         </div>
     </div>
 
-    <!-- Search Area -->
-    <div class="search-container">
-        <div class="search-box">
+    <!-- Search Row -->
+    <div class="search-row">
+        <div class="search-bar">
             <span>🔍</span>
-            <input type="text" placeholder="Search student links">
+            <input type="text" placeholder="Search Country">
         </div>
-        <button class="filter-btn">⚙️</button>
+        <button class="filter-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2"><circle cx="9" cy="9" r="2"/><circle cx="15" cy="15" r="2"/><circle cx="15" cy="9" r="2"/><circle cx="9" cy="15" r="2"/></svg>
+        </button>
     </div>
 
-    <!-- Main Data Card -->
+    <!-- Main Yellow Card -->
     <div class="main-card">
         <div class="card-top">
-            <div class="status-badge">
-                👤 STUDENT
+            <div class="status-pill">
+                <div class="icon-box">📱</div>
+                STUDENT
             </div>
-            <span style="font-weight: bold; cursor:pointer;">...</span>
+            <div class="dropdown-arrow">▾</div>
         </div>
         
-        <div class="amount-display">
-            <h2>TOTAL SPENT</h2>
-            <div class="amount">GHC 0.00</div>
-        </div>
+        <div class="main-amount">GHC 0.00</div>
+        <div class="sub-amount">Total Spent</div>
 
         <div class="card-bottom">
-            <div class="live-status">
-                <div class="live-badge">● LIVE: 10 - 5000</div><br>
+            <div class="live-text">
+                <strong>LIVE: 10 - 5000</strong><br>
                 (no no passenger added)
             </div>
-            <a href="#" class="btn-details">See Details &gt;</a>
+            <a href="#" class="details-btn">See Details &gt;</a>
         </div>
     </div>
 
-    <!-- Shortcuts Grid -->
+    <!-- Shortcuts -->
     <div class="shortcuts-header">
-        <span>My Shortcut</span>
+        <h3>My Shortcut</h3>
         <span>→</span>
     </div>
     
     <div class="shortcuts-grid">
-        <div class="shortcut-card">
-            <span>Buy Data</span>
-            <span class="shortcut-icon">⚡</span>
+        <div class="shortcut-btn">
+            Buy Data <span class="icon">⚡</span>
         </div>
-        <div class="shortcut-card">
-            <span>Special Offer</span>
-            <span class="shortcut-icon">🎁</span>
+        <div class="shortcut-btn">
+            Special Offer <span class="icon">🎁</span>
         </div>
-        <div class="shortcut-card">
-            <span>History</span>
-            <span class="shortcut-icon">🕒</span>
+        <div class="shortcut-btn">
+            History <span class="icon">🕒</span>
         </div>
-        <div class="shortcut-card">
-            <span>Share and Earn</span>
-            <span class="shortcut-icon">🔗</span>
+        <div class="shortcut-btn">
+            Share and Earn <span class="icon">🔗</span>
         </div>
     </div>
 </div>
