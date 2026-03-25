@@ -1,188 +1,296 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UniLink GH | Universal Student Connectivity</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UniLink Dashboard</title>
+<style>
+    /* Base Reset and Variables */
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    :root {
+        --bg-main: #1C334A; /* Exact deep blue background */
+        --card-yellow: #FCE863; /* High-contrast yellow */
+        --card-dark: #2A435B; /* Darker blue for shortcuts */
+        --text-light: #FFFFFF;
+        --text-dark: #1A212A;
+        --btn-black: #1A1A1A;
+    }
+
+    body {
+        background-color: #000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+    }
+
+    /* Mobile Container */
+    .mobile-app {
+        background-color: var(--bg-main);
+        width: 100%;
+        max-width: 400px;
+        height: 850px;
+        border-radius: 40px;
+        padding: 30px 20px;
+        overflow-y: auto;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    /* Header Section */
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .greeting h1 {
+        color: var(--text-light);
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .header-icons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .icon-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: none;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        font-size: 18px;
+    }
+
+    .btn-notification { background-color: var(--card-yellow); color: var(--text-dark); }
+    .btn-menu { background-color: #4CB1D6; color: var(--text-light); }
+
+    /* Search Bar */
+    .search-container {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 25px;
+    }
+
+    .search-box {
+        flex: 1;
+        background-color: var(--card-dark);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        padding: 0 15px;
+    }
+
+    .search-box input {
+        background: transparent;
+        border: none;
+        color: var(--text-light);
+        width: 100%;
+        padding: 12px 10px;
+        outline: none;
+        font-size: 14px;
+    }
+
+    .search-box input::placeholder { color: #8FA6BE; }
     
-    <!-- Scripts: Firebase, Paystack, Tailwind, Lucide -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <script src="https://js.paystack.co/v2/inline.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800;900&display=swap" rel="stylesheet">
+    .filter-btn {
+        width: 45px;
+        height: 45px;
+        background-color: var(--card-yellow);
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+    }
 
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: { sans: ['Poppins', 'sans-serif'] },
-            colors: {
-              brand: {
-                sunGold: '#FFF9E5',   /* Lightened Background */
-                plum: '#6A4374',      /* Primary Accent */
-                plumDark: '#3D2542',  /* Headers / Text */
-                tangerine: '#FF9900', /* Action Nodes */
-                lime: '#94CF76',      /* Status / Success */
-                mtn: '#FFC107', at: '#4F46E5', telecel: '#E11D48' /* Network Saturated */
-              }
-            }
-          }
-        }
-      }
-    </script>
+    /* Main Yellow Card */
+    .main-card {
+        background-color: var(--card-yellow);
+        border-radius: 24px;
+        padding: 20px;
+        margin-bottom: 30px;
+        color: var(--text-dark);
+    }
 
-    <style>
-        body { background-color: #FFF9E5; color: #3D2542; -webkit-tap-highlight-color: transparent; }
-        .glass-card { background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(10px); border: 1px solid rgba(61, 37, 66, 0.05); }
-        .ticket-clip { clip-path: polygon(0% 0%, 100% 0%, 100% 85%, 95% 90%, 5% 90%, 0 85%); }
-        .hidden-view { display: none !important; }
-        @keyframes orbit { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .animate-orbit { animation: orbit 8s linear infinite; }
-    </style>
+    .card-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .status-badge {
+        background-color: rgba(0,0,0,0.05);
+        padding: 6px 12px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .amount-display h2 {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: #555;
+    }
+
+    .amount-display .amount {
+        font-size: 32px;
+        font-weight: 800;
+        letter-spacing: -1px;
+        margin-bottom: 20px;
+    }
+
+    .card-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+    }
+
+    .live-status {
+        font-size: 12px;
+        font-weight: 600;
+        color: #4A5568;
+    }
+
+    .live-badge {
+        display: inline-block;
+        background-color: #2F4F4F;
+        color: #4ADE80;
+        padding: 4px 10px;
+        border-radius: 20px;
+        margin-bottom: 5px;
+    }
+
+    .btn-details {
+        background-color: var(--btn-black);
+        color: var(--text-light);
+        padding: 10px 20px;
+        border-radius: 20px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    /* Shortcuts Section */
+    .shortcuts-header {
+        display: flex;
+        justify-content: space-between;
+        color: var(--text-light);
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+
+    .shortcuts-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+
+    .shortcut-card {
+        background-color: var(--card-dark);
+        border-radius: 16px;
+        padding: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: var(--text-light);
+        font-weight: 500;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    .shortcut-icon {
+        color: var(--card-yellow);
+        font-size: 18px;
+    }
+</style>
 </head>
-<body class="max-w-md mx-auto min-h-screen relative font-sans">
+<body>
 
-    <!-- GLOBAL HEADER -->
-    <header class="p-6 flex justify-between items-center sticky top-0 z-50 bg-brand-sunGold/80 backdrop-blur-md">
-        <button onclick="handleAuth()" id="authBtn" class="bg-brand-plumDark p-2 rounded-xl text-brand-tangerine shadow-lg">
-            <i data-lucide="user-circle" class="w-6 h-6"></i>
-        </button>
-
-        <!-- MINIMALIST ACADEMIC ORBIT LOGO -->
-        <div class="flex flex-col items-center">
-            <div class="relative w-10 h-10 flex items-center justify-center">
-                <div class="absolute inset-0 border-2 border-brand-plum/20 rounded-full animate-orbit">
-                    <div class="absolute -top-1 left-1/2 w-2 h-2 bg-brand-tangerine rounded-full"></div>
-                </div>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3D2542" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 2L2 22h20L12 2z" />
-                </svg>
-            </div>
-            <span class="text-[10px] font-black uppercase tracking-[0.4em] mt-1">Uni<span class="text-brand-plum">Link</span></span>
+<div class="mobile-app">
+    <!-- Header -->
+    <div class="header">
+        <div class="greeting">
+            <!-- Personalized Greeting -->
+            <h1>Hi, Joel!</h1> 
         </div>
-
-        <button onclick="toggleHistory()" class="bg-brand-plumDark p-2 rounded-xl text-brand-sunGold shadow-lg">
-            <i data-lucide="history" class="w-6 h-6"></i>
-        </button>
-    </header>
-
-    <!-- HOME VIEW -->
-    <div id="homeView" class="p-6 space-y-8">
-        <!-- GREETING CARD -->
-        <section class="glass-card p-8 rounded-[2.5rem] shadow-xl relative overflow-hidden">
-            <div class="relative z-10">
-                <p id="greetingText" class="text-[10px] font-black uppercase tracking-widest opacity-60">Good Morning,</p>
-                <h1 id="userName" class="text-3xl font-black tracking-tight">Student</h1>
-                <div class="mt-6 flex items-baseline gap-2">
-                    <span class="text-sm font-bold opacity-50">GH₵</span>
-                    <span id="totalSpent" class="text-5xl font-black">0.00</span>
-                </div>
-                <p class="text-[9px] font-bold uppercase tracking-widest mt-2 opacity-40">Total Lifetime Transit</p>
-            </div>
-            <i data-lucide="cpu" class="absolute -right-8 -bottom-8 w-32 h-32 opacity-5 text-brand-plumDark"></i>
-        </section>
-
-        <!-- NETWORK SELECTION (THE RESTORED TICKETS) -->
-        <section class="space-y-4">
-            <h3 class="text-[10px] font-black uppercase tracking-[0.2em] px-2 text-brand-plumDark/50">Select Signal Track</h3>
-            
-            <div onclick="openBundles('MTN')" class="bg-brand-mtn p-6 rounded-[2rem] flex items-center justify-between cursor-pointer shadow-lg active:scale-95 transition-transform">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center font-black">M</div>
-                    <span class="text-xl font-black text-brand-plumDark uppercase tracking-tight">MTN Pulse</span>
-                </div>
-                <i data-lucide="chevron-right" class="text-brand-plumDark/40"></i>
-            </div>
-
-            <div onclick="openBundles('TELECEL')" class="bg-brand-telecel p-6 rounded-[2rem] flex items-center justify-between cursor-pointer shadow-lg active:scale-95 transition-transform text-white">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center font-black">T</div>
-                    <span class="text-xl font-black uppercase tracking-tight">Telecel</span>
-                </div>
-                <i data-lucide="chevron-right" class="text-white/40"></i>
-            </div>
-
-            <div onclick="openBundles('AT')" class="bg-brand-at p-6 rounded-[2rem] flex items-center justify-between cursor-pointer shadow-lg active:scale-95 transition-transform text-white">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center font-black text-sm">AT</div>
-                    <span class="text-xl font-black uppercase tracking-tight">AT Ghana</span>
-                </div>
-                <i data-lucide="chevron-right" class="text-white/40"></i>
-            </div>
-        </section>
-
-        <footer class="text-center py-10 opacity-30">
-            <p class="text-[9px] font-black tracking-[0.5em] uppercase">Academic Infrastructure v3.0</p>
-        </footer>
+        <div class="header-icons">
+            <button class="icon-btn btn-notification">🔔</button>
+            <button class="icon-btn btn-menu">☰</button>
+        </div>
     </div>
 
-    <!-- BUNDLE VIEW (DYNAMO) -->
-    <div id="bundleView" class="hidden-view p-6 pt-0 space-y-6">
-        <div class="flex items-center gap-4 mb-8">
-            <button onclick="showHome()" class="p-2 bg-brand-plumDark text-brand-sunGold rounded-xl"><i data-lucide="arrow-left"></i></button>
-            <h2 id="networkTitle" class="text-2xl font-black uppercase tracking-tighter">Bundles</h2>
+    <!-- Search Area -->
+    <div class="search-container">
+        <div class="search-box">
+            <span>🔍</span>
+            <input type="text" placeholder="Search student links">
         </div>
-        <div id="bundleList" class="space-y-6"></div>
+        <button class="filter-btn">⚙️</button>
     </div>
 
-    <script>
-        // FIREBASE & LOGIC
-        const config = { apiKey: "AIzaSyCqg3E9tuKRcEnq2DdP6FjtG0LqnAjCHfM", authDomain: "joeldata-25d06.firebaseapp.com", projectId: "joeldata-25d06", storageBucket: "joeldata-25d06.firebasestorage.app", messagingSenderId: "555857869458", appId: "1:555857869458:web:db96a97fca5983b142044b" };
-        firebase.initializeApp(config);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+    <!-- Main Data Card -->
+    <div class="main-card">
+        <div class="card-top">
+            <div class="status-badge">
+                👤 STUDENT
+            </div>
+            <span style="font-weight: bold; cursor:pointer;">...</span>
+        </div>
+        
+        <div class="amount-display">
+            <h2>TOTAL SPENT</h2>
+            <div class="amount">GHC 0.00</div>
+        </div>
 
-        const dataSets = {
-            MTN: { color: 'bg-brand-mtn', text: 'text-brand-plumDark', bundles: [{g:'1GB', p:5}, {g:'5GB', p:25}, {g:'10GB', p:50}] },
-            TELECEL: { color: 'bg-brand-telecel', text: 'text-white', bundles: [{g:'10GB', p:40}, {g:'20GB', p:80}, {g:'50GB', p:200}] },
-            AT: { color: 'bg-brand-at', text: 'text-white', bundles: [{g:'5GB', p:20}, {g:'10GB', p:40}, {g:'50GB', p:180}] }
-        };
+        <div class="card-bottom">
+            <div class="live-status">
+                <div class="live-badge">● LIVE: 10 - 5000</div><br>
+                (no no passenger added)
+            </div>
+            <a href="#" class="btn-details">See Details &gt;</a>
+        </div>
+    </div>
 
-        function showHome() {
-            document.getElementById('homeView').classList.remove('hidden-view');
-            document.getElementById('bundleView').classList.add('hidden-view');
-        }
+    <!-- Shortcuts Grid -->
+    <div class="shortcuts-header">
+        <span>My Shortcut</span>
+        <span>→</span>
+    </div>
+    
+    <div class="shortcuts-grid">
+        <div class="shortcut-card">
+            <span>Buy Data</span>
+            <span class="shortcut-icon">⚡</span>
+        </div>
+        <div class="shortcut-card">
+            <span>Special Offer</span>
+            <span class="shortcut-icon">🎁</span>
+        </div>
+        <div class="shortcut-card">
+            <span>History</span>
+            <span class="shortcut-icon">🕒</span>
+        </div>
+        <div class="shortcut-card">
+            <span>Share and Earn</span>
+            <span class="shortcut-icon">🔗</span>
+        </div>
+    </div>
+</div>
 
-        function openBundles(net) {
-            document.getElementById('homeView').classList.add('hidden-view');
-            const view = document.getElementById('bundleView');
-            const list = document.getElementById('bundleList');
-            document.getElementById('networkTitle').innerText = net + " TRACKS";
-            
-            list.innerHTML = '';
-            dataSets[net].bundles.forEach(b => {
-                list.innerHTML += `
-                    <div class="${dataSets[net].color} ${dataSets[net].text} p-8 rounded-[2.5rem] shadow-xl relative overflow-hidden ticket-clip">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h3 class="text-6xl font-black tracking-tighter">${b.g}</h3>
-                                <p class="text-[10px] font-black uppercase tracking-widest opacity-60">High-Speed Data</p>
-                            </div>
-                            <span class="font-black text-xl">₵${b.p}</span>
-                        </div>
-                        <button class="w-full bg-brand-plumDark text-white py-4 mt-8 rounded-2xl font-black uppercase tracking-widest shadow-lg active:scale-95 transition-transform">Buy Ticket</button>
-                    </div>`;
-            });
-            view.classList.remove('hidden-view');
-            lucide.createIcons();
-        }
-
-        auth.onAuthStateChanged(user => {
-            if(user) {
-                document.getElementById('userName').innerText = user.displayName.split(' ')[0];
-                document.getElementById('greetingText').innerText = "Welcome back,";
-            }
-        });
-
-        function handleAuth() {
-            if(auth.currentUser) auth.signOut();
-            else auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
-        }
-
-        lucide.createIcons();
-    </script>
 </body>
 </html>
