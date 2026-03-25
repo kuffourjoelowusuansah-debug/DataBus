@@ -4,111 +4,128 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .bg-custom-teal { background-color: #1A5F7A; }
-        .bg-custom-dark { background-color: #121212; }
-        .text-custom-yellow { color: #F2E14E; }
-        .bg-custom-yellow { background-color: #F2E14E; }
+        
+        /* Custom Colors matched to the image */
+        .bg-custom-teal { background-color: #0E3B4C; } /* Deep teal base */
+        .text-custom-yellow { color: #E8D558; } /* Muted, professional yellow */
+        .bg-custom-yellow { background-color: #E8D558; }
+        
+        /* Apply the specific gradient seen on the 'EXCLUSIVE DISCOUNT' card */
+        .gradient-exclusive {
+            background: linear-gradient(135deg, #1A4D6F 0%, #3178C6 100%);
+        }
+
+        /* Reusable button effect: Deep shadow and bounce animation on hover/active */
+        .button-effect {
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+        }
+        .button-effect:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+        }
+        .button-effect:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+        }
+        
     </style>
 </head>
 <body class="bg-custom-teal min-h-screen text-white p-6 max-w-md mx-auto relative pb-24">
 
-    <!-- Header Section -->
     <header class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold">Hi, Jackson Mok!</h1>
+        <h1 class="text-2xl font-bold tracking-tight">Hi, Jackson Mok!</h1>
         <div class="flex gap-2">
-            <div class="bg-custom-yellow p-2 rounded-full text-black">🔔</div>
-            <div class="bg-blue-400 p-2 rounded-full">☰</div>
+            <button class="bg-custom-yellow/20 p-2.5 rounded-full text-custom-yellow text-sm button-effect">🔔</button>
+            <button class="bg-blue-400 p-2.5 rounded-full text-white text-sm button-effect">☰</button>
         </div>
     </header>
 
-    <!-- Search Bar -->
     <div class="relative mb-6">
-        <input type="text" placeholder="Search Country" class="w-full bg-white/10 border border-white/20 rounded-full py-3 px-10 focus:outline-none">
-        <span class="absolute left-4 top-3.5 opacity-50">🔍</span>
-        <div class="absolute right-2 top-1.5 bg-custom-yellow p-2 rounded-full text-xs text-black font-bold">QR</div>
+        <input type="text" placeholder="Search Country" class="w-full bg-white/10 border border-white/10 rounded-full py-3.5 px-10 placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-custom-yellow/50">
+        <span class="absolute left-4 top-4 text-white/40">🔍</span>
+        <button class="absolute right-2.5 top-2.5 bg-custom-yellow p-1.5 px-3 rounded-full text-xs text-black font-extrabold button-effect">QR</button>
     </div>
 
-    <!-- Data Card -->
-    <div class="bg-custom-yellow text-black rounded-3xl p-5 mb-6">
-        <div class="flex justify-between items-start mb-4">
+    <div class="bg-custom-yellow text-black rounded-3xl p-6 mb-7 shadow-lg">
+        <div class="flex justify-between items-start mb-6">
             <div class="flex gap-3">
-                <div class="bg-black/10 p-2 rounded-lg">📱</div>
+                <div class="bg-black/10 p-2.5 rounded-xl text-lg">📱</div>
                 <div>
                     <h2 class="font-bold leading-tight">Global 100GB with Device</h2>
                     <p class="text-xs opacity-70">8517 2805 0744 870</p>
                 </div>
             </div>
-            <span>⌄</span>
+            <span class="opacity-50 text-xs">⌄</span>
         </div>
         
         <div class="mt-8">
-            <p class="text-3xl font-black">8.7GB Left</p>
-            <p class="text-xs font-semibold">Out of 100GB</p>
+            <p class="text-[40px] font-black leading-none">8.7GB Left</p>
+            <p class="text-sm font-semibold mb-6">Out of 100GB</p>
+            
             <div class="flex justify-between items-end mt-2">
-                <p class="text-[10px] opacity-60">Validity: Sep 03, 2025</p>
-                <button class="bg-black text-white px-4 py-2 rounded-full text-xs font-bold">See Details ></button>
+                <p class="text-[10px] font-medium opacity-60">Validity: Sep 03, 2025</p>
+                <button class="bg-black text-white px-5 py-2.5 rounded-full text-xs font-bold button-effect">See Details ></button>
             </div>
         </div>
     </div>
 
-    <!-- Shortcuts Grid -->
     <div class="flex justify-between items-center mb-4">
         <h3 class="font-bold">My Shortcut</h3>
-        <span class="text-xl">→</span>
+        <button class="text-xl text-custom-yellow button-effect">→</button>
     </div>
     
-    <div class="grid grid-cols-2 gap-3 mb-6">
-        <div class="bg-black/30 p-4 rounded-2xl flex justify-between items-center border border-white/5">
-            <span class="text-xs font-semibold">Pocket Wifi</span>
-            <span class="text-custom-yellow">📶</span>
+    <div class="grid grid-cols-2 gap-3.5 mb-7">
+        <button class="bg-black/25 p-4.5 rounded-2xl flex justify-between items-center border border-white/5 button-effect">
+            <span class="text-[13px] font-medium">Pocket Wifi</span>
+            <span class="text-custom-yellow text-lg">📶</span>
+        </button>
+        <button class="bg-black/25 p-4.5 rounded-2xl flex justify-between items-center border border-white/5 button-effect">
+            <span class="text-[13px] font-medium">Top Up</span>
+            <span class="text-custom-yellow text-lg">⚡</span>
+        </button>
+        <button class="bg-black/25 p-4.5 rounded-2xl flex justify-between items-center border border-white/5 button-effect">
+            <span class="text-[13px] font-medium">How it works</span>
+            <span class="text-custom-yellow text-lg">❓</span>
+        </button>
+        <button class="bg-black/25 p-4.5 rounded-2xl flex justify-between items-center border border-white/5 button-effect">
+            <span class="text-[13px] font-medium">Support</span>
+            <span class="text-custom-yellow text-lg">🎧</span>
+        </button>
+    </div>
+
+    <div class="flex gap-4 overflow-hidden mb-12">
+        <div class="gradient-exclusive rounded-3xl p-6 min-w-[210px] flex-1 relative h-44 shadow-lg">
+            <h4 class="text-2xl font-black leading-tight tracking-tighter">EXCLUSIVE<br>DISCOUNT!!</h4>
+            <p class="text-[11px] font-medium mt-3 opacity-90">Save 20% on all days.</p>
+            <button class="absolute bottom-5 left-6 bg-black text-[10px] px-4 py-1.5 rounded-full font-bold button-effect">See Details ></button>
         </div>
-        <div class="bg-black/30 p-4 rounded-2xl flex justify-between items-center border border-white/5">
-            <span class="text-xs font-semibold">Top Up</span>
-            <span class="text-custom-yellow">⚡</span>
-        </div>
-        <div class="bg-black/30 p-4 rounded-2xl flex justify-between items-center border border-white/5">
-            <span class="text-xs font-semibold">How it works</span>
-            <span class="text-custom-yellow">❓</span>
-        </div>
-        <div class="bg-black/30 p-4 rounded-2xl flex justify-between items-center border border-white/5">
-            <span class="text-xs font-semibold">Support</span>
-            <span class="text-custom-yellow">🎧</span>
+        
+        <div class="bg-custom-yellow text-black rounded-3xl p-6 min-w-[110px] h-44 shadow-lg">
+            <h4 class="text-2xl font-black leading-tight tracking-tighter">Early<br>Bird</h4>
         </div>
     </div>
 
-    <!-- Promotion Cards -->
-    <div class="flex gap-4 overflow-hidden">
-        <div class="bg-blue-500 rounded-3xl p-5 min-w-[200px] flex-1 relative h-40">
-            <h4 class="text-xl font-black leading-tight">Exclusive<br>Discount!!</h4>
-            <p class="text-[10px] mt-2">Save 20% on all days.</p>
-            <button class="absolute bottom-4 left-5 bg-black text-[10px] px-3 py-1 rounded-full">See Details ></button>
-        </div>
-        <div class="bg-custom-yellow text-black rounded-3xl p-5 min-w-[100px] flex-1 h-40">
-            <h4 class="text-xl font-black leading-tight">Early<br>Bird</h4>
-        </div>
-    </div>
-
-    <!-- Bottom Navigation -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-black/80 backdrop-blur-md p-4 flex justify-around items-center border-t border-white/10">
-        <div class="flex flex-col items-center gap-1">
-            <div class="bg-custom-yellow p-1 px-3 rounded-full text-black">🏠</div>
-            <span class="text-[10px] text-custom-yellow">Home</span>
-        </div>
-        <div class="flex flex-col items-center gap-1 opacity-50">
-            <span>📦</span>
-            <span class="text-[10px]">My Data</span>
-        </div>
-        <div class="flex flex-col items-center gap-1 opacity-50">
-            <span>💬</span>
-            <span class="text-[10px]">Contact</span>
-        </div>
-        <div class="flex flex-col items-center gap-1 opacity-50">
-            <span>👤</span>
-            <span class="text-[10px]">Account</span>
-        </div>
+    <nav class="fixed bottom-0 left-0 right-0 bg-black/80 backdrop-blur-lg p-4 flex justify-around items-center border-t border-white/5 z-50">
+        <button class="flex flex-col items-center gap-1.5 button-effect">
+            <div class="bg-custom-yellow p-1.5 px-4 rounded-full text-black text-sm">🏠</div>
+            <span class="text-[10px] font-semibold text-custom-yellow">Home</span>
+        </button>
+        <button class="flex flex-col items-center gap-1.5 opacity-40 hover:opacity-100 button-effect">
+            <span class="text-lg">📦</span>
+            <span class="text-[10px] font-medium">My Data</span>
+        </button>
+        <button class="flex flex-col items-center gap-1.5 opacity-40 hover:opacity-100 button-effect">
+            <span class="text-lg">💬</span>
+            <span class="text-[10px] font-medium">Contact</span>
+        </button>
+        <button class="flex flex-col items-center gap-1.5 opacity-40 hover:opacity-100 button-effect">
+            <span class="text-lg">👤</span>
+            <span class="text-[10px] font-medium">Account</span>
+        </button>
     </nav>
 
 </body>
