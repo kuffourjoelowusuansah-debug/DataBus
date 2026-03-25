@@ -3,76 +3,273 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Under Maintenance</title>
+    <title>UniLink GH - Dashboard</title>
     <style>
+        :root {
+            --primary-bg: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --text-muted: #777777;
+            --accent-color: #007bff;
+            --border-color: #e0e0e0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
-            color: #333;
+            background-color: #e9ecef; /* Darker background for desktop to frame the app */
             display: flex;
             justify-content: center;
+        }
+
+        /* Mobile App Container */
+        .app-container {
+            width: 100%;
+            max-width: 414px; /* iPhone screen width */
+            min-height: 100vh;
+            background-color: var(--primary-bg);
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            text-align: center;
+            padding: 20px;
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
         }
-        .container {
-            background: white;
-            padding: 3rem;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            max-width: 400px;
+
+        .greeting h1 {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: normal;
         }
-        h1 {
-            color: #2c3e50;
-            margin-bottom: 10px;
+
+        .greeting h2 {
+            font-size: 18px;
+            color: var(--text-main);
         }
-        p {
-            font-size: 1.1rem;
-            line-height: 1.6;
-            color: #666;
+
+        .header-icons {
+            display: flex;
+            gap: 15px;
+            font-size: 20px;
+            color: var(--text-main);
+            cursor: pointer;
         }
-        .whatsapp-btn {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 12px 25px;
-            background-color: #25D366;
+
+        /* Dashboard Card */
+        .dashboard-card {
+            background: linear-gradient(135deg, #007bff, #0056b3);
             color: white;
-            text-decoration: none;
-            border-radius: 30px;
+            margin: 20px;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .main-balance {
+            flex: 1;
+        }
+
+        .main-balance p {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .main-balance h3 {
+            font-size: 28px;
             font-weight: bold;
-            transition: transform 0.2s, background-color 0.2s;
         }
-        .whatsapp-btn:hover {
-            background-color: #128C7E;
-            transform: scale(1.05);
+
+        .side-stats {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
         }
-        .phone-number {
-            display: block;
+
+        .side-stats p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .side-stats h4 {
+            font-size: 16px;
+        }
+
+        /* Shelf Section */
+        .section-title {
+            padding: 0 20px;
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .shelf-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 0 20px 20px;
+        }
+
+        .shelf-btn {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-main);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .shelf-btn:active {
+            background-color: #f0f0f0;
+        }
+
+        /* Horizontal Scroll Tags */
+        .tags-container {
+            display: flex;
+            overflow-x: auto;
+            padding: 0 20px 20px;
+            gap: 10px;
+            scrollbar-width: none; /* Firefox */
+        }
+        
+        .tags-container::-webkit-scrollbar {
+            display: none; /* Chrome/Safari */
+        }
+
+        .tag {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 15px 20px;
+            border-radius: 12px;
+            white-space: nowrap;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        /* Ranking Section */
+        .ranking-container {
+            background-color: var(--card-bg);
+            margin: 0 20px 30px;
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .graph-placeholder {
+            height: 100px;
+            border-bottom: 2px solid var(--border-color);
+            border-left: 2px solid var(--border-color);
+            margin: 15px 0;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+        }
+
+        /* Simple CSS drawn graph line */
+        .graph-line {
+            width: 100%;
+            height: 50%;
+            border-top: 3px solid var(--accent-color);
+            border-radius: 50%;
+            transform: scaleY(0.5);
+        }
+
+        .ranking-text {
+            text-align: center;
+            font-weight: bold;
+            color: var(--text-main);
             margin-top: 10px;
-            font-weight: bold;
-            color: #2c3e50;
         }
+
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div style="font-size: 50px;">🛠️</div>
-        <h1>Under Maintenance</h1>
-        <p>We’re currently updating our store to serve you better. We'll be back online shortly!</p>
-        
-        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-        
-        <p><strong>Want to place an order?</strong></p>
-        
-        <!-- WhatsApp Link -->
-        <a href="https://wa.me/233248745662?text=Hello!%20I%20would%20like%20to%20place%20an%20order." class="whatsapp-btn">
-            Order via WhatsApp
-        </a>
-        
-        <span class="phone-number">Call us: 0248745662</span>
-    </div>
+<div class="app-container">
+    
+    <!-- Header -->
+    <header>
+        <div class="greeting">
+            <h1>Good Afternoon,</h1>
+            <h2>Joel Owusu Ansah</h2>
+        </div>
+        <div class="header-icons">
+            <span>🔔</span>
+            <span>☰</span>
+        </div>
+    </header>
+
+    <!-- Total Spent Dashboard -->
+    <section class="dashboard-card">
+        <div class="main-balance">
+            <p>Total Spent</p>
+            <h3>GH₵ 790.51</h3>
+        </div>
+        <div class="side-stats">
+            <div>
+                <p>LIVE</p>
+                <h4>2408</h4>
+            </div>
+            <div style="margin-top: 10px;">
+                <p>TOTAL DATA</p>
+                <h4>200GB</h4>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Shelf -->
+    <h3 class="section-title">Shelf</h3>
+    <section class="shelf-grid">
+        <div class="shelf-btn">Buy Data</div>
+        <div class="shelf-btn">Renew Data</div>
+        <div class="shelf-btn">Earnings</div>
+        <div class="shelf-btn">History</div>
+        <div class="shelf-btn">How To Buy</div>
+        <div class="shelf-btn">Support</div>
+    </section>
+
+    <!-- Horizontal Features -->
+    <section class="tags-container">
+        <div class="tag">Affordable</div>
+        <div class="tag">5G MTN Data Unlimited</div>
+        <div class="tag">Fast</div>
+        <div class="tag">Secure</div>
+    </section>
+
+    <!-- Ranking -->
+    <h3 class="section-title">Ranking</h3>
+    <section class="ranking-container">
+        <div class="graph-placeholder">
+            <div class="graph-line"></div>
+        </div>
+        <div class="ranking-text">You are #90 📈</div>
+    </section>
+
+</div>
 
 </body>
 </html>
