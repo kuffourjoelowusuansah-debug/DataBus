@@ -3,249 +3,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UniLink Home</title>
+    <title>Data Bus Premium</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap');
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
+        :root {
+            --bg-deep: #0f172a; /* Deep navy background */
+            --app-teal: #1a3a4a; /* Muted teal for sections */
+            --accent-yellow: #fce863;
+            --accent-blue: #4eb1d9;
+            --text-gray: #94a3b8;
         }
 
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+
         body {
-            background-color: #0d1b2a; /* Exact background deep blue */
+            background-color: #000;
             display: flex;
             justify-content: center;
             min-height: 100vh;
             color: white;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 400px;
             padding: 20px;
         }
 
-        /* --- Header Section --- */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-top: 10px;
-        }
-
-        .header h1 {
-            font-size: 24px;
-            font-weight: 800;
-        }
-
-        .header-btns {
-            display: flex;
-            gap: 10px;
-        }
-
-        .icon-circle {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: none;
-            cursor: pointer;
-        }
-
-        .btn-yellow { background-color: #fce863; color: #000; font-size: 18px; }
-        .btn-blue { background-color: #4eb1d9; color: #fff; font-size: 18px; }
-
-        /* --- Search Row --- */
-        .search-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-        }
-
-        .search-bar {
-            flex: 1;
-            background-color: #1e3a5a;
-            border-radius: 25px;
-            display: flex;
-            align-items: center;
-            padding: 0 15px;
-        }
-
-        .search-bar input {
-            background: transparent;
-            border: none;
-            color: #fff;
-            padding: 12px 10px;
-            outline: none;
+        .phone-frame {
+            background-color: var(--bg-deep);
             width: 100%;
-        }
-
-        .btn-filter {
-            width: 45px;
-            height: 45px;
-            background-color: #fce863;
-            border-radius: 50%;
-            border: none;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* --- Main Hero Card --- */
-        .hero-card {
-            background-color: #fce863;
-            border-radius: 35px; /* High rounding to match reference */
-            padding: 25px;
-            color: #1a1a1a;
-            margin-bottom: 30px;
+            max-width: 375px;
+            height: 812px;
+            border-radius: 40px;
             position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 50px 100px -20px rgba(0,0,0,0.5);
         }
 
-        .student-badge {
+        .content { padding: 20px; flex: 1; overflow-y: auto; padding-bottom: 100px; }
+
+        /* --- Header --- */
+        .header { display: flex; justify-content: space-between; align-items: center; margin: 20px 0; }
+        .header h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+        .header-icons { display: flex; gap: 10px; }
+        .circle-btn { width: 40px; height: 40px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+
+        /* --- Search --- */
+        .search-container { display: flex; gap: 10px; margin-bottom: 20px; }
+        .search-box { 
+            flex: 1; 
+            background: rgba(255,255,255,0.05); 
+            border-radius: 20px; 
+            display: flex; 
+            align-items: center; 
+            padding: 0 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .search-box input { background: transparent; border: none; color: white; padding: 12px; width: 100%; outline: none; }
+
+        /* --- Hero Card (The "Yellow" Look) --- */
+        .hero-card {
+            background: linear-gradient(135deg, #fce863 0%, #fbd14b 100%);
+            border-radius: 30px;
+            padding: 24px;
+            color: #000;
+            position: relative;
+            margin-bottom: 25px;
+            box-shadow: 0 15px 30px rgba(252, 232, 99, 0.2);
+        }
+
+        .badge { 
+            background: rgba(0,0,0,0.07); 
+            padding: 6px 12px; 
+            border-radius: 12px; 
+            font-size: 11px; 
+            font-weight: 800; 
             display: inline-flex;
             align-items: center;
-            background-color: rgba(0,0,0,0.08);
-            padding: 8px 14px;
-            border-radius: 15px;
-            font-weight: 700;
-            font-size: 12px;
+            gap: 5px;
             margin-bottom: 15px;
         }
 
-        .hero-card h3 {
-            font-size: 14px;
-            font-weight: 700;
-            color: #555;
-            margin-bottom: 5px;
-        }
+        .hero-card h2 { font-size: 32px; font-weight: 800; margin: 10px 0; }
+        .hero-card p { font-size: 12px; font-weight: 700; opacity: 0.6; }
 
-        .main-value {
-            font-size: 38px;
-            font-weight: 800;
-            margin-bottom: 25px;
-            letter-spacing: -1px;
-        }
-
-        .card-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-        }
-
-        .live-info {
-            line-height: 1.4;
-        }
-
-        .live-tag {
-            background-color: #1a3a3a;
-            color: #4ade80;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-            display: inline-block;
-            margin-bottom: 5px;
-        }
-
-        .no-pass-text {
-            font-size: 11px;
-            font-weight: 600;
-            color: #666;
-        }
-
-        .btn-details {
-            background-color: #1a1a1a;
-            color: white;
-            padding: 12px 22px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: 700;
-        }
+        .card-footer { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 20px; }
+        .live-status { background: #0f172a; color: #4ade80; padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; }
+        .btn-details { background: #000; color: #fff; padding: 10px 20px; border-radius: 20px; text-decoration: none; font-size: 12px; font-weight: 800; }
 
         /* --- Shortcut Grid --- */
-        .shortcut-header {
+        .section-label { display: flex; justify-content: space-between; margin-bottom: 15px; font-weight: 800; font-size: 14px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; }
+        .grid-item { 
+            background: #1e293b; 
+            padding: 18px; 
+            border-radius: 20px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            font-size: 13px;
+            font-weight: 700;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .grid-item span { color: var(--accent-yellow); font-size: 16px; }
+
+        /* --- Promo Card --- */
+        .promo-card {
+            background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+            border-radius: 25px;
+            padding: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            font-weight: 700;
         }
+        .promo-content h4 { font-size: 18px; font-weight: 800; line-height: 1.2; }
 
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .grid-item {
-            background-color: #1e3a5a;
-            border-radius: 20px;
-            padding: 20px 15px;
+        /* --- Bottom Nav Bar --- */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
+            justify-content: space-around;
+            padding: 15px 10px 30px 10px;
+            border-top: 1px solid rgba(255,255,255,0.05);
         }
-
-        .grid-item span.icon {
-            color: #fce863;
-            font-size: 18px;
-        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; color: var(--text-gray); font-size: 10px; font-weight: 700; text-decoration: none; }
+        .nav-item.active { color: var(--accent-yellow); }
+        .nav-icon { font-size: 20px; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        <h1>Hi, Joel!</h1>
-        <div class="header-btns">
-            <button class="icon-circle btn-yellow">🔔</button>
-            <button class="icon-circle btn-blue">☰</button>
-        </div>
-    </div>
-
-    <div class="search-row">
-        <div class="search-bar">
-            <span>🔍</span>
-            <input type="text" placeholder="Search student links">
-        </div>
-        <button class="btn-filter">⚙️</button>
-    </div>
-
-    <div class="hero-card">
-        <div class="student-badge">👤 STUDENT</div>
-        <h3>TOTAL SPENT</h3>
-        <div class="main-value">GHC 0.00</div>
-
-        <div class="card-footer">
-            <div class="live-info">
-                <div class="live-tag">● LIVE: 10 - 5000</div><br>
-                <span class="no-pass-text">(no no passenger added)</span>
+<div class="phone-frame">
+    <div class="content">
+        <div class="header">
+            <h1>Hi, Joel!</h1>
+            <div class="header-icons">
+                <button class="circle-btn" style="background: var(--accent-yellow);">🔔</button>
+                <button class="circle-btn" style="background: var(--accent-blue);">☰</button>
             </div>
-            <a href="#" class="btn-details">See Details ></a>
+        </div>
+
+        <div class="search-container">
+            <div class="search-box">
+                <span>🔍</span>
+                <input type="text" placeholder="Search student links">
+            </div>
+            <button class="circle-btn" style="background: var(--accent-yellow); border-radius: 15px;">⚙️</button>
+        </div>
+
+        <div class="hero-card">
+            <div class="badge">👤 STUDENT</div>
+            <p>TOTAL SPENT</p>
+            <h2>GHC 0.00</h2>
+            <div class="card-footer">
+                <div>
+                    <span class="live-status">● LIVE: 10 - 5000</span>
+                    <p style="margin-top: 5px; color: #555;">(no no passenger added)</p>
+                </div>
+                <a href="#" class="btn-details">See Details ></a>
+            </div>
+        </div>
+
+        <div class="section-label">
+            <span>My Shortcut</span>
+            <span style="color: var(--text-gray);">→</span>
+        </div>
+
+        <div class="grid">
+            <div class="grid-item">Buy Data <span>⚡</span></div>
+            <div class="grid-item">Special Offer <span>🎁</span></div>
+            <div class="grid-item">History <span>🕒</span></div>
+            <div class="grid-item">Share and Earn <span>🔗</span></div>
+        </div>
+
+        <div class="promo-card">
+            <div class="promo-content">
+                <h4>Exclusive<br>Discount!!</h4>
+                <p style="font-size: 11px; margin-top: 5px; opacity: 0.8;">Save up to 20% today</p>
+            </div>
+            <div style="font-size: 40px;">📱</div>
         </div>
     </div>
 
-    <div class="shortcut-header">
-        <span>My Shortcut</span>
-        <span>→</span>
-    </div>
-
-    <div class="grid">
-        <div class="grid-item">Buy Data <span class="icon">⚡</span></div>
-        <div class="grid-item">Special Offer <span class="icon">🎁</span></div>
-        <div class="grid-item">History <span class="icon">🕒</span></div>
-        <div class="grid-item">Share and Earn <span class="icon">🔗</span></div>
-    </div>
+    <!-- Bottom Navigation Bar as seen in source 13 -->
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active"><span class="nav-icon">🏠</span>Home</a>
+        <a href="#" class="nav-item"><span class="nav-icon">📊</span>Stats</a>
+        <a href="#" class="nav-item"><span class="nav-icon">💬</span>Support</a>
+        <a href="#" class="nav-item"><span class="nav-icon">👤</span>Account</a>
+    </nav>
 </div>
 
 </body>
