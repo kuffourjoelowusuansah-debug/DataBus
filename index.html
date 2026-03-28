@@ -3,273 +3,226 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UniLink GH - Dashboard</title>
+    <title>UniLink | Pro Data</title>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tailwind Configuration for Graphite & Glass Palette -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        appleBg: '#000000',
+                        appleSurface: '#1C1C1E',
+                        appleText: '#F5F5F7',
+                        appleMuted: '#86868B',
+                        appleBlue: '#2997FF'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        :root {
-            --primary-bg: #f4f7f6;
-            --card-bg: #ffffff;
-            --text-main: #333333;
-            --text-muted: #777777;
-            --accent-color: #007bff;
-            --border-color: #e0e0e0;
+        /* Smooth scrolling and hide scrollbar for sleek feel */
+        html { scroll-behavior: smooth; }
+        body::-webkit-scrollbar { display: none; }
+        body { -ms-overflow-style: none; scrollbar-width: none; }
+        .glass-nav {
+            background-color: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        body {
-            background-color: #e9ecef; /* Darker background for desktop to frame the app */
-            display: flex;
-            justify-content: center;
-        }
-
-        /* Mobile App Container */
-        .app-container {
-            width: 100%;
-            max-width: 414px; /* iPhone screen width */
-            min-height: 100vh;
-            background-color: var(--primary-bg);
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        /* Header */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            background-color: var(--card-bg);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .greeting h1 {
-            font-size: 14px;
-            color: var(--text-muted);
-            font-weight: normal;
-        }
-
-        .greeting h2 {
-            font-size: 18px;
-            color: var(--text-main);
-        }
-
-        .header-icons {
-            display: flex;
-            gap: 15px;
-            font-size: 20px;
-            color: var(--text-main);
-            cursor: pointer;
-        }
-
-        /* Dashboard Card */
-        .dashboard-card {
-            background: linear-gradient(135deg, #007bff, #0056b3);
-            color: white;
-            margin: 20px;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .main-balance {
-            flex: 1;
-        }
-
-        .main-balance p {
-            font-size: 12px;
-            opacity: 0.9;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-        }
-
-        .main-balance h3 {
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .side-stats {
-            text-align: right;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-around;
-        }
-
-        .side-stats p {
-            font-size: 12px;
-            opacity: 0.9;
-        }
-
-        .side-stats h4 {
-            font-size: 16px;
-        }
-
-        /* Shelf Section */
-        .section-title {
-            padding: 0 20px;
-            font-size: 14px;
-            color: var(--text-muted);
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .shelf-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            padding: 0 20px 20px;
-        }
-
-        .shelf-btn {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-            font-weight: 600;
-            color: var(--text-main);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .shelf-btn:active {
-            background-color: #f0f0f0;
-        }
-
-        /* Horizontal Scroll Tags */
-        .tags-container {
-            display: flex;
-            overflow-x: auto;
-            padding: 0 20px 20px;
-            gap: 10px;
-            scrollbar-width: none; /* Firefox */
-        }
-        
-        .tags-container::-webkit-scrollbar {
-            display: none; /* Chrome/Safari */
-        }
-
-        .tag {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            padding: 15px 20px;
-            border-radius: 12px;
-            white-space: nowrap;
-            font-weight: bold;
-            font-size: 14px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        }
-
-        /* Ranking Section */
-        .ranking-container {
-            background-color: var(--card-bg);
-            margin: 0 20px 30px;
-            padding: 20px;
-            border-radius: 15px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        }
-
-        .graph-placeholder {
-            height: 100px;
-            border-bottom: 2px solid var(--border-color);
-            border-left: 2px solid var(--border-color);
-            margin: 15px 0;
-            position: relative;
-            display: flex;
-            align-items: flex-end;
-        }
-
-        /* Simple CSS drawn graph line */
-        .graph-line {
-            width: 100%;
-            height: 50%;
-            border-top: 3px solid var(--accent-color);
-            border-radius: 50%;
-            transform: scaleY(0.5);
-        }
-
-        .ranking-text {
-            text-align: center;
-            font-weight: bold;
-            color: var(--text-main);
-            margin-top: 10px;
-        }
-
+        .page-section { display: none; animation: fadeIn 0.4s ease-in-out; }
+        .page-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body>
+<body class="bg-appleBg text-appleText font-sans antialiased min-h-screen">
 
-<div class="app-container">
-    
-    <!-- Header -->
-    <header>
-        <div class="greeting">
-            <h1>Good Afternoon,</h1>
-            <h2>Joel Owusu Ansah</h2>
-        </div>
-        <div class="header-icons">
-            <span>🔔</span>
-            <span>☰</span>
-        </div>
-    </header>
-
-    <!-- Total Spent Dashboard -->
-    <section class="dashboard-card">
-        <div class="main-balance">
-            <p>Total Spent</p>
-            <h3>GH₵ 790.51</h3>
-        </div>
-        <div class="side-stats">
-            <div>
-                <p>LIVE</p>
-                <h4>2408</h4>
+    <!-- Glassmorphism Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-nav transition-all duration-300">
+        <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-xl font-semibold tracking-tight cursor-pointer flex items-center gap-2" onclick="switchPage('home')">
+                <i class="fa-solid fa-link text-appleBlue"></i> UniLink
             </div>
-            <div style="margin-top: 10px;">
-                <p>TOTAL DATA</p>
-                <h4>200GB</h4>
+            <div class="flex gap-6 text-sm font-medium text-appleMuted">
+                <button onclick="switchPage('home')" class="hover:text-appleText transition-colors">Home</button>
+                <button onclick="switchPage('networks')" class="hover:text-appleText transition-colors">Networks</button>
+                <button onclick="switchPage('dashboard')" class="hover:text-appleText transition-colors">Dashboard</button>
             </div>
         </div>
-    </section>
+    </nav>
 
-    <!-- The Shelf -->
-    <h3 class="section-title">Shelf</h3>
-    <section class="shelf-grid">
-        <div class="shelf-btn">Buy Data</div>
-        <div class="shelf-btn">Renew Data</div>
-        <div class="shelf-btn">Earnings</div>
-        <div class="shelf-btn">History</div>
-        <div class="shelf-btn">How To Buy</div>
-        <div class="shelf-btn">Support</div>
-    </section>
+    <!-- Main Content Wrapper -->
+    <div class="pt-28 pb-20 max-w-5xl mx-auto px-6">
 
-    <!-- Horizontal Features -->
-    <section class="tags-container">
-        <div class="tag">Affordable</div>
-        <div class="tag">5G MTN Data Unlimited</div>
-        <div class="tag">Fast</div>
-        <div class="tag">Secure</div>
-    </section>
+        <!-- ================= HOME PAGE ================= -->
+        <section id="home" class="page-section active flex flex-col items-center text-center mt-12 mb-24">
+            <h1 class="text-5xl md:text-7xl font-bold tracking-tighter mb-6 bg-gradient-to-br from-white to-appleMuted bg-clip-text text-transparent">
+                Data, simplified.
+            </h1>
+            <p class="text-xl text-appleMuted max-w-2xl mb-10 font-light">
+                The most powerful way to connect to MTN, Telecel, and AT. Built exclusively for students. Pro-level speeds, minimal friction.
+            </p>
+            <div class="flex gap-4">
+                <button onclick="switchPage('networks')" class="bg-appleText text-appleBg px-8 py-3 rounded-full font-semibold hover:bg-gray-200 transition-all">
+                    View Data Plans
+                </button>
+                <button onclick="switchPage('dashboard')" class="text-appleBlue px-8 py-3 rounded-full font-semibold hover:bg-appleSurface transition-all flex items-center gap-2">
+                    Open Dashboard <i class="fa-solid fa-arrow-right text-sm"></i>
+                </button>
+            </div>
+            
+            <!-- Sleek Mockup Interface -->
+            <div class="mt-20 w-full max-w-3xl bg-appleSurface rounded-3xl border border-white/10 p-2 shadow-2xl">
+                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop" alt="Abstract Data" class="w-full h-64 object-cover rounded-2xl opacity-80 mix-blend-luminosity">
+            </div>
+        </section>
 
-    <!-- Ranking -->
-    <h3 class="section-title">Ranking</h3>
-    <section class="ranking-container">
-        <div class="graph-placeholder">
-            <div class="graph-line"></div>
-        </div>
-        <div class="ranking-text">You are #90 📈</div>
-    </section>
 
-</div>
+        <!-- ================= NETWORKS PAGE ================= -->
+        <section id="networks" class="page-section">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-semibold tracking-tight mb-4">Select your network.</h2>
+                <p class="text-appleMuted text-lg">Instant top-ups. Zero downtime.</p>
+            </div>
 
+            <!-- Network Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <!-- MTN Card -->
+                <div class="bg-appleSurface rounded-[2rem] p-8 border border-white/5 hover:border-white/20 transition-all cursor-pointer group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-yellow-500/10 rounded-full blur-3xl group-hover:bg-yellow-500/20 transition-all"></div>
+                    <div class="w-12 h-12 bg-yellow-500 rounded-2xl flex items-center justify-center mb-6 text-appleBg font-bold text-xl">
+                        M
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-2">MTN Ghana</h3>
+                    <p class="text-appleMuted mb-8 text-sm">High-speed data bundles tailored for campus coverage.</p>
+                    <button class="w-full bg-appleBg text-appleBlue py-3 rounded-xl font-medium border border-white/10 hover:bg-appleBlue hover:text-white transition-colors">
+                        View Packages
+                    </button>
+                </div>
+
+                <!-- Telecel Card -->
+                <div class="bg-appleSurface rounded-[2rem] p-8 border border-white/5 hover:border-white/20 transition-all cursor-pointer group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-red-500/10 rounded-full blur-3xl group-hover:bg-red-500/20 transition-all"></div>
+                    <div class="w-12 h-12 bg-red-600 rounded-2xl flex items-center justify-center mb-6 text-white font-bold text-xl">
+                        T
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-2">Telecel</h3>
+                    <p class="text-appleMuted mb-8 text-sm">Reliable connectivity with massive student bonuses.</p>
+                    <button class="w-full bg-appleBg text-appleBlue py-3 rounded-xl font-medium border border-white/10 hover:bg-appleBlue hover:text-white transition-colors">
+                        View Packages
+                    </button>
+                </div>
+
+                <!-- AT Card -->
+                <div class="bg-appleSurface rounded-[2rem] p-8 border border-white/5 hover:border-white/20 transition-all cursor-pointer group relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-all"></div>
+                    <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center mb-6 text-white font-bold text-xl">
+                        AT
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-2">AirtelTigo</h3>
+                    <p class="text-appleMuted mb-8 text-sm">Affordable, non-expiring data for everyday browsing.</p>
+                    <button class="w-full bg-appleBg text-appleBlue py-3 rounded-xl font-medium border border-white/10 hover:bg-appleBlue hover:text-white transition-colors">
+                        View Packages
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- ================= DASHBOARD PAGE ================= -->
+        <section id="dashboard" class="page-section">
+            <h2 class="text-3xl font-semibold tracking-tight mb-8">Overview</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                <!-- Balance Widget -->
+                <div class="bg-appleSurface rounded-[2rem] p-8 border border-white/5 md:col-span-2">
+                    <p class="text-appleMuted text-sm font-medium mb-1">Available Wallet Balance</p>
+                    <h3 class="text-5xl font-bold tracking-tight mb-6">GH₵ 124.50</h3>
+                    <div class="flex gap-4">
+                        <button class="bg-appleBlue text-white px-6 py-2.5 rounded-full font-medium hover:bg-blue-600 transition-colors">
+                            <i class="fa-solid fa-plus mr-2"></i> Fund Wallet
+                        </button>
+                        <button class="bg-appleBg border border-white/10 text-appleText px-6 py-2.5 rounded-full font-medium hover:bg-white/5 transition-colors">
+                            Transfer
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Stat Widget -->
+                <div class="bg-appleSurface rounded-[2rem] p-8 border border-white/5 flex flex-col justify-center">
+                    <div class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center mb-4 text-appleBlue">
+                        <i class="fa-solid fa-chart-pie"></i>
+                    </div>
+                    <p class="text-appleMuted text-sm font-medium mb-1">Data Used This Month</p>
+                    <h3 class="text-3xl font-semibold">42.5 GB</h3>
+                </div>
+            </div>
+
+            <!-- Recent Activity List -->
+            <h3 class="text-xl font-medium mb-4">Recent Activity</h3>
+            <div class="bg-appleSurface rounded-3xl border border-white/5 overflow-hidden">
+                
+                <div class="flex items-center justify-between p-6 border-b border-white/5 hover:bg-white/5 transition-colors">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-yellow-500/20 text-yellow-500 rounded-full flex items-center justify-center">
+                            <i class="fa-solid fa-wifi"></i>
+                        </div>
+                        <div>
+                            <p class="font-medium">10GB MTN Data</p>
+                            <p class="text-xs text-appleMuted">Today, 09:15 AM</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-medium">- GH₵ 45.00</p>
+                        <p class="text-xs text-green-400">Successful</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between p-6 border-b border-white/5 hover:bg-white/5 transition-colors">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center">
+                            <i class="fa-solid fa-arrow-down"></i>
+                        </div>
+                        <div>
+                            <p class="font-medium">Wallet Top-up</p>
+                            <p class="text-xs text-appleMuted">Yesterday, 14:30 PM</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-medium text-green-400">+ GH₵ 100.00</p>
+                        <p class="text-xs text-appleMuted">Mobile Money</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Simple JavaScript for Page Navigation -->
+    <script>
+        function switchPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page-section').forEach(page => {
+                page.classList.remove('active');
+            });
+            // Show target page
+            document.getElementById(pageId).classList.add('active');
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+    </script>
 </body>
 </html>
