@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UniLink | Premium Connectivity</title>
     
+    <!-- SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -18,11 +19,7 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    colors: {
-                        brand: '#2997FF',
-                        surface: '#121212',
-                        card: '#1C1C1E',
-                    },
+                    colors: { brand: '#2997FF', surface: '#000000', card: '#111111' },
                     fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] }
                 }
             }
@@ -31,172 +28,161 @@
 
     <style>
         body { background-color: #000; color: #fff; overflow-x: hidden; scroll-behavior: smooth; }
-        .glass { background: rgba(28, 28, 30, 0.8); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.1); }
-        .page-section { display: none; animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        .glass { background: rgba(20, 20, 20, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); }
+        .page-section { display: none; animation: fadeIn 0.5s ease-out; }
         .page-section.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* New reliable icon glow style */
-        .icon-box {
-            position: relative;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 120px;
-            height: 120px;
-            border-radius: 2rem;
-            background: #1C1C1E;
-            border: 1px solid rgba(255,255,255,0.05);
-            margin-bottom: 2rem;
-            transition: all 0.5s ease;
-        }
-        .icon-box i { font-size: 3rem; position: relative; z-index: 10; }
-        .glow-effect {
-            position: absolute;
-            inset: 0;
-            border-radius: 2rem;
-            opacity: 0.5;
-            filter: blur(20px);
-            z-index: 5;
-            transition: all 0.5s ease;
-        }
-
-        /* Hover states */
-        .group:hover .icon-box { transform: translateY(-5px); border-color: rgba(255,255,255,0.1); }
-        .group:hover .glow-effect { opacity: 0.8; filter: blur(30px); }
-
+        .rank-1 { background: linear-gradient(90deg, rgba(255,215,0,0.1) 0%, rgba(0,0,0,0) 100%); border-left: 4px solid #FFD700; }
+        .rank-2 { border-left: 4px solid #C0C0C0; }
+        .rank-3 { border-left: 4px solid #CD7F32; }
+        
+        .pulse-gold { animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(255, 215, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); } }
         ::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="antialiased">
 
+    <!-- Nav -->
     <nav class="fixed top-0 w-full z-50 py-4 px-6">
         <div class="max-w-5xl mx-auto flex justify-between items-center glass rounded-2xl px-6 py-3">
-            <div class="text-xl font-extrabold tracking-tight flex items-center gap-2 cursor-pointer" onclick="switchPage('home')">
-                <div class="w-8 h-8 bg-brand rounded-lg flex items-center justify-center text-white"><i class="fa-solid fa-bolt-lightning text-sm"></i></div>
-                UniLink
+            <div class="text-xl font-black tracking-tighter flex items-center gap-2 cursor-pointer" onclick="switchPage('home')">
+                <span class="bg-brand text-white p-1 rounded-md"><i class="fa-solid fa-bolt-lightning text-xs"></i></span> UniLink
             </div>
-            <div class="flex gap-6 items-center">
-                <button onclick="switchPage('dashboard')" class="text-[11px] font-bold text-gray-400 hover:text-white uppercase tracking-widest transition-colors">History</button>
-                <button onclick="handleAuthClick()" id="authBtn" class="bg-white text-black text-[11px] font-bold px-5 py-2 rounded-full uppercase tracking-wider">Login</button>
+            <div class="flex gap-4 items-center">
+                <button onclick="switchPage('leaderboard')" class="text-[10px] font-bold text-brand uppercase tracking-widest"><i class="fa-solid fa-trophy mr-1"></i> Board</button>
+                <button onclick="switchPage('dashboard')" class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">History</button>
+                <button onclick="handleAuthClick()" id="authBtn" class="bg-white text-black text-[10px] font-black px-4 py-2 rounded-full uppercase">Login</button>
             </div>
         </div>
     </nav>
 
     <main class="pt-28 pb-20 max-w-5xl mx-auto px-6">
 
+        <!-- HOME -->
         <section id="home" class="page-section active">
-            <div class="text-center space-y-6 py-10">
-                <span class="inline-block px-4 py-1.5 rounded-full bg-brand/10 text-brand text-[10px] font-bold uppercase tracking-[0.2em]">Premium Data Access</span>
-                <h1 class="text-5xl md:text-7xl font-extrabold tracking-tighter leading-[1.05]">Internet for the <br><span class="text-gray-500 italic">Connected Student.</span></h1>
-                <p class="text-gray-400 text-lg font-light leading-relaxed max-w-lg mx-auto">No delays. No complications. Just instant data delivery across all major networks in Ghana.</p>
-                <div class="pt-6">
-                    <button onclick="switchPage('networks')" class="bg-white text-black px-12 py-4 rounded-2xl font-bold text-sm shadow-2xl transition-transform hover:scale-105">Buy Data Now</button>
-                </div>
+            <div class="text-center py-12">
+                <h1 class="text-6xl md:text-8xl font-black tracking-tighter mb-6">Data. <span class="text-brand italic">Evolved.</span></h1>
+                <p class="text-gray-400 text-lg max-w-lg mx-auto mb-10">Instant high-speed bundles for Ghanaian students. Buy more, climb the board, and win free data weekly.</p>
+                <button onclick="switchPage('networks')" class="bg-brand text-white px-12 py-5 rounded-2xl font-black text-sm shadow-2xl shadow-brand/20 hover:scale-105 transition-transform">Get Started</button>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mt-20 px-4">
-                <div class="text-center group">
-                    <div class="icon-box">
-                        <div class="glow-effect bg-green-500"></div>
-                        <i class="fa-solid fa-cedi-sign text-green-400"></i>
-                    </div>
-                    <h3 class="text-xl font-bold italic tracking-tight">Affordable</h3>
-                    <p class="text-[10px] text-gray-500 uppercase tracking-[0.2em] mt-2 font-bold">Rates built for students</p>
+            <!-- Features -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
+                <div class="glass p-8 rounded-[2rem] text-center group hover:bg-white/5 transition-all">
+                    <i class="fa-solid fa-bolt text-3xl text-yellow-400 mb-4 block"></i>
+                    <h3 class="font-bold text-lg mb-2">Instant</h3>
+                    <p class="text-xs text-gray-500 uppercase tracking-widest">Sent in < 60s</p>
                 </div>
-
-                <div class="text-center group">
-                    <div class="icon-box !w-[140px] !h-[140px] -mt-5">
-                        <div class="glow-effect bg-brand"></div>
-                        <i class="fa-solid fa-rocket text-brand !text-[4rem]"></i>
-                    </div>
-                    <h3 class="text-2xl font-black italic tracking-tighter text-brand">Ultra Fast</h3>
-                    <p class="text-[10px] text-gray-400 uppercase tracking-[0.2em] mt-2 font-bold">Activation in < 60s</p>
+                <div class="glass p-8 rounded-[2rem] text-center border-brand/30 ring-1 ring-brand/20">
+                    <i class="fa-solid fa-trophy text-3xl text-brand mb-4 block"></i>
+                    <h3 class="font-bold text-lg mb-2 text-brand">Win Weekly</h3>
+                    <p class="text-xs text-gray-500 uppercase tracking-widest">Rank #1 for 5GB Bonus</p>
                 </div>
-
-                <div class="text-center group">
-                    <div class="icon-box">
-                        <div class="glow-effect bg-purple-500"></div>
-                        <i class="fa-solid fa-shield-lock text-purple-400"></i>
-                    </div>
-                    <h3 class="text-xl font-bold italic tracking-tight">Secure</h3>
-                    <p class="text-[10px] text-gray-500 uppercase tracking-[0.2em] mt-2 font-bold">Encrypted Payments</p>
+                <div class="glass p-8 rounded-[2rem] text-center group hover:bg-white/5 transition-all">
+                    <i class="fa-solid fa-shield-check text-3xl text-purple-400 mb-4 block"></i>
+                    <h3 class="font-bold text-lg mb-2">Secure</h3>
+                    <p class="text-xs text-gray-500 uppercase tracking-widest">Paystack Protected</p>
                 </div>
             </div>
         </section>
 
+        <!-- LEADERBOARD -->
+        <section id="leaderboard" class="page-section max-w-2xl mx-auto">
+            <div class="text-center mb-10">
+                <span class="text-brand font-black text-[10px] uppercase tracking-[0.4em]">The Elite Circle</span>
+                <h2 class="text-4xl font-black italic tracking-tighter mt-2">Weekly Leaderboard</h2>
+                <p class="text-gray-500 text-sm mt-2">Resets every Sunday at 00:00 GMT</p>
+            </div>
+
+            <!-- Top Prize Card -->
+            <div class="glass bg-gradient-to-br from-brand/20 to-transparent p-6 rounded-[2rem] mb-8 flex items-center justify-between border-brand/20">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-brand rounded-full flex items-center justify-center pulse-gold">
+                        <i class="fa-solid fa-gift text-white"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-black text-sm italic italic uppercase">Current Prize</h4>
+                        <p class="text-xs text-gray-400">Top Ranker: 5GB FREE DATA</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="text-[9px] font-bold text-gray-500 uppercase">Ends In</p>
+                    <p class="text-sm font-black text-brand">4d 12h 05m</p>
+                </div>
+            </div>
+
+            <div id="leaderboardList" class="space-y-3">
+                <!-- Loader -->
+                <div class="text-center py-10 opacity-50 text-xs tracking-widest">Fetching Champions...</div>
+            </div>
+        </section>
+
+        <!-- NETWORKS -->
         <section id="networks" class="page-section max-w-xl mx-auto">
-            <h2 class="text-3xl font-extrabold tracking-tight mb-10 text-center">Choose Network</h2>
+            <h2 class="text-3xl font-black italic mb-10 text-center tracking-tighter">Choose Network</h2>
             <div class="space-y-4">
-                <div onclick="showBundles('MTN')" class="bg-card p-6 rounded-[2rem] border border-white/5 flex items-center gap-6 cursor-pointer hover:bg-zinc-800 transition-all group">
-                    <div class="w-14 h-14 bg-yellow-400 rounded-2xl flex items-center justify-center text-black text-xl font-black">M</div>
-                    <div><h3 class="font-bold text-lg">MTN Ghana</h3><p class="text-xs text-gray-500">Premium High-Speed Data</p></div>
-                    <i class="fa-solid fa-chevron-right ml-auto text-gray-600 group-hover:text-brand transition-colors"></i>
+                <div onclick="showBundles('MTN')" class="glass p-6 rounded-[2rem] flex items-center gap-6 cursor-pointer hover:bg-white/5 transition-all">
+                    <div class="w-14 h-14 bg-yellow-400 rounded-2xl flex items-center justify-center text-black text-xl font-black shadow-lg shadow-yellow-400/20">M</div>
+                    <div><h3 class="font-bold text-lg">MTN Ghana</h3><p class="text-xs text-gray-500">Fast & Reliable</p></div>
+                    <i class="fa-solid fa-chevron-right ml-auto text-gray-700"></i>
                 </div>
-                <div onclick="showBundles('TELECEL')" class="bg-card p-6 rounded-[2rem] border border-white/5 flex items-center gap-6 cursor-pointer hover:bg-zinc-800 transition-all group">
-                    <div class="w-14 h-14 bg-red-600 rounded-2xl flex items-center justify-center text-white text-xl font-black">T</div>
-                    <div><h3 class="font-bold text-lg">Telecel</h3><p class="text-xs text-gray-500">Maximum Stability</p></div>
-                    <i class="fa-solid fa-chevron-right ml-auto text-gray-600 group-hover:text-brand transition-colors"></i>
-                </div>
-                <div onclick="showBundles('AT')" class="bg-card p-6 rounded-[2rem] border border-white/5 flex items-center gap-6 cursor-pointer hover:bg-zinc-800 transition-all group">
-                    <div class="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-xl font-black">AT</div>
-                    <div><h3 class="font-bold text-lg">AT Ghana</h3><p class="text-xs text-gray-500">Best Budget Choice</p></div>
-                    <i class="fa-solid fa-chevron-right ml-auto text-gray-600 group-hover:text-brand transition-colors"></i>
+                <div onclick="showBundles('TELECEL')" class="glass p-6 rounded-[2rem] flex items-center gap-6 cursor-pointer hover:bg-white/5 transition-all">
+                    <div class="w-14 h-14 bg-red-600 rounded-2xl flex items-center justify-center text-white text-xl font-black shadow-lg shadow-red-600/20">T</div>
+                    <div><h3 class="font-bold text-lg">Telecel</h3><p class="text-xs text-gray-500">Best Coverage</p></div>
+                    <i class="fa-solid fa-chevron-right ml-auto text-gray-700"></i>
                 </div>
             </div>
         </section>
 
+        <!-- BUNDLES -->
         <section id="bundles" class="page-section max-w-xl mx-auto">
             <div class="flex items-center gap-4 mb-10">
-                <button onclick="switchPage('networks')" class="w-12 h-12 glass rounded-full flex items-center justify-center"><i class="fa-solid fa-arrow-left"></i></button>
-                <h2 id="currentNetworkTitle" class="text-3xl font-extrabold tracking-tight">Available Packages</h2>
+                <button onclick="switchPage('networks')" class="w-10 h-10 glass rounded-full flex items-center justify-center"><i class="fa-solid fa-arrow-left text-xs"></i></button>
+                <h2 id="currentNetworkTitle" class="text-3xl font-black italic tracking-tighter">Packages</h2>
             </div>
             <div id="bundleContainer" class="grid grid-cols-1 gap-3"></div>
         </section>
 
+        <!-- CHECKOUT -->
         <section id="checkout" class="page-section max-w-md mx-auto">
-            <div class="bg-card rounded-[3rem] border border-white/10 p-10 shadow-2xl relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-brand/10 blur-3xl"></div>
-                <h2 class="text-[10px] font-black uppercase tracking-[0.3em] text-brand mb-8">Purchase Invoice</h2>
+            <div class="glass rounded-[3rem] p-10 relative overflow-hidden">
+                <div class="absolute -top-10 -right-10 w-40 h-40 bg-brand/10 blur-[60px]"></div>
+                <h2 class="text-[10px] font-black uppercase tracking-[0.4em] text-brand mb-8">Checkout Summary</h2>
                 
                 <div class="flex justify-between items-end mb-10 pb-8 border-b border-white/5">
                     <div>
-                        <p id="checkNetName" class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Provider</p>
-                        <h3 id="checkBundleName" class="text-5xl font-extrabold tracking-tighter italic">0GB</h3>
+                        <p id="checkNetName" class="text-[10px] font-bold text-gray-500 uppercase mb-1">Provider</p>
+                        <h3 id="checkBundleName" class="text-5xl font-black italic tracking-tighter">0GB</h3>
                     </div>
                     <div class="text-right">
-                        <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Base Price</p>
-                        <p class="text-2xl font-bold">₵ <span id="basePriceDisplay">0.00</span></p>
+                        <p class="text-[10px] font-bold text-gray-500 uppercase mb-1">Points</p>
+                        <p class="text-xl font-black text-brand">+ <span id="pointsPreview">0</span></p>
                     </div>
                 </div>
 
-                <div class="space-y-4 mb-10">
-                    <div class="flex justify-between text-sm">
-                        <span class="text-gray-400 font-medium">Network Processing Fee</span>
-                        <span class="font-bold">+₵ <span id="feeDisplay">0.00</span></span>
+                <div class="space-y-5">
+                    <input type="tel" id="recipientPhone" maxlength="10" placeholder="Recipient Phone (02xxxxxxxx)" class="w-full bg-white/5 border border-white/10 p-5 rounded-2xl text-sm font-bold focus:border-brand outline-none transition-all">
+                    <input type="email" id="buyerEmail" placeholder="Email Address" class="w-full bg-white/5 border border-white/10 p-5 rounded-2xl text-sm font-bold focus:border-brand outline-none transition-all">
+                    <div class="flex justify-between text-lg font-black pt-4">
+                        <span>Total</span>
+                        <span class="text-brand">₵ <span id="checkTotalPrice">0.00</span></span>
                     </div>
-                    <div class="flex justify-between pt-6 border-t border-white/10">
-                        <span class="text-xl font-bold">Total Amount</span>
-                        <span class="text-2xl font-black text-brand tracking-tighter italic">₵ <span id="checkTotalPrice">0.00</span></span>
-                    </div>
-                </div>
-
-                <div class="space-y-4">
-                    <input type="tel" id="recipientPhone" maxlength="10" placeholder="Recipient Phone (02xxxxxxxx)" class="w-full bg-black/50 border border-white/10 p-5 rounded-2xl text-sm font-bold focus:border-brand outline-none transition-all placeholder:text-gray-600">
-                    <input type="email" id="buyerEmail" placeholder="Email Address" class="w-full bg-black/50 border border-white/10 p-5 rounded-2xl text-sm font-bold focus:border-brand outline-none transition-all placeholder:text-gray-600">
-                    <button onclick="handlePayment()" class="w-full bg-brand text-white py-5 rounded-2xl font-extrabold uppercase text-xs tracking-widest mt-4 shadow-xl shadow-brand/20 active:scale-95 transition-all">
-                        Complete Transaction <i class="fa-solid fa-lock ml-2 text-[10px]"></i>
+                    <button onclick="handlePayment()" class="w-full bg-brand text-white py-5 rounded-2xl font-black uppercase text-xs tracking-widest mt-4 shadow-xl shadow-brand/20 active:scale-95 transition-all">
+                        Pay Securely <i class="fa-solid fa-lock-keyhole ml-2 text-[10px]"></i>
                     </button>
                 </div>
             </div>
         </section>
 
+        <!-- DASHBOARD (History) -->
         <section id="dashboard" class="page-section max-w-xl mx-auto">
             <div class="flex justify-between items-center mb-10">
-                <h2 class="text-3xl font-extrabold tracking-tight italic">History</h2>
+                <h2 class="text-3xl font-black italic tracking-tighter">History</h2>
                 <div class="text-right">
-                    <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Total Savings</p>
-                    <p class="text-2xl font-bold text-brand tracking-tighter italic">₵ <span id="totalSpentDisplay">0.00</span></p>
+                    <p class="text-[9px] font-bold text-gray-500 uppercase">Wallet</p>
+                    <p class="text-2xl font-black text-brand">₵ <span id="totalSpentDisplay">0.00</span></p>
                 </div>
             </div>
             <div id="historyList" class="space-y-3"></div>
@@ -205,27 +191,59 @@
     </main>
 
     <script>
-        // --- FIREBASE & DATA CONFIG ---
+        // --- CONFIG ---
         const firebaseConfig = { apiKey: "AIzaSyCqg3E9tuKRcEnq2DdP6FjtG0LqnAjCHfM", authDomain: "joeldata-25d06.firebaseapp.com", projectId: "joeldata-25d06", storageBucket: "joeldata-25d06.firebasestorage.app", messagingSenderId: "555857869458", appId: "1:555857869458:web:db96a97fca5983b142044b" };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 
         const dataSets = {
-            MTN: [{gb:"1 GB", price:5}, {gb:"2 GB", price:10}, {gb:"5 GB", price:25}, {gb:"10 GB", price:50}, {gb:"20 GB", price:85}],
-            AT: [{gb:"2 GB", price:9}, {gb:"5 GB", price:20.5}, {gb:"10 GB", price:40}, {gb:"25 GB", price:100}],
-            TELECEL: [{gb:"10 GB", price:40}, {gb:"20 GB", price:80}, {gb:"50 GB", price:200}]
+            MTN: [{gb:"1 GB", price:5}, {gb:"5 GB", price:25}, {gb:"10 GB", price:50}],
+            TELECEL: [{gb:"10 GB", price:40}, {gb:"20 GB", price:80}]
         };
 
         let currentSelection = { net: '', gb: '', price: 0 };
 
-        // --- NAVIGATION ---
         function switchPage(pageId) {
             document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
-            window.scrollTo(0,0);
+            if(pageId === 'leaderboard') loadLeaderboard();
         }
 
+        // --- LEADERBOARD SYSTEM ---
+        async function loadLeaderboard() {
+            const list = document.getElementById('leaderboardList');
+            try {
+                // Fetch top 10 users by points
+                const snap = await db.collection('users').orderBy('points', 'desc').limit(10).get();
+                list.innerHTML = '';
+                let rank = 1;
+                
+                snap.forEach(doc => {
+                    const u = doc.data();
+                    const name = u.email.split('@')[0];
+                    const isTop = rank <= 3;
+                    
+                    list.innerHTML += `
+                        <div class="glass p-5 rounded-2xl flex items-center gap-4 transition-all hover:translate-x-2 ${rank === 1 ? 'rank-1' : (rank === 2 ? 'rank-2' : (rank === 3 ? 'rank-3' : ''))}">
+                            <div class="w-8 h-8 flex items-center justify-center font-black ${isTop ? 'text-brand' : 'text-gray-600'}">
+                                ${rank === 1 ? '<i class="fa-solid fa-crown text-yellow-400"></i>' : rank}
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-sm">${name}****</h4>
+                                <p class="text-[9px] text-gray-500 uppercase tracking-widest">Active Rank</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm font-black text-white italic">${u.points || 0} PTS</p>
+                                <p class="text-[8px] text-gray-600 uppercase">Weekly Score</p>
+                            </div>
+                        </div>`;
+                    rank++;
+                });
+            } catch(e) { console.error(e); }
+        }
+
+        // --- PURCHASE LOGIC ---
         function showBundles(net) {
             currentSelection.net = net;
             document.getElementById('currentNetworkTitle').innerText = net;
@@ -233,13 +251,13 @@
             container.innerHTML = '';
             dataSets[net].forEach(item => {
                 container.innerHTML += `
-                    <div class="bg-card/40 p-6 rounded-3xl border border-white/5 flex justify-between items-center hover:border-brand/40 transition-all cursor-pointer group" onclick="openCheckout('${item.gb}', ${item.price})">
+                    <div class="glass p-6 rounded-3xl flex justify-between items-center hover:border-brand/50 transition-all cursor-pointer group" onclick="openCheckout('${item.gb}', ${item.price})">
                         <div>
-                            <h4 class="text-2xl font-extrabold tracking-tighter italic group-hover:text-brand transition-colors">${item.gb}</h4>
+                            <h4 class="text-2xl font-black italic tracking-tighter group-hover:text-brand transition-colors">${item.gb}</h4>
                             <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">₵ ${item.price.toFixed(2)}</p>
                         </div>
-                        <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-brand transition-all">
-                            <i class="fa-solid fa-plus text-[10px]"></i>
+                        <div class="text-right">
+                            <span class="text-[10px] font-black text-brand bg-brand/10 px-3 py-1 rounded-full">+${parseInt(item.gb) * 10} PTS</span>
                         </div>
                     </div>`;
             });
@@ -249,15 +267,47 @@
         function openCheckout(gb, price) {
             currentSelection.gb = gb;
             currentSelection.price = price;
-            const fee = (price < 30 ? 0.35 : 0.95);
-            const total = price + fee;
-            
             document.getElementById('checkBundleName').innerText = gb;
             document.getElementById('checkNetName').innerText = currentSelection.net;
-            document.getElementById('basePriceDisplay').innerText = price.toFixed(2);
-            document.getElementById('feeDisplay').innerText = fee.toFixed(2);
-            document.getElementById('checkTotalPrice').innerText = total.toFixed(2);
+            document.getElementById('checkTotalPrice').innerText = (price + 0.5).toFixed(2); // Added small fee
+            document.getElementById('pointsPreview').innerText = parseInt(gb) * 10;
             switchPage('checkout');
+        }
+
+        function handlePayment() {
+            const phone = document.getElementById('recipientPhone').value;
+            const email = document.getElementById('buyerEmail').value;
+            if (phone.length < 10 || !email) return alert("Fill all details");
+            
+            const total = currentSelection.price + 0.5;
+            const pointsToAdd = parseInt(currentSelection.gb) * 10;
+
+            const handler = PaystackPop.setup({
+                key: 'pk_live_90305707d30b6282979eac837bbbc9509da579af',
+                email: email,
+                amount: Math.round(total * 100),
+                currency: 'GHS',
+                callback: async (res) => {
+                    // Update user points in DB
+                    const userRef = db.collection('users').doc(email);
+                    const userDoc = await userRef.get();
+                    if(userDoc.exists) {
+                        await userRef.update({ points: firebase.firestore.FieldValue.increment(pointsToAdd) });
+                    } else {
+                        await userRef.set({ email: email, points: pointsToAdd });
+                    }
+
+                    // Log transaction
+                    await db.collection('orders').add({
+                        email, phone, amount: currentSelection.price, 
+                        bundle: `${currentSelection.gb} ${currentSelection.net}`, ref: res.reference,
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    
+                    window.location.href = `https://wa.me/233248745662?text=ORDER: ${currentSelection.gb} to ${phone}`;
+                }
+            });
+            handler.openIframe();
         }
 
         // --- AUTH & HISTORY ---
@@ -272,59 +322,27 @@
                 btn.innerText = "Logout";
                 document.getElementById('buyerEmail').value = user.email;
                 loadHistory(user.email);
-            } else {
-                btn.innerText = "Login";
-            }
+            } else { btn.innerText = "Login"; }
         });
 
         async function loadHistory(email) {
-            try {
-                const snap = await db.collection('orders').where('email', '==', email).orderBy('timestamp', 'desc').get();
-                const list = document.getElementById('historyList');
-                let total = 0;
-                list.innerHTML = '';
-                snap.forEach(doc => {
-                    const d = doc.data();
-                    total += parseFloat(d.amount);
-                    list.innerHTML += `
-                        <div class="bg-card/30 p-5 rounded-2xl border border-white/5 flex justify-between items-center">
-                            <div>
-                                <p class="text-xs font-extrabold uppercase tracking-tight italic">${d.bundle}</p>
-                                <p class="text-[9px] text-gray-500 font-bold uppercase mt-1">${d.date} • ${d.phone}</p>
-                            </div>
-                            <p class="text-sm font-bold text-brand italic">₵${d.amount.toFixed(2)}</p>
-                        </div>`;
-                });
-                document.getElementById('totalSpentDisplay').innerText = total.toFixed(2);
-            } catch(e) { console.error(e); }
-        }
-
-        // --- PAYMENT ---
-        function handlePayment() {
-            const phone = document.getElementById('recipientPhone').value;
-            const email = document.getElementById('buyerEmail').value;
-            if (phone.length < 10) return alert("Enter valid phone number");
-            
-            const fee = (currentSelection.price < 30 ? 0.35 : 0.95);
-            const total = currentSelection.price + fee;
-
-            const handler = PaystackPop.setup({
-                key: 'pk_live_90305707d30b6282979eac837bbbc9509da579af',
-                email: email || 'customer@unilink.gh',
-                amount: Math.round(total * 100),
-                currency: 'GHS',
-                callback: (res) => {
-                    const now = new Date();
-                    db.collection('orders').add({
-                        email: email, phone: phone, amount: currentSelection.price, 
-                        bundle: `${currentSelection.gb} ${currentSelection.net}`, ref: res.reference,
-                        date: now.toLocaleDateString('en-GB'),
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                    window.location.href = `https://wa.me/233248745662?text=UNILINK-ORDER: ${currentSelection.gb} ${currentSelection.net} to ${phone}. Ref: ${res.reference}`;
-                }
+            const snap = await db.collection('orders').where('email', '==', email).orderBy('timestamp', 'desc').get();
+            const list = document.getElementById('historyList');
+            let total = 0;
+            list.innerHTML = '';
+            snap.forEach(doc => {
+                const d = doc.data();
+                total += d.amount;
+                list.innerHTML += `
+                    <div class="glass p-5 rounded-2xl flex justify-between items-center">
+                        <div>
+                            <p class="text-xs font-black italic uppercase">${d.bundle}</p>
+                            <p class="text-[9px] text-gray-500 mt-1">${d.phone}</p>
+                        </div>
+                        <p class="text-sm font-black text-brand">₵${d.amount.toFixed(2)}</p>
+                    </div>`;
             });
-            handler.openIframe();
+            document.getElementById('totalSpentDisplay').innerText = total.toFixed(2);
         }
     </script>
 </body>
