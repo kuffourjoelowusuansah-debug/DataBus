@@ -1,0 +1,75 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><title>UniLink | Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="js/config.js"></script>
+    <style>
+        .dash-card { background: #151B2B; border-radius: 3.5rem; border: 1px solid rgba(255,255,255,0.05); }
+    </style>
+</head>
+<body class="bg-[#0A0F1E] text-white p-6">
+    <div class="max-w-md mx-auto pt-10">
+        <div class="dash-card p-12 relative overflow-hidden">
+            <div class="flex justify-between mb-10">
+                <h2 class="text-2xl font-black uppercase leading-none">Good Evening,<br>Passenger</h2>
+                <span class="h-fit px-4 py-1 rounded-full border border-gray-600 text-[9px] font-bold text-gray-400 uppercase">Passenger</span>
+            </div>
+
+            <div class="space-y-10">
+                <div>
+                    <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Total Spent</p>
+                    <div class="flex items-baseline">
+                        <span class="text-yellow-500 font-black text-2xl mr-2">GH₵</span>
+                        <span id="spentDisplay" class="text-7xl font-black tracking-tighter">0.00</span>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Total Data Bought</p>
+                    <div class="flex items-baseline">
+                        <span id="gbDisplay" class="text-5xl font-black tracking-tighter">0.0</span>
+                        <span class="text-blue-500 font-black ml-2 text-xl italic">GB</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex gap-4 mt-12">
+                <div class="flex-1 border border-green-500/50 bg-green-500/10 py-4 rounded-3xl text-center">
+                    <p id="rankDisplay" class="text-[10px] font-black text-green-500 uppercase tracking-widest">Live: 0 Points</p>
+                </div>
+                <a href="history.html" class="flex-1 bg-white/5 border border-white/10 py-4 rounded-3xl text-center text-[10px] font-black uppercase tracking-widest">History</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) { window.location.href = 'login.html'; return; }
+            
+            // Logic to calculate totals from Firestore
+            const orders = await db.collection('orders').where('email', '==', user.email).get();
+            let totalSpent = 0;
+            let totalGB = 0;
+
+            orders.forEach(doc => {
+                const data = doc.data();
+                totalSpent += parseFloat(data.amount || 0);
+                const gb = parseInt(data.bundle) || 0;
+                totalGB += gb;
+            });
+
+            document.getElementById('spentDisplay').innerText = totalSpent.toFixed(2);
+            document.getElementById('gbDisplay').innerText = totalGB.toFixed(1);
+            
+            // Get Points for Rank
+            const userDoc = await db.collection('users').doc(user.email).get();
+            document.getElementById('rankDisplay').innerText = `Live: ${userDoc.data()?.points || 0} Points`;
+        });
+    </script>
+</body>
+</html>
