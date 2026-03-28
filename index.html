@@ -3,14 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UniLink | Pro Data</title>
-    <!-- Google Fonts: Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Tailwind CSS -->
+    <title>UniLink | The Student Data</title>
+    
+    <!-- Firebase & Paystack SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://js.paystack.co/v2/inline.js"></script>
+    
+    <!-- Design Assets -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Tailwind Configuration for Graphite & Glass Palette -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <script>
         tailwind.config = {
             theme: {
@@ -22,222 +27,253 @@
                         appleMuted: '#86868B',
                         appleBlue: '#2997FF'
                     },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    }
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
                 }
             }
         }
     </script>
+
     <style>
-        /* Smooth scrolling and hide scrollbar for sleek feel */
         html { scroll-behavior: smooth; }
         body::-webkit-scrollbar { display: none; }
-        body { -ms-overflow-style: none; scrollbar-width: none; }
-        .glass-nav {
-            background-color: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .page-section { display: none; animation: fadeIn 0.4s ease-in-out; }
+        .glass-nav { background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .page-section { display: none; animation: fadeIn 0.4s ease-out; }
         .page-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .grid-bg { background-image: linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 40px 40px; }
     </style>
 </head>
 <body class="bg-appleBg text-appleText font-sans antialiased min-h-screen relative">
 
-    <!-- ================= SUBTLE BACKGROUND DESIGNS ================= -->
-    <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none flex justify-center">
-        <!-- Faint Transparent Grid Lines -->
-        <div class="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:64px_64px]"></div>
-        
-        <!-- Soft Ambient Top Glow -->
-        <div class="absolute top-[-20%] w-[800px] h-[600px] bg-appleBlue/10 blur-[140px] rounded-full"></div>
-        
-        <!-- Bottom Left Ambient Glow -->
-        <div class="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-white/5 blur-[120px] rounded-full"></div>
-    </div>
-    <!-- ============================================================ -->
+    <!-- Background Decoration -->
+    <div class="fixed inset-0 z-[-1] grid-bg pointer-events-none"></div>
+    <div class="fixed top-[-10%] left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-appleBlue/10 blur-[120px] rounded-full z-[-1]"></div>
 
-    <!-- Glassmorphism Navigation -->
-    <nav class="fixed top-0 w-full z-50 glass-nav transition-all duration-300">
-        <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="text-xl font-semibold tracking-tight cursor-pointer flex items-center gap-2" onclick="switchPage('home')">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-nav">
+        <div class="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-xl font-bold tracking-tighter flex items-center gap-2 cursor-pointer" onclick="switchPage('home')">
                 <i class="fa-solid fa-link text-appleBlue"></i> UniLink
             </div>
-            <div class="flex gap-6 text-sm font-medium text-appleMuted">
-                <button onclick="switchPage('home')" class="hover:text-appleText transition-colors">Home</button>
-                <button onclick="switchPage('networks')" class="hover:text-appleText transition-colors">Networks</button>
-                <button onclick="switchPage('dashboard')" class="hover:text-appleText transition-colors">Dashboard</button>
+            <div class="flex gap-5 items-center">
+                <button onclick="switchPage('home')" class="text-xs font-medium text-appleMuted hover:text-white transition-colors">Home</button>
+                <button onclick="switchPage('networks')" class="text-xs font-medium text-appleMuted hover:text-white transition-colors">Buy</button>
+                <button onclick="handleAuthClick()" id="authBtn" class="bg-white text-black text-[10px] font-bold px-4 py-1.5 rounded-full uppercase tracking-tight">Login</button>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content Wrapper -->
-    <div class="pt-28 pb-20 max-w-5xl mx-auto px-6">
+    <div class="pt-24 pb-20 max-w-4xl mx-auto px-6">
 
-        <!-- ================= HOME PAGE ================= -->
-        <section id="home" class="page-section active flex flex-col items-center text-center mt-12 mb-24">
-            <h1 class="text-5xl md:text-7xl font-bold tracking-tighter mb-6 bg-gradient-to-br from-white to-appleMuted bg-clip-text text-transparent">
+        <!-- HOME PAGE -->
+        <section id="home" class="page-section active text-center mt-10">
+            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tighter mb-4 bg-gradient-to-b from-white to-gray-500 bg-clip-text text-transparent">
                 The Student Data
             </h1>
-            <p class="text-xl text-appleMuted max-w-2xl mb-10 font-light">
-                The most powerful way to connect to MTN, Telecel, and AT. Built exclusively for students. Pro-level speeds, minimal friction.
+            <p class="text-appleMuted text-lg mb-10 font-light max-w-xl mx-auto leading-relaxed">
+                Premium connectivity for the modern student. High-speed transit for MTN, Telecel, and AT.
             </p>
-            <div class="flex gap-4">
-                <button onclick="switchPage('networks')" class="bg-appleText text-appleBg px-8 py-3 rounded-full font-semibold hover:bg-gray-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)]">
-                    View Data Plans
-                </button>
-                <button onclick="switchPage('dashboard')" class="text-appleBlue px-8 py-3 rounded-full font-semibold hover:bg-white/5 transition-all flex items-center gap-2">
-                    Open Dashboard <i class="fa-solid fa-arrow-right text-sm"></i>
-                </button>
+            <div class="flex justify-center gap-4 mb-20">
+                <button onclick="switchPage('networks')" class="bg-white text-black px-8 py-3 rounded-full font-bold text-sm">Start Transit</button>
+                <button onclick="switchPage('dashboard')" class="text-appleBlue px-6 py-3 rounded-full font-bold text-sm bg-appleBlue/10">Dashboard</button>
             </div>
             
-            <!-- Sleek Mockup Interface -->
-            <div class="mt-20 w-full max-w-3xl bg-appleSurface/80 backdrop-blur-md rounded-3xl border border-white/10 p-2 shadow-2xl relative">
-                <div class="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent rounded-3xl pointer-events-none"></div>
-                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop" alt="Abstract Data" class="w-full h-64 object-cover rounded-2xl opacity-70 mix-blend-luminosity">
+            <!-- Mini Status Card -->
+            <div class="bg-appleSurface/50 border border-white/10 p-8 rounded-[2.5rem] backdrop-blur-md max-w-md mx-auto relative overflow-hidden text-left">
+                <p id="userName" class="text-[10px] font-bold uppercase tracking-widest text-appleMuted">Welcome, Passenger</p>
+                <h2 class="text-4xl font-bold mt-2">GH₵ <span id="totalSpentDisplay">0.00</span></h2>
+                <p class="text-[9px] text-appleMuted uppercase mt-1">Total Lifetime Savings</p>
+                <div class="mt-6 flex items-center gap-2">
+                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                    <span class="text-[10px] font-bold"><span id="liveCounter">42</span> Active Passages</span>
+                </div>
             </div>
         </section>
 
-
-        <!-- ================= NETWORKS PAGE ================= -->
+        <!-- NETWORKS PAGE -->
         <section id="networks" class="page-section">
-            <div class="text-center mb-16 relative">
-                <h2 class="text-4xl font-semibold tracking-tight mb-4 relative z-10">Select your network.</h2>
-                <p class="text-appleMuted text-lg relative z-10">Instant top-ups. Zero downtime.</p>
-            </div>
-
-            <!-- Network Cards Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                
-                <!-- MTN Card -->
-                <div class="bg-appleSurface/80 backdrop-blur-md rounded-[2rem] p-8 border border-white/5 hover:border-white/20 transition-all cursor-pointer group relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-yellow-500/10 rounded-full blur-3xl group-hover:bg-yellow-500/20 transition-all"></div>
-                    <div class="w-12 h-12 bg-yellow-500 rounded-2xl flex items-center justify-center mb-6 text-appleBg font-bold text-xl relative z-10 shadow-[0_0_15px_rgba(234,179,8,0.3)]">
-                        M
-                    </div>
-                    <h3 class="text-2xl font-semibold mb-2 relative z-10">MTN Ghana</h3>
-                    <p class="text-appleMuted mb-8 text-sm relative z-10">High-speed data bundles tailored for campus coverage.</p>
-                    <button class="w-full bg-appleBg/50 text-appleBlue py-3 rounded-xl font-medium border border-white/10 hover:bg-appleBlue hover:text-white transition-colors relative z-10">
-                        View Packages
-                    </button>
+            <h2 class="text-3xl font-bold tracking-tight mb-8 text-center">Select Network</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div onclick="showBundles('MTN')" class="bg-appleSurface/60 p-8 rounded-[2rem] border border-white/5 hover:border-appleBlue/50 transition-all cursor-pointer group text-center">
+                    <div class="w-12 h-12 bg-yellow-400 rounded-2xl mx-auto mb-4 flex items-center justify-center text-black font-black">M</div>
+                    <h3 class="font-bold">MTN Ghana</h3>
+                    <p class="text-[10px] text-appleMuted mt-2">Ultra-fast delivery</p>
                 </div>
-
-                <!-- Telecel Card -->
-                <div class="bg-appleSurface/80 backdrop-blur-md rounded-[2rem] p-8 border border-white/5 hover:border-white/20 transition-all cursor-pointer group relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-red-500/10 rounded-full blur-3xl group-hover:bg-red-500/20 transition-all"></div>
-                    <div class="w-12 h-12 bg-red-600 rounded-2xl flex items-center justify-center mb-6 text-white font-bold text-xl relative z-10 shadow-[0_0_15px_rgba(220,38,38,0.3)]">
-                        T
-                    </div>
-                    <h3 class="text-2xl font-semibold mb-2 relative z-10">Telecel</h3>
-                    <p class="text-appleMuted mb-8 text-sm relative z-10">Reliable connectivity with massive student bonuses.</p>
-                    <button class="w-full bg-appleBg/50 text-appleBlue py-3 rounded-xl font-medium border border-white/10 hover:bg-appleBlue hover:text-white transition-colors relative z-10">
-                        View Packages
-                    </button>
+                <div onclick="showBundles('TELECEL')" class="bg-appleSurface/60 p-8 rounded-[2rem] border border-white/5 hover:border-red-500/50 transition-all cursor-pointer group text-center">
+                    <div class="w-12 h-12 bg-red-600 rounded-2xl mx-auto mb-4 flex items-center justify-center text-white font-black">T</div>
+                    <h3 class="font-bold">Telecel</h3>
+                    <p class="text-[10px] text-appleMuted mt-2">Maximum reliability</p>
                 </div>
-
-                <!-- AT Card -->
-                <div class="bg-appleSurface/80 backdrop-blur-md rounded-[2rem] p-8 border border-white/5 hover:border-white/20 transition-all cursor-pointer group relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-all"></div>
-                    <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center mb-6 text-white font-bold text-xl relative z-10 shadow-[0_0_15px_rgba(37,99,235,0.3)]">
-                        AT
-                    </div>
-                    <h3 class="text-2xl font-semibold mb-2 relative z-10">AirtelTigo</h3>
-                    <p class="text-appleMuted mb-8 text-sm relative z-10">Affordable, non-expiring data for everyday browsing.</p>
-                    <button class="w-full bg-appleBg/50 text-appleBlue py-3 rounded-xl font-medium border border-white/10 hover:bg-appleBlue hover:text-white transition-colors relative z-10">
-                        View Packages
-                    </button>
+                <div onclick="showBundles('AT')" class="bg-appleSurface/60 p-8 rounded-[2rem] border border-white/5 hover:border-blue-500/50 transition-all cursor-pointer group text-center">
+                    <div class="w-12 h-12 bg-blue-600 rounded-2xl mx-auto mb-4 flex items-center justify-center text-white font-black">AT</div>
+                    <h3 class="font-bold">AT Ghana</h3>
+                    <p class="text-[10px] text-appleMuted mt-2">Best affordability</p>
                 </div>
-
             </div>
         </section>
 
+        <!-- BUNDLES LIST -->
+        <section id="bundles" class="page-section">
+            <div class="flex items-center gap-4 mb-8">
+                <button onclick="switchPage('networks')" class="w-10 h-10 bg-appleSurface rounded-full flex items-center justify-center"><i class="fa-solid fa-arrow-left"></i></button>
+                <h2 id="currentNetworkTitle" class="text-2xl font-bold">Bundles</h2>
+            </div>
+            <div id="bundleContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </section>
 
-        <!-- ================= DASHBOARD PAGE ================= -->
-        <section id="dashboard" class="page-section">
-            <h2 class="text-3xl font-semibold tracking-tight mb-8">Overview</h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                <!-- Balance Widget -->
-                <div class="bg-appleSurface/80 backdrop-blur-md rounded-[2rem] p-8 border border-white/5 md:col-span-2 relative overflow-hidden">
-                    <div class="absolute -bottom-20 -right-20 w-64 h-64 bg-appleBlue/5 rounded-full blur-3xl pointer-events-none"></div>
-                    <p class="text-appleMuted text-sm font-medium mb-1 relative z-10">Available Wallet Balance</p>
-                    <h3 class="text-5xl font-bold tracking-tight mb-6 relative z-10">GH₵ 124.50</h3>
-                    <div class="flex gap-4 relative z-10">
-                        <button class="bg-appleBlue text-white px-6 py-2.5 rounded-full font-medium hover:bg-blue-600 transition-colors shadow-[0_0_15px_rgba(41,151,255,0.4)]">
-                            <i class="fa-solid fa-plus mr-2"></i> Fund Wallet
-                        </button>
-                        <button class="bg-appleBg/50 border border-white/10 text-appleText px-6 py-2.5 rounded-full font-medium hover:bg-white/5 transition-colors backdrop-blur-sm">
-                            Transfer
-                        </button>
+        <!-- CHECKOUT -->
+        <section id="checkout" class="page-section max-w-md mx-auto">
+            <div class="bg-appleSurface p-8 rounded-[2.5rem] border border-white/10 shadow-2xl">
+                <h2 class="text-xs font-black text-appleBlue uppercase tracking-widest mb-6">Confirm Order</h2>
+                <div class="flex justify-between items-end mb-8">
+                    <div>
+                        <h3 id="checkBundleName" class="text-4xl font-bold italic tracking-tighter">0GB</h3>
+                        <p id="checkNetName" class="text-appleMuted text-xs uppercase font-bold">Network</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[24px] font-bold text-white">₵ <span id="checkTotalPrice">0.00</span></p>
                     </div>
                 </div>
-
-                <!-- Quick Stat Widget -->
-                <div class="bg-appleSurface/80 backdrop-blur-md rounded-[2rem] p-8 border border-white/5 flex flex-col justify-center relative overflow-hidden">
-                    <div class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center mb-4 text-appleBlue">
-                        <i class="fa-solid fa-chart-pie"></i>
-                    </div>
-                    <p class="text-appleMuted text-sm font-medium mb-1 relative z-10">Data Used This Month</p>
-                    <h3 class="text-3xl font-semibold relative z-10">42.5 GB</h3>
+                <div class="space-y-4">
+                    <input type="tel" id="recipientPhone" maxlength="10" placeholder="Recipient Phone (02xxxxxxxx)" class="w-full bg-black border border-white/10 p-4 rounded-2xl text-sm font-bold focus:border-appleBlue outline-none">
+                    <input type="email" id="buyerEmail" placeholder="Email for Receipt" class="w-full bg-black border border-white/10 p-4 rounded-2xl text-sm font-bold focus:border-appleBlue outline-none">
+                    <button onclick="handlePayment()" class="w-full bg-appleBlue text-white py-4 rounded-2xl font-bold uppercase text-xs tracking-widest mt-4">Pay via Paystack</button>
                 </div>
             </div>
+        </section>
 
-            <!-- Recent Activity List -->
-            <h3 class="text-xl font-medium mb-4">Recent Activity</h3>
-            <div class="bg-appleSurface/80 backdrop-blur-md rounded-3xl border border-white/5 overflow-hidden">
-                
-                <div class="flex items-center justify-between p-6 border-b border-white/5 hover:bg-white/5 transition-colors">
-                    <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 bg-yellow-500/20 text-yellow-500 rounded-full flex items-center justify-center">
-                            <i class="fa-solid fa-wifi"></i>
-                        </div>
-                        <div>
-                            <p class="font-medium">10GB MTN Data</p>
-                            <p class="text-xs text-appleMuted">Today, 09:15 AM</p>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="font-medium">- GH₵ 45.00</p>
-                        <p class="text-xs text-green-400">Successful</p>
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-between p-6 border-b border-transparent hover:bg-white/5 transition-colors">
-                    <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center">
-                            <i class="fa-solid fa-arrow-down"></i>
-                        </div>
-                        <div>
-                            <p class="font-medium">Wallet Top-up</p>
-                            <p class="text-xs text-appleMuted">Yesterday, 14:30 PM</p>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="font-medium text-green-400">+ GH₵ 100.00</p>
-                        <p class="text-xs text-appleMuted">Mobile Money</p>
-                    </div>
-                </div>
-
+        <!-- DASHBOARD / HISTORY -->
+        <section id="dashboard" class="page-section">
+            <h2 class="text-2xl font-bold mb-6">Recent Activity</h2>
+            <div id="historyList" class="space-y-3">
+                <!-- Data loaded from Firestore -->
             </div>
         </section>
 
     </div>
 
-    <!-- Simple JavaScript for Page Navigation -->
     <script>
+        // --- CONFIGURATION & INIT ---
+        const firebaseConfig = { apiKey: "AIzaSyCqg3E9tuKRcEnq2DdP6FjtG0LqnAjCHfM", authDomain: "joeldata-25d06.firebaseapp.com", projectId: "joeldata-25d06", storageBucket: "joeldata-25d06.firebasestorage.app", messagingSenderId: "555857869458", appId: "1:555857869458:web:db96a97fca5983b142044b" };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        const dataSets = {
+            MTN: [{gb:"1 GB", price:5}, {gb:"2 GB", price:10}, {gb:"5 GB", price:25}, {gb:"10 GB", price:50}, {gb:"20 GB", price:85}, {gb:"40 GB", price:165}],
+            AT: [{gb:"2 GB", price:9}, {gb:"5 GB", price:20.5}, {gb:"10 GB", price:40}, {gb:"25 GB", price:100}],
+            TELECEL: [{gb:"10 GB", price:40}, {gb:"20 GB", price:80}, {gb:"50 GB", price:200}]
+        };
+
+        let currentSelection = { net: '', gb: '', price: 0 };
+
+        // --- CORE NAVIGATION ---
         function switchPage(pageId) {
-            // Hide all pages
-            document.querySelectorAll('.page-section').forEach(page => {
-                page.classList.remove('active');
-            });
-            // Show target page
+            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
-            // Scroll to top
-            window.scrollTo(0, 0);
+            window.scrollTo(0,0);
         }
+
+        function showBundles(net) {
+            currentSelection.net = net;
+            document.getElementById('currentNetworkTitle').innerText = net + " Bundles";
+            const container = document.getElementById('bundleContainer');
+            container.innerHTML = '';
+            dataSets[net].forEach(item => {
+                container.innerHTML += `
+                    <div class="bg-appleSurface/40 p-6 rounded-3xl border border-white/5 flex justify-between items-center">
+                        <div>
+                            <h4 class="text-2xl font-bold tracking-tighter">${item.gb}</h4>
+                            <p class="text-[10px] text-appleMuted font-bold uppercase tracking-widest">₵ ${item.price.toFixed(2)}</p>
+                        </div>
+                        <button onclick="openCheckout('${item.gb}', ${item.price})" class="bg-white text-black text-[10px] font-black px-5 py-2 rounded-full uppercase">Get</button>
+                    </div>`;
+            });
+            switchPage('bundles');
+        }
+
+        function openCheckout(gb, price) {
+            currentSelection.gb = gb;
+            currentSelection.price = price;
+            const fee = (price < 30 ? 0.3 : 0.9);
+            document.getElementById('checkBundleName').innerText = gb;
+            document.getElementById('checkNetName').innerText = currentSelection.net;
+            document.getElementById('checkTotalPrice').innerText = (price + fee).toFixed(2);
+            switchPage('checkout');
+        }
+
+        // --- AUTH & DATA LOGIC ---
+        function handleAuthClick() {
+            if (auth.currentUser) auth.signOut();
+            else auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+        }
+
+        auth.onAuthStateChanged(async (user) => {
+            const btn = document.getElementById('authBtn');
+            if (user) {
+                btn.innerText = "Logout";
+                document.getElementById('userName').innerText = "Welcome, " + user.displayName.split(' ')[0];
+                document.getElementById('buyerEmail').value = user.email;
+                loadHistory(user.email);
+            } else {
+                btn.innerText = "Login";
+                document.getElementById('userName').innerText = "Welcome, Passenger";
+            }
+        });
+
+        async function loadHistory(email) {
+            const snap = await db.collection('orders').where('email', '==', email).orderBy('timestamp', 'desc').get();
+            const list = document.getElementById('historyList');
+            let total = 0;
+            list.innerHTML = '';
+            snap.forEach(doc => {
+                const d = doc.data();
+                total += parseFloat(d.amount);
+                list.innerHTML += `
+                    <div class="bg-appleSurface/30 p-5 rounded-2xl border border-white/5 flex justify-between items-center">
+                        <div>
+                            <p class="text-xs font-bold">${d.bundle}</p>
+                            <p class="text-[9px] text-appleMuted">${d.date} • ${d.phone}</p>
+                        </div>
+                        <p class="text-sm font-bold text-appleBlue">₵${d.amount}</p>
+                    </div>`;
+            });
+            document.getElementById('totalSpentDisplay').innerText = total.toFixed(2);
+        }
+
+        function handlePayment() {
+            const phone = document.getElementById('recipientPhone').value;
+            const email = document.getElementById('buyerEmail').value;
+            if (phone.length < 10) return alert("Enter valid phone number");
+            
+            const fee = (currentSelection.price < 30 ? 0.3 : 0.9);
+            const total = currentSelection.price + fee;
+
+            const handler = PaystackPop.setup({
+                key: 'pk_live_90305707d30b6282979eac837bbbc9509da579af',
+                email: email,
+                amount: Math.round(total * 100),
+                currency: 'GHS',
+                callback: (res) => {
+                    const now = new Date();
+                    db.collection('orders').add({
+                        email: email, phone: phone, amount: currentSelection.price, 
+                        bundle: `${currentSelection.gb} ${currentSelection.net}`, ref: res.reference,
+                        date: now.toLocaleDateString('en-GB'),
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    window.location.href = `https://wa.me/233248745662?text=UNI-LINK ORDER: ${currentSelection.gb} ${currentSelection.net} to ${phone}. Ref: ${res.reference}`;
+                }
+            });
+            handler.openIframe();
+        }
+
+        // Live Counter Effect
+        setInterval(() => {
+            const el = document.getElementById('liveCounter');
+            let val = parseInt(el.innerText) + (Math.floor(Math.random() * 3) - 1);
+            el.innerText = val < 20 ? 25 : val;
+        }, 5000);
     </script>
 </body>
 </html>
