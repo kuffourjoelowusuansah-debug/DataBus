@@ -5,10 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UniLink | Premium Connectivity</title>
     
+    <!-- SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://js.paystack.co/v2/inline.js"></script>
+    
+    <!-- Styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -21,7 +24,6 @@
                         brand: '#2997FF',
                         surface: '#121212',
                         card: '#1C1C1E',
-                        border: 'rgba(255,255,255,0.08)'
                     },
                     fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] }
                 }
@@ -30,18 +32,18 @@
     </script>
 
     <style>
-        body { background-color: #000; color: #fff; overflow-x: hidden; }
-        .glass { background: rgba(28, 28, 30, 0.7); backdrop-filter: blur(20px); border: 1px solid var(--border); }
-        .page-section { display: none; animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+        body { background-color: #000; color: #fff; overflow-x: hidden; scroll-behavior: smooth; }
+        .glass { background: rgba(28, 28, 30, 0.8); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.1); }
+        .page-section { display: none; animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
         .page-section.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .btn-primary { background: #fff; color: #000; transition: all 0.2s; }
-        .btn-primary:active { transform: scale(0.96); }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .iphone-glow { filter: drop-shadow(0 0 40px rgba(41, 151, 255, 0.2)); }
+        ::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="antialiased">
 
-    <!-- Navbar -->
+    <!-- Navigation -->
     <nav class="fixed top-0 w-full z-50 py-4 px-6">
         <div class="max-w-5xl mx-auto flex justify-between items-center glass rounded-2xl px-6 py-3">
             <div class="text-xl font-extrabold tracking-tight flex items-center gap-2 cursor-pointer" onclick="switchPage('home')">
@@ -49,126 +51,152 @@
                 UniLink
             </div>
             <div class="flex gap-6 items-center">
-                <button onclick="switchPage('dashboard')" class="text-xs font-semibold text-gray-400 hover:text-white transition-colors">History</button>
-                <button onclick="handleAuthClick()" id="authBtn" class="bg-white text-black text-[11px] font-bold px-5 py-2 rounded-full uppercase tracking-wider shadow-lg">Login</button>
+                <button onclick="switchPage('dashboard')" class="text-[11px] font-bold text-gray-400 hover:text-white uppercase tracking-widest transition-colors">History</button>
+                <button onclick="handleAuthClick()" id="authBtn" class="bg-white text-black text-[11px] font-bold px-5 py-2 rounded-full uppercase tracking-wider">Login</button>
             </div>
         </div>
     </nav>
 
-    <main class="pt-32 pb-20 max-w-2xl mx-auto px-6">
+    <main class="pt-28 pb-20 max-w-5xl mx-auto px-6">
 
-        <!-- HOME: MINIMALIST & BOLD -->
+        <!-- HOME PAGE: THE SHOWCASE -->
         <section id="home" class="page-section active">
             <div class="text-center space-y-6 py-10">
-                <span class="inline-block px-4 py-1.5 rounded-full bg-brand/10 text-brand text-[10px] font-bold uppercase tracking-[0.2em]">Available Nationwide</span>
-                <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight leading-[1.1]">Internet for <br><span class="text-gray-500">The New Generation.</span></h1>
-                <p class="text-gray-400 text-lg font-light leading-relaxed max-w-md mx-auto">Instant data delivery for MTN, Telecel, and AT. Built for students, powered by UniLink.</p>
+                <span class="inline-block px-4 py-1.5 rounded-full bg-brand/10 text-brand text-[10px] font-bold uppercase tracking-[0.2em]">Premium Data Access</span>
+                <h1 class="text-5xl md:text-7xl font-extrabold tracking-tighter leading-[1.05]">Internet for the <br><span class="text-gray-500 italic">Connected Student.</span></h1>
+                <p class="text-gray-400 text-lg font-light leading-relaxed max-w-lg mx-auto">No delays. No complications. Just instant data delivery across all major networks in Ghana.</p>
                 <div class="pt-6">
-                    <button onclick="switchPage('networks')" class="btn-primary px-10 py-4 rounded-2xl font-bold text-sm shadow-xl shadow-white/5">Get Started</button>
+                    <button onclick="switchPage('networks')" class="bg-white text-black px-12 py-4 rounded-2xl font-bold text-sm shadow-2xl hover:scale-105 transition-transform">Buy Data Now</button>
+                </div>
+            </div>
+
+            <!-- THE THREE iPHONES SHOWCASE -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mt-20 px-4">
+                <!-- Affordable -->
+                <div class="text-center group">
+                    <div class="relative inline-block mb-8 transition-all duration-700 group-hover:-translate-y-4">
+                        <div class="absolute inset-0 bg-green-500/10 blur-[80px] rounded-full"></div>
+                        <img src="https://www.apple.com/v/iphone/home/bu/images/overview/select/iphone_13_blue__cnv7mky769me_large.png" class="h-64 object-contain relative z-10 iphone-glow">
+                    </div>
+                    <h3 class="text-xl font-bold italic tracking-tight">Affordable</h3>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-[0.2em] mt-2 font-bold">Rates built for students</p>
+                </div>
+
+                <!-- Fast -->
+                <div class="text-center group">
+                    <div class="relative inline-block mb-8 transition-all duration-700 group-hover:-translate-y-6">
+                        <div class="absolute inset-0 bg-brand/20 blur-[100px] rounded-full"></div>
+                        <img src="https://www.apple.com/v/iphone/home/bu/images/overview/select/iphone_15_pro_black_titanium__er98v7m83m0y_large.png" class="h-80 object-contain relative z-10 iphone-glow">
+                    </div>
+                    <h3 class="text-2xl font-black italic tracking-tighter text-brand">Ultra Fast</h3>
+                    <p class="text-[10px] text-gray-400 uppercase tracking-[0.2em] mt-2 font-bold">Activation in < 60s</p>
+                </div>
+
+                <!-- Secure -->
+                <div class="text-center group">
+                    <div class="relative inline-block mb-8 transition-all duration-700 group-hover:-translate-y-4">
+                        <div class="absolute inset-0 bg-purple-500/10 blur-[80px] rounded-full"></div>
+                        <img src="https://www.apple.com/v/iphone/home/bu/images/overview/select/iphone_15_pink__bt9vvv8re99u_large.png" class="h-64 object-contain relative z-10 iphone-glow">
+                    </div>
+                    <h3 class="text-xl font-bold italic tracking-tight">Secure</h3>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-[0.2em] mt-2 font-bold">Encrypted Payments</p>
                 </div>
             </div>
         </section>
 
-        <!-- NETWORKS -->
-        <section id="networks" class="page-section">
-            <h2 class="text-2xl font-bold mb-8 text-center">Select Provider</h2>
-            <div class="grid grid-cols-1 gap-4">
-                <div onclick="showBundles('MTN')" class="bg-card p-6 rounded-3xl border border-white/5 flex items-center gap-5 cursor-pointer hover:bg-zinc-800 transition-all">
-                    <div class="w-14 h-14 bg-yellow-400 rounded-2xl flex items-center justify-center text-black text-xl font-black italic">MTN</div>
-                    <div><h3 class="font-bold text-lg">MTN Ghana</h3><p class="text-xs text-gray-500 italic">Fast & Reliable Delivery</p></div>
-                    <i class="fa-solid fa-chevron-right ml-auto text-gray-600"></i>
+        <!-- NETWORKS PAGE -->
+        <section id="networks" class="page-section max-w-xl mx-auto">
+            <h2 class="text-3xl font-extrabold tracking-tight mb-10 text-center">Choose Network</h2>
+            <div class="space-y-4">
+                <div onclick="showBundles('MTN')" class="bg-card p-6 rounded-[2rem] border border-white/5 flex items-center gap-6 cursor-pointer hover:bg-zinc-800 transition-all group">
+                    <div class="w-14 h-14 bg-yellow-400 rounded-2xl flex items-center justify-center text-black text-xl font-black">M</div>
+                    <div><h3 class="font-bold text-lg">MTN Ghana</h3><p class="text-xs text-gray-500">Premium High-Speed Data</p></div>
+                    <i class="fa-solid fa-chevron-right ml-auto text-gray-600 group-hover:text-brand transition-colors"></i>
                 </div>
-                <div onclick="showBundles('TELECEL')" class="bg-card p-6 rounded-3xl border border-white/5 flex items-center gap-5 cursor-pointer hover:bg-zinc-800 transition-all">
-                    <div class="w-14 h-14 bg-red-600 rounded-2xl flex items-center justify-center text-white text-xl font-black italic">T</div>
-                    <div><h3 class="font-bold text-lg">Telecel</h3><p class="text-xs text-gray-500 italic">Maximum Network Stability</p></div>
-                    <i class="fa-solid fa-chevron-right ml-auto text-gray-600"></i>
+                <div onclick="showBundles('TELECEL')" class="bg-card p-6 rounded-[2rem] border border-white/5 flex items-center gap-6 cursor-pointer hover:bg-zinc-800 transition-all group">
+                    <div class="w-14 h-14 bg-red-600 rounded-2xl flex items-center justify-center text-white text-xl font-black">T</div>
+                    <div><h3 class="font-bold text-lg">Telecel</h3><p class="text-xs text-gray-500">Maximum Stability</p></div>
+                    <i class="fa-solid fa-chevron-right ml-auto text-gray-600 group-hover:text-brand transition-colors"></i>
                 </div>
-                <div onclick="showBundles('AT')" class="bg-card p-6 rounded-3xl border border-white/5 flex items-center gap-5 cursor-pointer hover:bg-zinc-800 transition-all">
-                    <div class="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-xl font-black italic">AT</div>
-                    <div><h3 class="font-bold text-lg">AT Ghana</h3><p class="text-xs text-gray-500 italic">Affordable Data Options</p></div>
-                    <i class="fa-solid fa-chevron-right ml-auto text-gray-600"></i>
+                <div onclick="showBundles('AT')" class="bg-card p-6 rounded-[2rem] border border-white/5 flex items-center gap-6 cursor-pointer hover:bg-zinc-800 transition-all group">
+                    <div class="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center text-white text-xl font-black">AT</div>
+                    <div><h3 class="font-bold text-lg">AT Ghana</h3><p class="text-xs text-gray-500">Best Budget Choice</p></div>
+                    <i class="fa-solid fa-chevron-right ml-auto text-gray-600 group-hover:text-brand transition-colors"></i>
                 </div>
             </div>
         </section>
 
-        <!-- BUNDLES -->
-        <section id="bundles" class="page-section">
+        <!-- BUNDLES PAGE -->
+        <section id="bundles" class="page-section max-w-xl mx-auto">
             <div class="flex items-center gap-4 mb-10">
-                <button onclick="switchPage('networks')" class="w-10 h-10 bg-card rounded-full flex items-center justify-center"><i class="fa-solid fa-arrow-left"></i></button>
-                <h2 id="currentNetworkTitle" class="text-2xl font-bold italic">Bundles</h2>
+                <button onclick="switchPage('networks')" class="w-12 h-12 glass rounded-full flex items-center justify-center"><i class="fa-solid fa-arrow-left"></i></button>
+                <h2 id="currentNetworkTitle" class="text-3xl font-extrabold tracking-tight">Available Packages</h2>
             </div>
-            <div id="bundleContainer" class="space-y-3"></div>
+            <div id="bundleContainer" class="grid grid-cols-1 gap-3"></div>
         </section>
 
-        <!-- ADVANCED CHECKOUT -->
-        <section id="checkout" class="page-section">
-            <div class="bg-card rounded-[2.5rem] border border-white/10 p-8 shadow-2xl overflow-hidden relative">
+        <!-- CHECKOUT PAGE: INVOICE STYLE -->
+        <section id="checkout" class="page-section max-w-md mx-auto">
+            <div class="bg-card rounded-[3rem] border border-white/10 p-10 shadow-2xl relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-32 h-32 bg-brand/10 blur-3xl"></div>
                 
-                <h2 class="text-[10px] font-black uppercase tracking-widest text-brand mb-10">Purchase Summary</h2>
+                <h2 class="text-[10px] font-black uppercase tracking-[0.3em] text-brand mb-8">Purchase Invoice</h2>
                 
-                <!-- The Bundle Card Repetition -->
-                <div class="flex justify-between items-center mb-10 pb-10 border-b border-white/5">
+                <!-- Summary Card -->
+                <div class="flex justify-between items-end mb-10 pb-8 border-b border-white/5">
                     <div>
-                        <p id="checkNetName" class="text-xs font-bold text-gray-500 uppercase">NETWORK PROVIDER</p>
-                        <h3 id="checkBundleName" class="text-4xl font-extrabold tracking-tighter italic">0GB</h3>
+                        <p id="checkNetName" class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Provider</p>
+                        <h3 id="checkBundleName" class="text-5xl font-extrabold tracking-tighter italic">0GB</h3>
                     </div>
                     <div class="text-right">
-                        <p class="text-xs font-bold text-gray-500 uppercase">BASE PRICE</p>
+                        <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Base Price</p>
                         <p class="text-2xl font-bold">₵ <span id="basePriceDisplay">0.00</span></p>
                     </div>
                 </div>
 
-                <!-- Fee Breakdown -->
+                <!-- Fees -->
                 <div class="space-y-4 mb-10">
                     <div class="flex justify-between text-sm">
-                        <span class="text-gray-400">Transaction Fee</span>
-                        <span class="font-medium text-white">+₵ <span id="feeDisplay">0.00</span></span>
+                        <span class="text-gray-400 font-medium">Network Processing Fee</span>
+                        <span class="font-bold">+₵ <span id="feeDisplay">0.00</span></span>
                     </div>
                     <div class="flex justify-between text-sm">
-                        <span class="text-gray-400">Discount Applied</span>
-                        <span class="font-medium text-green-500">-₵ 0.00</span>
+                        <span class="text-gray-400 font-medium">Service Discount</span>
+                        <span class="font-bold text-green-500">-₵ 0.00</span>
                     </div>
-                    <div class="flex justify-between pt-4 border-t border-white/10">
-                        <span class="text-lg font-bold">Total Payable</span>
-                        <span class="text-xl font-extrabold text-brand tracking-tight">₵ <span id="checkTotalPrice">0.00</span></span>
+                    <div class="flex justify-between pt-6 border-t border-white/10">
+                        <span class="text-xl font-bold">Total Amount</span>
+                        <span class="text-2xl font-black text-brand tracking-tighter italic">₵ <span id="checkTotalPrice">0.00</span></span>
                     </div>
                 </div>
 
+                <!-- Form -->
                 <div class="space-y-4">
-                    <div class="relative">
-                        <i class="fa-solid fa-phone absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 text-sm"></i>
-                        <input type="tel" id="recipientPhone" maxlength="10" placeholder="Recipient Number (02xxxxxxxx)" class="w-full bg-black/50 border border-white/10 p-5 pl-12 rounded-2xl text-sm font-bold focus:border-brand outline-none transition-all">
-                    </div>
-                    <div class="relative">
-                        <i class="fa-solid fa-envelope absolute left-5 top-1/2 -translate-y-1/2 text-gray-500 text-sm"></i>
-                        <input type="email" id="buyerEmail" placeholder="Email for Receipt" class="w-full bg-black/50 border border-white/10 p-5 pl-12 rounded-2xl text-sm font-bold focus:border-brand outline-none transition-all">
-                    </div>
+                    <input type="tel" id="recipientPhone" maxlength="10" placeholder="Recipient Phone (02xxxxxxxx)" class="w-full bg-black/50 border border-white/10 p-5 rounded-2xl text-sm font-bold focus:border-brand outline-none transition-all placeholder:text-gray-600">
+                    <input type="email" id="buyerEmail" placeholder="Email Address" class="w-full bg-black/50 border border-white/10 p-5 rounded-2xl text-sm font-bold focus:border-brand outline-none transition-all placeholder:text-gray-600">
                     <button onclick="handlePayment()" class="w-full bg-brand text-white py-5 rounded-2xl font-extrabold uppercase text-xs tracking-widest mt-4 shadow-xl shadow-brand/20 active:scale-95 transition-all">
-                        Secure Checkout <i class="fa-solid fa-lock ml-2"></i>
+                        Complete Transaction <i class="fa-solid fa-lock ml-2 text-[10px]"></i>
                     </button>
                 </div>
             </div>
         </section>
 
-        <!-- DASHBOARD / HISTORY -->
-        <section id="dashboard" class="page-section">
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="text-3xl font-extrabold tracking-tight">Activity</h2>
+        <!-- HISTORY PAGE -->
+        <section id="dashboard" class="page-section max-w-xl mx-auto">
+            <div class="flex justify-between items-center mb-10">
+                <h2 class="text-3xl font-extrabold tracking-tight italic">History</h2>
                 <div class="text-right">
-                    <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Lifetime Usage</p>
-                    <p class="text-xl font-bold">₵ <span id="totalSpentDisplay">0.00</span></p>
+                    <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Total Savings</p>
+                    <p class="text-2xl font-bold text-brand tracking-tighter italic">₵ <span id="totalSpentDisplay">0.00</span></p>
                 </div>
             </div>
-            <div id="historyList" class="space-y-3">
-                <!-- Transactions from Firebase -->
-            </div>
+            <div id="historyList" class="space-y-3"></div>
         </section>
 
     </main>
 
     <script>
-        // CONFIG
+        // --- FIREBASE & DATA CONFIG ---
         const firebaseConfig = { apiKey: "AIzaSyCqg3E9tuKRcEnq2DdP6FjtG0LqnAjCHfM", authDomain: "joeldata-25d06.firebaseapp.com", projectId: "joeldata-25d06", storageBucket: "joeldata-25d06.firebasestorage.app", messagingSenderId: "555857869458", appId: "1:555857869458:web:db96a97fca5983b142044b" };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
@@ -176,12 +204,13 @@
 
         const dataSets = {
             MTN: [{gb:"1 GB", price:5}, {gb:"2 GB", price:10}, {gb:"5 GB", price:25}, {gb:"10 GB", price:50}, {gb:"20 GB", price:85}],
-            AT: [{gb:"2 GB", price:9}, {gb:"5 GB", price:20.5}, {gb:"10 GB", price:40}],
+            AT: [{gb:"2 GB", price:9}, {gb:"5 GB", price:20.5}, {gb:"10 GB", price:40}, {gb:"25 GB", price:100}],
             TELECEL: [{gb:"10 GB", price:40}, {gb:"20 GB", price:80}, {gb:"50 GB", price:200}]
         };
 
         let currentSelection = { net: '', gb: '', price: 0 };
 
+        // --- NAVIGATION ---
         function switchPage(pageId) {
             document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
@@ -190,18 +219,18 @@
 
         function showBundles(net) {
             currentSelection.net = net;
-            document.getElementById('currentNetworkTitle').innerText = net + " Bundles";
+            document.getElementById('currentNetworkTitle').innerText = net;
             const container = document.getElementById('bundleContainer');
             container.innerHTML = '';
             dataSets[net].forEach(item => {
                 container.innerHTML += `
-                    <div class="bg-card/40 p-6 rounded-3xl border border-white/5 flex justify-between items-center hover:border-brand/30 transition-all cursor-pointer group" onclick="openCheckout('${item.gb}', ${item.price})">
+                    <div class="bg-card/40 p-6 rounded-3xl border border-white/5 flex justify-between items-center hover:border-brand/40 transition-all cursor-pointer group" onclick="openCheckout('${item.gb}', ${item.price})">
                         <div>
-                            <h4 class="text-2xl font-extrabold tracking-tighter italic">${item.gb}</h4>
+                            <h4 class="text-2xl font-extrabold tracking-tighter italic group-hover:text-brand transition-colors">${item.gb}</h4>
                             <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">₵ ${item.price.toFixed(2)}</p>
                         </div>
                         <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-brand transition-all">
-                            <i class="fa-solid fa-plus text-xs"></i>
+                            <i class="fa-solid fa-plus text-[10px]"></i>
                         </div>
                     </div>`;
             });
@@ -222,6 +251,7 @@
             switchPage('checkout');
         }
 
+        // --- AUTH & HISTORY ---
         function handleAuthClick() {
             if (auth.currentUser) auth.signOut();
             else auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
@@ -230,7 +260,7 @@
         auth.onAuthStateChanged(async (user) => {
             const btn = document.getElementById('authBtn');
             if (user) {
-                btn.innerText = "Sign Out";
+                btn.innerText = "Logout";
                 document.getElementById('buyerEmail').value = user.email;
                 loadHistory(user.email);
             } else {
@@ -253,17 +283,18 @@
                                 <p class="text-xs font-extrabold uppercase tracking-tight italic">${d.bundle}</p>
                                 <p class="text-[9px] text-gray-500 font-bold uppercase mt-1">${d.date} • ${d.phone}</p>
                             </div>
-                            <p class="text-sm font-bold text-brand">₵${d.amount.toFixed(2)}</p>
+                            <p class="text-sm font-bold text-brand italic">₵${d.amount.toFixed(2)}</p>
                         </div>`;
                 });
                 document.getElementById('totalSpentDisplay').innerText = total.toFixed(2);
-            } catch(e) { console.error("History fetch error:", e); }
+            } catch(e) { console.error(e); }
         }
 
+        // --- PAYMENT ---
         function handlePayment() {
             const phone = document.getElementById('recipientPhone').value;
             const email = document.getElementById('buyerEmail').value;
-            if (phone.length < 10) return alert("Please enter a valid Ghana phone number.");
+            if (phone.length < 10) return alert("Enter valid phone number");
             
             const fee = (currentSelection.price < 30 ? 0.35 : 0.95);
             const total = currentSelection.price + fee;
