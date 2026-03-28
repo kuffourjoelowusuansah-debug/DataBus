@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UniLink | Premium Connectivity</title>
     
-    <!-- SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://js.paystack.co/v2/inline.js"></script>
     
-    <!-- Styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -37,13 +35,41 @@
         .page-section { display: none; animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
         .page-section.active { display: block; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        .iphone-glow { filter: drop-shadow(0 0 40px rgba(41, 151, 255, 0.2)); }
+        
+        /* New reliable icon glow style */
+        .icon-box {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 120px;
+            height: 120px;
+            border-radius: 2rem;
+            background: #1C1C1E;
+            border: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 2rem;
+            transition: all 0.5s ease;
+        }
+        .icon-box i { font-size: 3rem; position: relative; z-index: 10; }
+        .glow-effect {
+            position: absolute;
+            inset: 0;
+            border-radius: 2rem;
+            opacity: 0.5;
+            filter: blur(20px);
+            z-index: 5;
+            transition: all 0.5s ease;
+        }
+
+        /* Hover states */
+        .group:hover .icon-box { transform: translateY(-5px); border-color: rgba(255,255,255,0.1); }
+        .group:hover .glow-effect { opacity: 0.8; filter: blur(30px); }
+
         ::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="antialiased">
 
-    <!-- Navigation -->
     <nav class="fixed top-0 w-full z-50 py-4 px-6">
         <div class="max-w-5xl mx-auto flex justify-between items-center glass rounded-2xl px-6 py-3">
             <div class="text-xl font-extrabold tracking-tight flex items-center gap-2 cursor-pointer" onclick="switchPage('home')">
@@ -59,44 +85,39 @@
 
     <main class="pt-28 pb-20 max-w-5xl mx-auto px-6">
 
-        <!-- HOME PAGE: THE SHOWCASE -->
         <section id="home" class="page-section active">
             <div class="text-center space-y-6 py-10">
                 <span class="inline-block px-4 py-1.5 rounded-full bg-brand/10 text-brand text-[10px] font-bold uppercase tracking-[0.2em]">Premium Data Access</span>
                 <h1 class="text-5xl md:text-7xl font-extrabold tracking-tighter leading-[1.05]">Internet for the <br><span class="text-gray-500 italic">Connected Student.</span></h1>
                 <p class="text-gray-400 text-lg font-light leading-relaxed max-w-lg mx-auto">No delays. No complications. Just instant data delivery across all major networks in Ghana.</p>
                 <div class="pt-6">
-                    <button onclick="switchPage('networks')" class="bg-white text-black px-12 py-4 rounded-2xl font-bold text-sm shadow-2xl hover:scale-105 transition-transform">Buy Data Now</button>
+                    <button onclick="switchPage('networks')" class="bg-white text-black px-12 py-4 rounded-2xl font-bold text-sm shadow-2xl transition-transform hover:scale-105">Buy Data Now</button>
                 </div>
             </div>
 
-            <!-- THE THREE iPHONES SHOWCASE -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mt-20 px-4">
-                <!-- Affordable -->
                 <div class="text-center group">
-                    <div class="relative inline-block mb-8 transition-all duration-700 group-hover:-translate-y-4">
-                        <div class="absolute inset-0 bg-green-500/10 blur-[80px] rounded-full"></div>
-                        <img src="https://www.apple.com/v/iphone/home/bu/images/overview/select/iphone_13_blue__cnv7mky769me_large.png" class="h-64 object-contain relative z-10 iphone-glow">
+                    <div class="icon-box">
+                        <div class="glow-effect bg-green-500"></div>
+                        <i class="fa-solid fa-cedi-sign text-green-400"></i>
                     </div>
                     <h3 class="text-xl font-bold italic tracking-tight">Affordable</h3>
                     <p class="text-[10px] text-gray-500 uppercase tracking-[0.2em] mt-2 font-bold">Rates built for students</p>
                 </div>
 
-                <!-- Fast -->
                 <div class="text-center group">
-                    <div class="relative inline-block mb-8 transition-all duration-700 group-hover:-translate-y-6">
-                        <div class="absolute inset-0 bg-brand/20 blur-[100px] rounded-full"></div>
-                        <img src="https://www.apple.com/v/iphone/home/bu/images/overview/select/iphone_15_pro_black_titanium__er98v7m83m0y_large.png" class="h-80 object-contain relative z-10 iphone-glow">
+                    <div class="icon-box !w-[140px] !h-[140px] -mt-5">
+                        <div class="glow-effect bg-brand"></div>
+                        <i class="fa-solid fa-rocket text-brand !text-[4rem]"></i>
                     </div>
                     <h3 class="text-2xl font-black italic tracking-tighter text-brand">Ultra Fast</h3>
                     <p class="text-[10px] text-gray-400 uppercase tracking-[0.2em] mt-2 font-bold">Activation in < 60s</p>
                 </div>
 
-                <!-- Secure -->
                 <div class="text-center group">
-                    <div class="relative inline-block mb-8 transition-all duration-700 group-hover:-translate-y-4">
-                        <div class="absolute inset-0 bg-purple-500/10 blur-[80px] rounded-full"></div>
-                        <img src="https://www.apple.com/v/iphone/home/bu/images/overview/select/iphone_15_pink__bt9vvv8re99u_large.png" class="h-64 object-contain relative z-10 iphone-glow">
+                    <div class="icon-box">
+                        <div class="glow-effect bg-purple-500"></div>
+                        <i class="fa-solid fa-shield-lock text-purple-400"></i>
                     </div>
                     <h3 class="text-xl font-bold italic tracking-tight">Secure</h3>
                     <p class="text-[10px] text-gray-500 uppercase tracking-[0.2em] mt-2 font-bold">Encrypted Payments</p>
@@ -104,7 +125,6 @@
             </div>
         </section>
 
-        <!-- NETWORKS PAGE -->
         <section id="networks" class="page-section max-w-xl mx-auto">
             <h2 class="text-3xl font-extrabold tracking-tight mb-10 text-center">Choose Network</h2>
             <div class="space-y-4">
@@ -126,7 +146,6 @@
             </div>
         </section>
 
-        <!-- BUNDLES PAGE -->
         <section id="bundles" class="page-section max-w-xl mx-auto">
             <div class="flex items-center gap-4 mb-10">
                 <button onclick="switchPage('networks')" class="w-12 h-12 glass rounded-full flex items-center justify-center"><i class="fa-solid fa-arrow-left"></i></button>
@@ -135,14 +154,11 @@
             <div id="bundleContainer" class="grid grid-cols-1 gap-3"></div>
         </section>
 
-        <!-- CHECKOUT PAGE: INVOICE STYLE -->
         <section id="checkout" class="page-section max-w-md mx-auto">
             <div class="bg-card rounded-[3rem] border border-white/10 p-10 shadow-2xl relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-32 h-32 bg-brand/10 blur-3xl"></div>
-                
                 <h2 class="text-[10px] font-black uppercase tracking-[0.3em] text-brand mb-8">Purchase Invoice</h2>
                 
-                <!-- Summary Card -->
                 <div class="flex justify-between items-end mb-10 pb-8 border-b border-white/5">
                     <div>
                         <p id="checkNetName" class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Provider</p>
@@ -154,15 +170,10 @@
                     </div>
                 </div>
 
-                <!-- Fees -->
                 <div class="space-y-4 mb-10">
                     <div class="flex justify-between text-sm">
                         <span class="text-gray-400 font-medium">Network Processing Fee</span>
                         <span class="font-bold">+₵ <span id="feeDisplay">0.00</span></span>
-                    </div>
-                    <div class="flex justify-between text-sm">
-                        <span class="text-gray-400 font-medium">Service Discount</span>
-                        <span class="font-bold text-green-500">-₵ 0.00</span>
                     </div>
                     <div class="flex justify-between pt-6 border-t border-white/10">
                         <span class="text-xl font-bold">Total Amount</span>
@@ -170,7 +181,6 @@
                     </div>
                 </div>
 
-                <!-- Form -->
                 <div class="space-y-4">
                     <input type="tel" id="recipientPhone" maxlength="10" placeholder="Recipient Phone (02xxxxxxxx)" class="w-full bg-black/50 border border-white/10 p-5 rounded-2xl text-sm font-bold focus:border-brand outline-none transition-all placeholder:text-gray-600">
                     <input type="email" id="buyerEmail" placeholder="Email Address" class="w-full bg-black/50 border border-white/10 p-5 rounded-2xl text-sm font-bold focus:border-brand outline-none transition-all placeholder:text-gray-600">
@@ -181,7 +191,6 @@
             </div>
         </section>
 
-        <!-- HISTORY PAGE -->
         <section id="dashboard" class="page-section max-w-xl mx-auto">
             <div class="flex justify-between items-center mb-10">
                 <h2 class="text-3xl font-extrabold tracking-tight italic">History</h2>
